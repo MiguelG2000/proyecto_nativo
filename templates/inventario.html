@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+</head>
+<body>
+<h1>Inventario</h1>
+<h2>Lista de los productos</h2>
+<a href="{% url 'create_product' %}">Agregar producto</a>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Descripcion</th>
+        <th>Categoria</th>
+        <th>Volumen</th>
+        <th>Unidad</th>
+        <th>Inventario</th>
+        <th>Precio Publico</th>
+        <th>Precio Distribuidor</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+    <tr>
+        <td>{{product.id}}</td>
+        <td>{{product.nombre}}</td>
+        <td>{{product.descripcion}}</td>
+        <td>{{product.categoria}}</td>
+        <td>{{product.volumen}}</td>
+        <td>{{product.unidad}}</td>
+        <td>{{product.inventario}}</td>
+        <td>{{product.precio_general}}</td>
+        <td>{{product.precio_distribuidor}}</td>
+        <td><a href="{% url 'update_product' product.id %}">Editar</a></td>
+        <td><a href="{% url 'delete_product' product.id %}">Eliminar</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
