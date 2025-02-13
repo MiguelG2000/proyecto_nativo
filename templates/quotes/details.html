@@ -1,0 +1,91 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Quote Details</title>
+</head>
+<div>
+<h1>Detalles de la cotización: {{ cotizaciones.id }}</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Fecha límite del presupuesto</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ cotizaciones.id }}</td>
+            <td>{{ cotizaciones.fecha }}</td>
+            <td>{{ cotizaciones.fecha_propuesta }}</td>
+            <td>{{ cotizaciones.total }}</td>
+            <td><a href="{% url 'update_quote' cotizaciones.id %}">Editar</a></td>
+            <td><a href="{% url 'delete_quote' cotizaciones.id %}">Eliminar</a></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<hr>
+
+<!-- Botón para agregar productos -->
+<h3>Agregar un nuevo producto</h3>
+<form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
+    {% csrf_token %}
+    <div>
+    <label for="producto">Selecciona un producto:</label>
+    <select name="producto" id="producto">
+        {% for producto in products %}
+            <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }}</option>
+        {% endfor %}
+    </select>
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" name="cantidad" id="cantidad" min="1" required>
+
+    <button type="submit">Agregar</button>
+    </div>
+</form>
+
+<hr>
+
+<!-- Tabla de productos en la cotización -->
+<table>
+    <thead>
+        <tr>
+            <th>Número de la cotización</th>
+            <th>Producto</th>
+            <th>Precio actual</th>
+            <th>Precio historico</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cotizacionPro in cotProduct %}
+        <tr>
+            <td>{{ cotizacionPro.cotizacion_id }}</td>
+            <td>{{ cotizacionPro.product_id.nombre }}</td>
+            <td>{{ cotizacionPro.product_id.precio_general }}</td>
+            <td>{{ cotizacionPro.phistorico }}</td>
+            <td>{{ cotizacionPro.cantidad }}</td>
+            <td>${{ cotizacionPro.subtotal }}</td>
+            <td>
+                <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    td {
+        text-align: center;
+        padding: 5px;
+    }
+</style>
+</html>

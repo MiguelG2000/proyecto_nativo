@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cotizaciones</title>
+</head>
+<body>
+<h1>Todas las cotizaciones</h1>
+<h2>Lista de las cotizaciones</h2>
+<a href={% url 'create_quote' %}>Crear una nueva cotización</a>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Fecha</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cotizacion in cotizaciones %}
+    <tr>
+        <td>{{cotizacion.id}}</td>
+        <td>{{cotizacion.fecha}}</td>
+        <td>{{cotizacion.status}}</td>
+        <td><a href="{% url 'details' cotizacion.id %}">Ver detalles</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<form method="post" action=".">
+<form method="POST">
   {% csrf_token %}
   <div class="form-group">
     <label>Nombre</label>
@@ -48,6 +48,7 @@
         placeholder="Unidad del producto"
         value="{{product.unidad}}">
     </div>
+
     <div class="form-group">
     <label>Inventario</label>
     <input

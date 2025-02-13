@@ -1,0 +1,37 @@
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="id">ID de Cotización:</label>
+    <input type="text" name="id" id="id" value="{{ quote.id }}" required>
+
+    <label for="fecha">Fecha:</label>
+    <input type="text" name="fecha" id="fecha" required readonly>
+
+    <label for="fecha_propuesta">Fecha Propuesta:</label>
+    <input type="text" name="fecha_propuesta" id="fecha_propuesta" required readonly>
+
+    <label for="total">Total:</label>
+    <input type="number" step="0.01" name="total" id="total" value="0" required>
+
+    <label for="status">Status:</label>
+    <input type="text" name="status" id="status" value="pendiente" required readonly>
+    
+    <button type="submit" class="btn btn-success">Agregar</button>
+</form>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function formatDate(date) {
+            const options = {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'};
+            return date.toLocaleDateString('es-ES', options);
+        }
+
+        let today = new Date();
+        let futureDate = new Date();
+        futureDate.setDate(today.getDate() + 7);
+
+        document.getElementById("fecha").value = formatDate(today);
+        document.getElementById("fecha_propuesta").value = formatDate(futureDate);
+    });
+</script>
