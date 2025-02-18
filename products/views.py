@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 
 from products.models import Product
-from cotizaciones.models import Cotizaciones
+from cotizaciones.models import Cotizaciones, CotizacionProduct
 
 
 # Create your views here.
@@ -51,3 +51,4 @@ def update_product(request, product_id):
 def delete_product(request, product_id):
     Product.objects.get(id=product_id).delete()
     return redirect(reverse_lazy('products'))
+

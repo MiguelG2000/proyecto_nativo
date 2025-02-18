@@ -5,6 +5,8 @@
     <title>Inventario</title>
 </head>
 <body>
+{% if request.user.is_authenticated %}
+{% include 'nav_bar.html' %}
 <h1>Inventario</h1>
 <h2>Lista de los productos</h2>
 <a href="{% url 'create_product' %}">Agregar producto</a>
@@ -40,6 +42,11 @@
     {% endfor %}
     </tbody>
 </table>
+    {% else %}
+    <h2>No esta autentificado</h2>
+    <a href="{% url 'login' %}">Inicie sesion</a>
+{% endif %}
+
 </body>
 <style>
     table, th, td {

@@ -2,7 +2,42 @@
 <head>
     <meta charset="utf-8">
     <title>Quote Details</title>
+    <script>
+        function mostrarFormulario() {
+            document.getElementById('formulario-personalizado').style.display = 'block';
+        }
+
+        function agregarProductoPersonalizado() {
+            var cotizacionId = "{{ cotizaciones.id }}";
+            var nombre = document.getElementById('nombre_producto').value;
+            var precioActual = parseFloat(document.getElementById('precio_actual').value);
+            var precioHistorico = parseFloat(document.getElementById('precio_historico').value);
+            var cantidad = parseInt(document.getElementById('cantidad_personalizada').value);
+            var subtotal = precioActual * cantidad;
+
+            var table = document.getElementById("tabla-productos").getElementsByTagName('tbody')[0];
+            var row = table.insertRow();
+            row.innerHTML = `
+                <td>${cotizacionId}</td>
+                <td>${nombre}</td>
+                <td>$${precioActual.toFixed(2)}</td>
+                <td>$${precioHistorico.toFixed(2)}</td>
+                <td>${cantidad}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+                <td><button onclick="eliminarFila(this)">Eliminar</button></td>`;
+
+            document.getElementById('formulario-personalizado').reset();
+            document.getElementById('formulario-personalizado').style.display = 'none';
+        }
+
+        function eliminarFila(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+    </script>
 </head>
+<body>
+{% if request.user.is_autheticated %}
 <div>
 <h1>Detalles de la cotización: {{ cotizaciones.id }}</h1>
 <table>
@@ -28,28 +63,40 @@
 </div>
 <hr>
 
-<!-- Botón para agregar productos -->
 <h3>Agregar un nuevo producto</h3>
 <form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
     {% csrf_token %}
     <div>
-    <label for="producto">Selecciona un producto:</label>
-    <select name="producto" id="producto">
-        {% for producto in products %}
-            <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }}</option>
-        {% endfor %}
-    </select>
-    <label for="cantidad">Cantidad:</label>
-    <input type="number" name="cantidad" id="cantidad" min="1" required>
-
-    <button type="submit">Agregar</button>
+        <label for="producto">Selecciona un producto:</label>
+        <select name="producto" id="producto">
+            {% for producto in products %}
+                <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }}</option>
+            {% endfor %}
+        </select>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" min="1" required>
+        <button type="submit">Agregar</button>
     </div>
+</form>
+<button onclick="mostrarFormulario()">Agregar producto personalizado</button>
+
+<!-- Formulario para producto personalizado -->
+<form id="formulario-personalizado" style="display:none;">
+    <label for="nombre_producto">Nombre:</label>
+    <input type="text" id="nombre_producto" required>
+    <label for="precio_actual">Precio Actual:</label>
+    <input type="number" id="precio_actual" step="0.01" required>
+    <label for="precio_historico">Precio Histórico:</label>
+    <input type="number" id="precio_historico" step="0.01" required>
+    <label for="cantidad_personalizada">Cantidad:</label>
+    <input type="number" id="cantidad_personalizada" min="1" required>
+    <button type="button" onclick="agregarProductoPersonalizado()">Añadir</button>
 </form>
 
 <hr>
 
 <!-- Tabla de productos en la cotización -->
-<table>
+<table id="tabla-productos">
     <thead>
         <tr>
             <th>Número de la cotización</th>
@@ -66,8 +113,8 @@
         <tr>
             <td>{{ cotizacionPro.cotizacion_id }}</td>
             <td>{{ cotizacionPro.product_id.nombre }}</td>
-            <td>{{ cotizacionPro.product_id.precio_general }}</td>
-            <td>{{ cotizacionPro.phistorico }}</td>
+            <td>${{ cotizacionPro.product_id.precio_general }}</td>
+            <td>${{ cotizacionPro.phistorico }}</td>
             <td>{{ cotizacionPro.cantidad }}</td>
             <td>${{ cotizacionPro.subtotal }}</td>
             <td>
@@ -77,6 +124,10 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+    <h2>No esta autentificado</h2>
+    <a href="{% url 'login' %}">Inicie sesion</a>
+{% endif %}
 </body>
 <style>
     table, th, td {

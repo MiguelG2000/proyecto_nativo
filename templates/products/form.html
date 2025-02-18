@@ -1,5 +1,6 @@
 <form method="POST">
   {% csrf_token %}
+    <input type="hidden" name="quote_id" value="{{ id }}">
   <div class="form-group">
     <label>Nombre</label>
     <input

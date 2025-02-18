@@ -6,11 +6,14 @@
 
 </head>
 <body>
+{% include 'nav_bar.html' %}
+{% if request.user.is_authenticated %}
 <h1>Bienvenido</h1>
 <div>
     <button class="button"><a href="{% url 'products' %}">Inventario</a></button>
     <button class="button"><a href="{% url 'list_quotes' %}">Cotizacion</a></button>
     <button class="button"><a>Reporte</a></button>
 </div>
+{% endif %}
 </body>
 </html>

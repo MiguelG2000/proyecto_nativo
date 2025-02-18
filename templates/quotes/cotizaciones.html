@@ -5,9 +5,12 @@
     <title>Cotizaciones</title>
 </head>
 <body>
+{% if request.user.is_authenticated %}
+{% include 'nav_bar.html' %}
 <h1>Todas las cotizaciones</h1>
 <h2>Lista de las cotizaciones</h2>
 <a href={% url 'create_quote' %}>Crear una nueva cotización</a>
+
 <table>
     <thead>
     <tr>
@@ -27,5 +30,10 @@
     {% endfor %}
     </tbody>
 </table>
+    {% else %}
+    <h2>No esta autentificado</h2>
+    <a href="{% url 'login' %}">Inicie sesion</a>
+{% endif %}
+
 </body>
 </html>
