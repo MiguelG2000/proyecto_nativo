@@ -11,7 +11,7 @@ from cotizaciones.models import Cotizaciones, CotizacionProduct
 # Create your views here.
 #CRUD
 def products_view(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(otro = False)
     context = {"products": products}
     return render(request, 'products/inventario.html', context)
 

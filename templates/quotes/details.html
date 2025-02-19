@@ -1,142 +1,87 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Quote Details</title>
-    <script>
-        function mostrarFormulario() {
-            document.getElementById('formulario-personalizado').style.display = 'block';
-        }
-
-        function agregarProductoPersonalizado() {
-            var cotizacionId = "{{ cotizaciones.id }}";
-            var nombre = document.getElementById('nombre_producto').value;
-            var precioActual = parseFloat(document.getElementById('precio_actual').value);
-            var precioHistorico = parseFloat(document.getElementById('precio_historico').value);
-            var cantidad = parseInt(document.getElementById('cantidad_personalizada').value);
-            var subtotal = precioActual * cantidad;
-
-            var table = document.getElementById("tabla-productos").getElementsByTagName('tbody')[0];
-            var row = table.insertRow();
-            row.innerHTML = `
-                <td>${cotizacionId}</td>
-                <td>${nombre}</td>
-                <td>$${precioActual.toFixed(2)}</td>
-                <td>$${precioHistorico.toFixed(2)}</td>
-                <td>${cantidad}</td>
-                <td>$${subtotal.toFixed(2)}</td>
-                <td><button onclick="eliminarFila(this)">Eliminar</button></td>`;
-
-            document.getElementById('formulario-personalizado').reset();
-            document.getElementById('formulario-personalizado').style.display = 'none';
-        }
-
-        function eliminarFila(button) {
-            var row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-    </script>
+    <title>Detalles de la Cotización</title>
 </head>
-<body>
+<body class="bg-gray-100 p-8">
+{% include 'nav_bar.html' %}
 {% if request.user.is_authenticated %}
-<div>
-<h1>Detalles de la cotización: {{ cotizaciones.id }}</h1>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>Fecha límite del presupuesto</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{ cotizaciones.id }}</td>
-            <td>{{ cotizaciones.fecha }}</td>
-            <td>{{ cotizaciones.fecha_propuesta }}</td>
-            <td>{{ cotizaciones.total }}</td>
-            <td><a href="{% url 'update_quote' cotizaciones.id %}">Editar</a></td>
-            <td><a href="{% url 'delete_quote' cotizaciones.id %}">Eliminar</a></td>
-        </tr>
-    </tbody>
-</table>
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }}</h1>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">ID</th>
+                <th class="border px-4 py-2">Fecha</th>
+                <th class="border px-4 py-2">Fecha límite</th>
+                <th class="border px-4 py-2">Total</th>
+                <th class="border px-4 py-2"></th>
+                <th class="border px-4 py-2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="text-center">
+                <td class="border px-4 py-2">{{ cotizaciones.id }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.fecha }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.fecha_propuesta }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.total }}</td>
+                <td><a href="{% url 'update_quote' cotizaciones.id %}" class="text-blue-500">Editar</a></td>
+                <td><a href="{% url 'delete_quote' cotizaciones.id %}" class="text-red-500">Eliminar</a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-<hr>
+<hr class="my-4">
 
-<h3>Agregar un nuevo producto</h3>
-<form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
+<!-- Agregar producto a la cotizacion -->
+<h3 class="text-lg font-semibold">Agregar un nuevo producto</h3>
+<form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}" class="mb-4">
     {% csrf_token %}
-    <div>
-        <label for="producto">Selecciona un producto:</label>
-        <select name="producto" id="producto">
+    <div class="space-y-2">
+        <label for="producto" class="block">Selecciona un producto:</label>
+        <select name="producto" id="producto" class="border p-2 rounded w-full">
             {% for producto in products %}
                 <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }}</option>
             {% endfor %}
         </select>
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" name="cantidad" id="cantidad" min="1" required>
-        <button type="submit">Agregar</button>
+        <label for="cantidad" class="block">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" min="1" required class="border p-2 rounded w-full">
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Agregar</button>
     </div>
 </form>
-<button onclick="mostrarFormulario()">Agregar producto personalizado</button>
 
-<!-- Formulario para producto personalizado -->
-<form id="formulario-personalizado" style="display:none;">
-    <label for="nombre_producto">Nombre:</label>
-    <input type="text" id="nombre_producto" required>
-    <label for="precio_actual">Precio Actual:</label>
-    <input type="number" id="precio_actual" step="0.01" required>
-    <label for="precio_historico">Precio Histórico:</label>
-    <input type="number" id="precio_historico" step="0.01" required>
-    <label for="cantidad_personalizada">Cantidad:</label>
-    <input type="number" id="cantidad_personalizada" min="1" required>
-    <button type="button" onclick="agregarProductoPersonalizado()">Añadir</button>
-</form>
+<!-- Agregar Producto personalizado -->
+<button class="bg-blue-500 text-white px-4 py-2 rounded">Agregar Producto Personalizado</button>
 
-<hr>
-
+<hr class="my-4">
 <!-- Tabla de productos en la cotización -->
-<table id="tabla-productos">
+<table id="tabla-productos" class="w-full border-collapse border border-gray-300">
     <thead>
-        <tr>
-            <th>Número de la cotización</th>
-            <th>Producto</th>
-            <th>Precio actual</th>
-            <th>Precio historico</th>
-            <th>Cantidad</th>
-            <th>Subtotal</th>
+        <tr class="bg-gray-200">
+            <th class="border px-4 py-2">Cotización</th>
+            <th class="border px-4 py-2">Producto</th>
+            <th class="border px-4 py-2">Precio actual</th>
+            <th class="border px-4 py-2">Precio histórico</th>
+            <th class="border px-4 py-2">Cantidad</th>
+            <th class="border px-4 py-2">Subtotal</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         {% for cotizacionPro in cotProduct %}
         <tr>
-            <td>{{ cotizacionPro.cotizacion_id }}</td>
-            <td>{{ cotizacionPro.product_id.nombre }}</td>
-            <td>${{ cotizacionPro.product_id.precio_general }}</td>
-            <td>${{ cotizacionPro.phistorico }}</td>
-            <td>{{ cotizacionPro.cantidad }}</td>
-            <td>${{ cotizacionPro.subtotal }}</td>
-            <td>
-                <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="btn btn-danger">Eliminar</a>
-            </td>
+            <td class="border px-4 py-2">{{ cotizacionPro.cotizacion_id }}</td>
+            <td class="border px-4 py-2">{{ cotizacionPro.product_id.nombre }}</td>
+            <td class="border px-4 py-2">${{ cotizacionPro.product_id.precio_general }}</td>
+            <td class="border px-4 py-2">${{ cotizacionPro.phistorico }}</td>
+            <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
+            <td class="border px-4 py-2">${{ cotizacionPro.subtotal }}</td>
+            <td class="border px-4 py-2"><a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-{% else %}
-    <h2>No esta autentificado</h2>
-    <a href="{% url 'login' %}">Inicie sesion</a>
 {% endif %}
 </body>
-<style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-    td {
-        text-align: center;
-        padding: 5px;
-    }
-</style>
 </html>

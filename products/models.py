@@ -4,7 +4,7 @@ from django.db import models
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
-from django_otp.plugins.otp_email.conf import settings
+from django.db.models import BooleanField
 
 # Create your models here.
 class Product(models.Model):
@@ -16,6 +16,7 @@ class Product(models.Model):
     inventario = models.IntegerField(blank=True, null=True)
     precio_general = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=False)
     precio_distribuidor = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=False)
+    otro = BooleanField(default=False)
     imagen = models.ImageField(upload_to='images_products/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='thumbs', blank=True, null=True, editable=False)
 
@@ -28,7 +29,6 @@ class Product(models.Model):
     # Si hay una imagen, generar el thumbnail
         if self.imagen:
             self.make_thumbnail()
-
 
     def make_thumbnail(self):
         self.imagen.open()  # Asegurarse de que la imagen está abierta

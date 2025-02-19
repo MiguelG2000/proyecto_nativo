@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pagina de inicio</title>
-
+    <title>Pagina de Inicio</title>
 </head>
 <body>
 {% include 'nav_bar.html' %}
 {% if request.user.is_authenticated %}
-<h1>Bienvenido</h1>
-<div>
-    <button class="button"><a href="{% url 'products' %}">Inventario</a></button>
-    <button class="button"><a href="{% url 'list_quotes' %}">Cotizacion</a></button>
-    <button class="button"><a>Reporte</a></button>
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido {{ request.user.first_name }} </h1>
+    <div class="flex flex-wrap gap-4">
+        <a href="{% url 'products' %}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Inventario</a>
+        <a href="{% url 'list_quotes' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Cotización</a>
+        <a href="#" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Reporte</a>
+    </div>
 </div>
 {% endif %}
 </body>

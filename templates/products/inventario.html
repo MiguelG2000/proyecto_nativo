@@ -7,55 +7,57 @@
 <body>
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
-<h1>Inventario</h1>
-<h2>Lista de los productos</h2>
-<a href="{% url 'create_product' %}">Agregar producto</a>
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Nombre</th>
-        <th>Descripcion</th>
-        <th>Categoria</th>
-        <th>Volumen</th>
-        <th>Unidad</th>
-        <th>Inventario</th>
-        <th>Precio Publico</th>
-        <th>Precio Distribuidor</th>
-        <th>Imagen</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for product in products %}
-    <tr>
-        <td>{{product.id}}</td>
-        <td>{{product.nombre}}</td>
-        <td>{{product.descripcion}}</td>
-        <td>{{product.categoria}}</td>
-        <td>{{product.volumen}}</td>
-        <td>{{product.unidad}}</td>
-        <td>{{product.inventario}}</td>
-        <td>{{product.precio_general}}</td>
-        <td>{{product.precio_distribuidor}}</td>
-        <td><img src="http://127.0.0.1:8000/{{product.thumbnail}}"></td>
-        <td><a href="{% url 'update_product' product.id %}">Editar</a></td>
-        <td><a href="{% url 'delete_product' product.id %}">Eliminar</a></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-    {% else %}
-    <h2>No esta autentificado</h2>
-    <a href="{% url 'login' %}">Inicie sesion</a>
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">Inventario</h1>
+    <h2 class="text-xl text-gray-600 mb-4">Lista de los productos</h2>
+    <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Agregar producto</a>
+    <div class="overflow-x-auto mt-6">
+        <table class="min-w-full border border-gray-300 bg-white shadow-md rounded-lg">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 border">Id</th>
+                    <th class="py-2 px-4 border">Nombre</th>
+                    <th class="py-2 px-4 border">Descripción</th>
+                    <th class="py-2 px-4 border">Categoría</th>
+                    <th class="py-2 px-4 border">Volumen</th>
+                    <th class="py-2 px-4 border">Unidad</th>
+                    <th class="py-2 px-4 border">Inventario</th>
+                    <th class="py-2 px-4 border">Precio Público</th>
+                    <th class="py-2 px-4 border">Precio Distribuidor</th>
+                    <th class="py-2 px-4 border">Imagen</th>
+                    <th class="py-2 px-4 border">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr class="hover:bg-gray-100">
+                    <td class="py-2 px-4 border">{{ product.id }}</td>
+                    <td class="py-2 px-4 border">{{ product.nombre }}</td>
+                    <td class="py-2 px-4 border">{{ product.descripcion }}</td>
+                    <td class="py-2 px-4 border">{{ product.categoria }}</td>
+                    <td class="py-2 px-4 border">{{ product.volumen }}</td>
+                    <td class="py-2 px-4 border">{{ product.unidad }}</td>
+                    <td class="py-2 px-4 border">{{ product.inventario }}</td>
+                    <td class="py-2 px-4 border">{{ product.precio_general }}</td>
+                    <td class="py-2 px-4 border">{{ product.precio_distribuidor }}</td>
+                    <td class="py-2 px-4 border">
+                        <img src="http://127.0.0.1:8000/{{ product.thumbnail }}" class="h-16 w-16 object-cover rounded">
+                    </td>
+                    <td class="py-2 px-4 border flex space-x-2">
+                        <a href="{% url 'update_product' product.id %}" class="text-blue-500 hover:underline">Editar</a>
+                        <a href="{% url 'delete_product' product.id %}" class="text-red-500 hover:underline">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="flex flex-col items-center justify-center min-h-screen text-center">
+    <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+    <a href="{% url 'login' %}" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Iniciar sesión</a>
+</div>
 {% endif %}
-
 </body>
-<style>
-    table, th, td {
-        border: 1px solid black;
-    }
-    td {
-        text-align: center;
-    }
-</style>
 </html>

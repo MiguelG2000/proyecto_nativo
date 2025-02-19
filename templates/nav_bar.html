@@ -1,32 +1,61 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="base.html">Fixed navbar</a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarCollapse"
-    aria-controls="navbarCollapse"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link disabled">Disabled</a>
-      </li>
-    </ul>
-    <form class="form-inline mt-2 mt-md-0">
-      <input
-        class="form-control mr-sm-2"
-        type="text"
-        placeholder="Search"
-        aria-label="Search"
-      />
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-        Search
-      </button>
-    </form>
-  </div>
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    {% tailwind_css %}
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- LOGO -->
+            <div class="flex items-center">
+                <a href="{% url 'login' %}">
+                    <img src="{% static 'img/casa.png' %}" alt="Logo" class="h-10 w-auto mr-3">
+                </a>
+            </div>
+
+            <!-- Menú principal (pantallas grandes) -->
+            <div class="hidden md:flex space-x-6">
+                <a href="{% url 'products' %}" class="text-gray-300 hover:text-white">Inventario</a>
+                <a href="{% url 'list_quotes' %}" class="text-gray-300 hover:text-white">Cotizaciones</a>
+                <a class="text-gray-300 hover:text-white">Reporte</a>
+            </div>
+
+            <!-- Botón de cerrar sesión -->
+            <div class="hidden md:flex items-center">
+                <button class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                    Cerrar Sesión
+                </button>
+            </div>
+
+            <!-- Icono de menú hamburguesa (para móviles) -->
+            <button class="md:hidden text-white focus:outline-none" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú desplegable en móviles -->
+        <div class="hidden md:hidden space-y-2 px-2 pt-2 pb-3" id="navbarCollapse">
+            <a href="{% url 'products' %}" class="block text-gray-300 hover:text-white">Inventario</a>
+            <a href="{% url 'list_quotes' %}" class="block text-gray-300 hover:text-white">Cotizaciones</a>
+            <button class="w-full text-left px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
 </nav>
+
+<!-- Script para el menú en móviles -->
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('navbarCollapse').classList.toggle('hidden');
+    });
+</script>
+
+</body>
+</html>

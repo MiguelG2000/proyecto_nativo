@@ -18,7 +18,7 @@ def quotes_view(request):
 def details_view(request, id):
     cotizaciones = Cotizaciones.objects.get(id=id)
     cotProduct = CotizacionProduct.objects.filter(cotizacion_id=id)
-    products = Product.objects.all()
+    products = Product.objects.filter(otro = False)
     context = {'cotizaciones': cotizaciones, 'cotProduct': cotProduct, 'products': products}
     return render(request, 'quotes/details.html',context)
 

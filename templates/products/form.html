@@ -1,85 +1,57 @@
-<form method="POST">
-  {% csrf_token %}
-    <input type="hidden" name="quote_id" value="{{ id }}">
-  <div class="form-group">
-    <label>Nombre</label>
-    <input
-            type="text"
-            class="form-control"
-            name="nombre"
-            placeholder="Nombre producto"
-            value="{{product.nombre}}">
-  </div>
-  <div class="form-group">
-    <label>Descripción</label>
-    <input
-            type="text"
-            class="form-control"
-            name="descripcion"
-            placeholder="Descripcion producto"
-            value="{{product.descripcion}}"
-    >
-  </div>
-  <div class="form-group">
-    <label>Categoria</label>
-    <input
-            type="text"
-            class="form-control"
-            name="categoria"
-            placeholder="Categoria"
-            value="{{product.categoria}}"
-    >
-  </div>
-    <div class="form-group">
-        <label>Volumen</label>
-        <input
-        type="number"
-        step="any"
-        class="form-control"
-        name="volumen"
-        placeholder="Volumen del producto"
-        value="{{product.volumen}}">
-    </div>
-    <div class="form-group">
-        <label>Unidad</label>
-        <input
-        type="text"
-        class="form-control"
-        name="unidad"
-        placeholder="Unidad del producto"
-        value="{{product.unidad}}">
-    </div>
+{% include 'nav_bar.html' %}
+<div class="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <form method="POST" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="quote_id" value="{{ id }}">
 
-    <div class="form-group">
-    <label>Inventario</label>
-    <input
-            type="number"
-            class="form-control"
-            name="inventario"
-            placeholder="No de piezas del producto"
-            value="{{product.inventario}}">
-  </div>
+        <div>
+            <label class="block text-gray-700 font-medium">Nombre</label>
+            <input type="text" name="nombre" placeholder="Nombre producto" value="{{ product.nombre }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
 
-    <div class="form-group">
-    <label>Precio general</label>
-    <input
-            type="number"
-            step="any"
-            class="form-control"
-            name="precio_general"
-            placeholder="Precio al publico del producto"
-            value="{{product.precio_general}}">
-  </div>
-    <div class="form-group">
-        <label>Precio de distribuidor</label>
-        <input
-        type="number"
-        step="any"
-        class="form-control"
-        name="precio_distribuidor"
-        placeholder="Precio al distribuidor del producto"
-        value="{{product.precio_distribuidor}}">
-    </div>
+        <div>
+            <label class="block text-gray-700 font-medium">Descripción</label>
+            <input type="text" name="descripcion" placeholder="Descripción producto" value="{{ product.descripcion }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
 
-  <button type="submit" class="btn btn-success">Agregar</button>
-</form>
+        <div>
+            <label class="block text-gray-700 font-medium">Categoría</label>
+            <input type="text" name="categoria" placeholder="Categoría" value="{{ product.categoria }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium">Volumen</label>
+            <input type="number" step="any" name="volumen" placeholder="Volumen del producto" value="{{ product.volumen }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium">Unidad</label>
+            <input type="text" name="unidad" placeholder="Unidad del producto" value="{{ product.unidad }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium">Inventario</label>
+            <input type="number" name="inventario" placeholder="No de piezas del producto" value="{{ product.inventario }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium">Precio general</label>
+            <input type="number" step="any" name="precio_general" placeholder="Precio al público del producto" value="{{ product.precio_general }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 font-medium">Precio de distribuidor</label>
+            <input type="number" step="any" name="precio_distribuidor" placeholder="Precio al distribuidor del producto" value="{{ product.precio_distribuidor }}"
+                   class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
+
+        <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition">Agregar</button>
+    </form>
+</div>

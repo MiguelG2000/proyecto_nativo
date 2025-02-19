@@ -1,6 +1,3 @@
-from datetime import timezone, datetime
-
-from PIL.ImageChops import multiply
 from django.db import models
 
 from cliente.models import Cliente
@@ -8,14 +5,11 @@ from products.models import Product
 
 # Create your models here.
 class Cotizaciones(models.Model):
-    #product = models.ManyToManyField(Product, through='CotizacionProduct')
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
     fecha = models.CharField(max_length=100, blank=False, null=False)
     fecha_propuesta = models.CharField(max_length=100, blank=False, null=False)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     status = models.CharField(max_length=20, blank=False, null=False, default='Pendiente')
-    #cliente_id = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False, default=None, related_name='cotizaciones')
-
 
     def __str__(self):
         return str(self.id)
