@@ -22,21 +22,24 @@ class Product(models.Model):
     def __str__(self):
         return self.nombre
 
-    '''def save(self, *args, **kwargs):
-        if not self.make_thumbnail():
-            raise Exception("No se pudo crear la miniatura")
-
+    def save(self, *args, **kwargs):
+    # Primero guardar el producto para que tenga un ID válido
         super(Product, self).save(*args, **kwargs)
+    # Si hay una imagen, generar el thumbnail
+        if self.imagen:
+            self.make_thumbnail()
+
 
     def make_thumbnail(self):
-        imagen = Image.open(self.image)
-        thumbnail_size = 75, 75
+        self.imagen.open()  # Asegurarse de que la imagen está abierta
+        imagen = Image.open(self.imagen)
+
+        thumbnail_size = (75, 75)
         imagen.thumbnail(thumbnail_size)
 
-        thumb_name, thumb_extension = os.path.splitext(self.image.name)
+        # Obtener nombre y extensión del archivo
+        thumb_name, thumb_extension = os.path.splitext(self.imagen.name)
         thumb_extension = thumb_extension.lower()
-
-        thumb_filename = thumb_name + '_thumb' + thumb_extension
 
         if thumb_extension in ['.jpg', '.jpeg']:
             FTYPE = 'JPEG'
@@ -45,15 +48,19 @@ class Product(models.Model):
         elif thumb_extension == '.png':
             FTYPE = 'PNG'
         else:
-            return False  # Unrecognized file type
+            return False  # Tipo de archivo no reconocido
 
-        # Save thumbnail to in-memory file as StringIO
+        # Crear un archivo temporal en memoria
         temp_thumb = BytesIO()
         imagen.save(temp_thumb, FTYPE)
         temp_thumb.seek(0)
 
-        # set save=False, otherwise it will run in an infinite loop
+        # Guardar la miniatura con un nuevo nombre
+        thumb_filename = f"{thumb_name}_thumb{thumb_extension}"
         self.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
         temp_thumb.close()
 
-        return True'''
+        # Guardar nuevamente para actualizar la miniatura
+        super(Product, self).save(update_fields=['thumbnail'])
+
+        return True

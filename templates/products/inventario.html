@@ -22,6 +22,7 @@
         <th>Inventario</th>
         <th>Precio Publico</th>
         <th>Precio Distribuidor</th>
+        <th>Imagen</th>
     </tr>
     </thead>
     <tbody>
@@ -36,6 +37,7 @@
         <td>{{product.inventario}}</td>
         <td>{{product.precio_general}}</td>
         <td>{{product.precio_distribuidor}}</td>
+        <td><img src="http://127.0.0.1:8000/{{product.thumbnail}}"></td>
         <td><a href="{% url 'update_product' product.id %}">Editar</a></td>
         <td><a href="{% url 'delete_product' product.id %}">Eliminar</a></td>
     </tr>
