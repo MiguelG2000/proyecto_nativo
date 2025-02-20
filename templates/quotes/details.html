@@ -7,7 +7,7 @@
 <body class="bg-gray-100 p-8">
 {% include 'nav_bar.html' %}
 {% if request.user.is_authenticated %}
-<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="bg-white p-6 rounded-lg shadow-md mt-20">
     <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }}</h1>
     <table class="w-full border-collapse border border-gray-300">
         <thead>
@@ -16,6 +16,9 @@
                 <th class="border px-4 py-2">Fecha</th>
                 <th class="border px-4 py-2">Fecha límite</th>
                 <th class="border px-4 py-2">Total</th>
+                <th class="border px-4 py-2">Anticipo</th>
+                <th class="border px-4 py-2">Restante</th>
+                <th class="border px-4 py-2">Metodo de Pago</th>
                 <th class="border px-4 py-2"></th>
                 <th class="border px-4 py-2"></th>
             </tr>
@@ -26,6 +29,9 @@
                 <td class="border px-4 py-2">{{ cotizaciones.fecha }}</td>
                 <td class="border px-4 py-2">{{ cotizaciones.fecha_propuesta }}</td>
                 <td class="border px-4 py-2">{{ cotizaciones.total }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.anticipo }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.restante }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.metodo_pago }}</td>
                 <td><a href="{% url 'update_quote' cotizaciones.id %}" class="text-blue-500">Editar</a></td>
                 <td><a href="{% url 'delete_quote' cotizaciones.id %}" class="text-red-500">Eliminar</a></td>
             </tr>
@@ -34,7 +40,7 @@
 </div>
 <hr class="my-4">
 
-<!-- Agregar producto a la cotizacion -->
+<!-- Agregar producto a la cotización -->
 <h3 class="text-lg font-semibold">Agregar un nuevo producto</h3>
 <form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}" class="mb-4">
     {% csrf_token %}
@@ -42,11 +48,15 @@
         <label for="producto" class="block">Selecciona un producto:</label>
         <select name="producto" id="producto" class="border p-2 rounded w-full">
             {% for producto in products %}
-                <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }}</option>
+                <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }} / ${{ producto.precio_distribuidor }}</option>
             {% endfor %}
         </select>
         <label for="cantidad" class="block">Cantidad:</label>
         <input type="number" name="cantidad" id="cantidad" min="1" required class="border p-2 rounded w-full">
+        <label for="usar_precio_distribuidor" class="inline-flex items-center">
+            <input type="checkbox" name="usar_precio_distribuidor" id="usar_precio_distribuidor" class="mr-2">
+            Usar precio de distribuidor
+        </label>
         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Agregar</button>
     </div>
 </form>
@@ -55,13 +65,12 @@
 <button class="bg-blue-500 text-white px-4 py-2 rounded">Agregar Producto Personalizado</button>
 
 <hr class="my-4">
-<!-- Tabla de productos en la cotización -->
 <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
     <thead>
         <tr class="bg-gray-200">
             <th class="border px-4 py-2">Cotización</th>
             <th class="border px-4 py-2">Producto</th>
-            <th class="border px-4 py-2">Precio actual</th>
+            <th class="border px-4 py-2">Precio usado</th>
             <th class="border px-4 py-2">Precio histórico</th>
             <th class="border px-4 py-2">Cantidad</th>
             <th class="border px-4 py-2">Subtotal</th>
@@ -73,7 +82,13 @@
         <tr>
             <td class="border px-4 py-2">{{ cotizacionPro.cotizacion_id }}</td>
             <td class="border px-4 py-2">{{ cotizacionPro.product_id.nombre }}</td>
-            <td class="border px-4 py-2">${{ cotizacionPro.product_id.precio_general }}</td>
+            <td class="border px-4 py-2">
+                {% if cotizacionPro.usar_precio_distribuidor %}
+                    ${{ cotizacionPro.product_id.precio_distribuidor }} (Distribuidor)
+                {% else %}
+                    ${{ cotizacionPro.product_id.precio_general }} (General)
+                {% endif %}
+            </td>
             <td class="border px-4 py-2">${{ cotizacionPro.phistorico }}</td>
             <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
             <td class="border px-4 py-2">${{ cotizacionPro.subtotal }}</td>

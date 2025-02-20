@@ -26,9 +26,14 @@
 
             <!-- Botón de cerrar sesión -->
             <div class="hidden md:flex items-center">
-                <button class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
-                    Cerrar Sesión
-                </button>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                        Cerrar Sesión
+                    </button>
+                </form>
+
             </div>
 
             <!-- Icono de menú hamburguesa (para móviles) -->
@@ -43,9 +48,14 @@
         <div class="hidden md:hidden space-y-2 px-2 pt-2 pb-3" id="navbarCollapse">
             <a href="{% url 'products' %}" class="block text-gray-300 hover:text-white">Inventario</a>
             <a href="{% url 'list_quotes' %}" class="block text-gray-300 hover:text-white">Cotizaciones</a>
-            <button class="w-full text-left px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
-                Cerrar Sesión
-            </button>
+            <a class="text-gray-300 hover:text-white">Reporte</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit"
+                        class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                    Cerrar Sesión
+                </button>
+            </form>
         </div>
     </div>
 </nav>

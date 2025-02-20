@@ -28,6 +28,10 @@ def create_quote(request):
         quote.fecha = request.POST['fecha']
         quote.fecha_propuesta = request.POST['fecha_propuesta']
         quote.total = request.POST['total']
+        quote.status = request.POST['status']
+        quote.anticipo = request.POST['anticipo']
+        quote.restante = request.POST['restante']
+        quote.metodo_pago = request.POST['metodo_pago']
         quote.save()
         return redirect(reverse_lazy('list_quotes'))
     return render(request, 'quotes/form.html')
@@ -40,6 +44,10 @@ def update_quote(request, id):
         quote.fecha = request.POST['fecha']
         quote.fecha_propuesta = request.POST['fecha_propuesta']
         quote.total = request.POST['total']
+        quote.status = request.POST['status']
+        quote.anticipo = request.POST['anticipo']
+        quote.restante = request.POST['restante']
+        quote.metodo_pago = request.POST['metodo_pago']
         quote.save()
         return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
     context = {"quote": quote}
@@ -56,11 +64,13 @@ def add_product_to_quote(request, id):
         cotizacion = get_object_or_404(Cotizaciones, id=id)
         product = get_object_or_404(Product, id=request.POST["producto"])
         cantidad_nueva = int(request.POST["cantidad"])
+        usar_precio_distribuidor = request.POST.get("usar_precio_distribuidor") == "on"
 
-        # Buscar si el producto ya está en la cotización
+        # Buscar si el producto ya está en la cotización con el mismo tipo de precio
         cotizacion_producto, created = CotizacionProduct.objects.get_or_create(
             cotizacion_id=cotizacion,
             product_id=product,
+            usar_precio_distribuidor=usar_precio_distribuidor,
             defaults={'cantidad': cantidad_nueva}
         )
 
@@ -74,6 +84,7 @@ def add_product_to_quote(request, id):
 
         messages.success(request, "Producto agregado correctamente.")
         return redirect('details', id=cotizacion.id)
+
 
 
 def delete_product_from_quote(request, id):

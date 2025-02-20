@@ -1,5 +1,5 @@
 {% include 'nav_bar.html' %}
-<div class="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
+<div class="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-20">
     <form method="POST" class="space-y-4">
         {% csrf_token %}
         <input type="hidden" name="quote_id" value="{{ id }}">

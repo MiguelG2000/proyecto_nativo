@@ -42,7 +42,14 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                'custom-blue': '#1e3a8a',
+                'custom-red': '#dc2626',
+                'custom-green': '#16a34a',
+                // Agrega más colores según la paleta de la imagen
+            },
+        },
     },
     plugins: [
         /**

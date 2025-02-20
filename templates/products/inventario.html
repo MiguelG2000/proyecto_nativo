@@ -7,7 +7,7 @@
 <body>
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-6 mt-20">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Inventario</h1>
     <h2 class="text-xl text-gray-600 mb-4">Lista de los productos</h2>
     <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Agregar producto</a>
