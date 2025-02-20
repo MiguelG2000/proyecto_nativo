@@ -14,10 +14,6 @@
     <input type="text" name="fecha_propuesta" id="fecha_propuesta" required readonly
            class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
 
-    <label for="total" class="block mt-4 text-sm font-medium text-gray-700">Total:</label>
-    <input type="number" step="0.01" name="total" id="total" value="0" required
-           class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-
     <label for="status" class="block mt-4 text-sm font-medium text-gray-700">Status:</label>
     <select name="status" id="status" required
             class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
@@ -30,11 +26,11 @@
     </select>
 
     <label for="anticipo" class="block mt-4 text-sm font-medium text-gray-700">Anticipo</label>
-    <input type="number" step="0.01" name="anticipo" id="anticipo" value="0" required
+    <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" required
             class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
-    <label for="restante" class ="block mt4 text-sm font-medium text-gray-700">Restante</label>
-    <input type="number" step="0.01" name="restante" id="restante" value="0" required
+    <label for="costo_envio" class="block mt-4 text-sm font-medium text-gray-700">Costo Envio</label>
+    <input type="number" step="0.01" name="costo_envio" id="costo_envio" value="{{ quote.costo_envio }}" required
             class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <label for="metodo_pago" class="block mt-4 text-sm font-medium text-gray-700">Metodo de Pago</label>
@@ -45,6 +41,12 @@
         <option value="Transferencia">Transferencia</option>
         <option value="Tarjeta Debito/Credito">Tarjeta Debito/Credito</option>
     </select>
+
+    <label for="iva_8" class="block mt-4 text-sm font-medium text-gray-700">IVA 8%</label>
+    <input type="checkbox" name="iva_8" id="iva_8" value="{{ quote.iva_8 }}" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+
+    <label for="iva_16" class="block mt-4 text-sm font-medium text-gray-700">IVA 16%</label>
+    <input type="checkbox" name="iva_16" id="iva_16" value="{{ quote.iva_16 }}" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Agregar</button>
 </form>

@@ -1,20 +1,26 @@
 from django.db import models
-from django.db.transaction import mark_for_rollback_on_error
 
 from cliente.models import Cliente
 from products.models import Product
+from decimal import Decimal
+
 
 # Create your models here.
 class Cotizaciones(models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
     fecha = models.CharField(max_length=100, blank=False, null=False)
     fecha_propuesta = models.CharField(max_length=100, blank=False, null=False)
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    servicio_envio = models.CharField(max_length=100, blank=False, null=True, default=None)
+    costo_envio = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0) # Este total es el total sin IVA por cuestiones programaticas lo decidimos dejar así.
+    total_Civa = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     status = models.CharField(max_length=20, blank=False, null=False, default='Pendiente')
     anticipo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     restante = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     metodo_pago = models.CharField(max_length=20, null=False, default='No')
-
+    iva = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    iva_8 = models.BooleanField(default=False)
+    iva_16 = models.BooleanField(default=False)
     def __str__(self):
         return str(self.id)
 
@@ -32,10 +38,18 @@ class Cotizaciones(models.Model):
     def update_total(self):
         self.total = sum(item.subtotal for item in self.cotizaciones.all())
         self.save()
-        self.cal_restante()
 
-    def cal_restante(self):
-        self.restante = self.total - self.anticipo
+    def calcular_iva(self):
+        iva_porcentaje = Decimal('0.16') if self.iva_16 else Decimal('0.08') if self.iva_8 else Decimal('0')
+        total_decimal = Decimal(str(self.total))
+        costo_envioDecimal = Decimal(str(self.costo_envio))
+        # Calcular el IVA
+        self.iva = total_decimal * iva_porcentaje
+        # Asegurarse de que self.total y self.iva son ambos Decimals al sumarlos
+        self.total_Civa = total_decimal + self.iva + costo_envioDecimal
+
+        anticipo_decimal = Decimal(str(self.anticipo))
+        self.restante = self.total_Civa - anticipo_decimal
         self.save()
 
 class CotizacionProduct(models.Model):
