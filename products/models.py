@@ -28,6 +28,10 @@ class Product(models.Model):
         return self.nombre
 
     def update_volumen(self):
+        #Calcular volumen por pieza
+        self.volumen = self.largo * self.ancho * self.alto
+
+        #Calcular volumen total
         from cotizaciones.models import CotizacionProduct
         cotizaciones = CotizacionProduct.objects.filter(product_id=self)
         self.volumen_total = sum(self.volumen * cotizacion.cantidad for cotizacion in cotizaciones)

@@ -1,0 +1,42 @@
+<div class="bg-white p-6 rounded-lg shadow-md mt-20">
+    <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }}</h1>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+        <tr class="bg-gray-200">
+            <th class="border px-4 py-2">ID</th>
+            <th class="border px-4 py-2">Fecha</th>
+            <th class="border px-4 py-2">Fecha límite</th>
+            <th class="border px-4 py-2">Total sin IVA</th>
+            <th class="border px-4 py-2">Anticipo</th>
+            <th class="border px-4 py-2">Metodo de Pago</th>
+            <th class="border px-4 py-2">Servicio de Envío</th>
+            <th class="border px-4 py-2">Costo de Envío</th>
+            <th class="border px-4 py-2">I.V.A.</th>
+            <th class="border px-4 py-2">Total con IVA</th>
+            <th class="border px-4 py-2">Restante</th>
+            <th class="border px-4 py-2"></th>
+            <th class="border px-4 py-2"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+            <td class="border px-4 py-2">{{ cotizaciones.id }}</td>
+            <td class="border px-4 py-2">{{ cotizaciones.fecha }}</td>
+            <td class="border px-4 py-2">{{ cotizaciones.fecha_propuesta }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.total }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.anticipo }}</td>
+            <td class="border px-4 py-2">{{ cotizaciones.metodo_pago }}</td>
+            <td class="border px-4 py-2">{{ cotizaciones.servicio_envio }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.costo_envio }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.iva }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.total_Civa }}</td>
+            <td class="border px-4 py-2">${{ cotizaciones.restante }}</td>
+            <td><a href="{% url 'update_quote' cotizaciones.id %}" class="text-blue-500">Editar</a></td>
+            <td><a href="{% url 'delete_quote' cotizaciones.id %}" class="text-red-500">Eliminar</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr class="my-4">
+    <p class="text-lg font-semibold">Total con IVA: <span id="total_con_iva">${{ cotizaciones.total_Civa }}</span></p>
+</div>

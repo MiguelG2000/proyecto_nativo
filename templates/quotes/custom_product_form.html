@@ -1,0 +1,27 @@
+<button id="btnAgregarProducto" class="bg-blue-500 text-white px-4 py-2 rounded mt-10">Agregar Producto Personalizado</button>
+<div id="formularioProductoPersonalizado" class="hidden max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-4">
+    <form method="POST" action="{% url 'add_custom_product_to_quote' cotizaciones.id %}" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="quote_id" value="{{ cotizaciones.id }}">
+
+        <label class="block text-gray-700 font-medium">Nombre</label>
+        <input type="text" name="nombre" required class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <label class="block text-gray-700 font-medium">Cantidad</label>
+        <input type="number" name="cantidad" min="1" value="1" class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <label class="block text-gray-700 font-medium">Largo</label>
+        <input type="number" step="any" name="largo" value="0" class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <label class="block text-gray-700 font-medium">Ancho</label>
+        <input type="number" step="any" name="ancho" value="0" class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <label class="block text-gray-700 font-medium">Alto</label>
+        <input type="number" step="any" name="alto" value="0" class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <label class="block text-gray-700 font-medium">Precio Unitario</label>
+        <input type="number" step="any" name="precio_general" value="0" required class="w-full p-2 border border-gray-300 rounded-lg">
+
+        <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition">Guardar</button>
+    </form>
+</div>

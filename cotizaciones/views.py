@@ -49,8 +49,8 @@ def create_quote(request):
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
+        quote.servicio_envio = request.POST['servicio_envio']
         quote.costo_envio = request.POST['costo_envio']
-
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST
@@ -71,6 +71,7 @@ def update_quote(request, id):
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
+        quote.servicio_envio = request.POST['servicio_envio']
         quote.costo_envio = request.POST['costo_envio']
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
@@ -127,7 +128,6 @@ def add_custom_product_to_quote(request, id):
         largo = float(request.POST["largo"]) if request.POST["largo"] else 0
         ancho = float(request.POST["ancho"]) if request.POST["ancho"] else 0
         alto = float(request.POST["alto"]) if request.POST["alto"] else 0
-        volumen = float(request.POST["volumen"]) if request.POST["volumen"] else 0
         precio_general = float(request.POST["precio_general"]) if request.POST["precio_general"] else 0
         cantidad = int(request.POST["cantidad"]) if request.POST["cantidad"] else 1  # Asegurar un valor por defecto
 
@@ -137,8 +137,6 @@ def add_custom_product_to_quote(request, id):
             largo=largo,
             ancho=ancho,
             alto=alto,
-            volumen=volumen,
-            volumen_total=0,
             precio_general=precio_general,
             otro=True  # Marcamos como personalizado
         )

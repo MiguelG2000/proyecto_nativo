@@ -1,0 +1,33 @@
+<h2 class="text-lg font-semibold text-gray-900 mb-4 mt-10">Tabla de Productos</h2>
+<table id="tabla-productos" class="w-full border-collapse border border-gray-300">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="border px-4 py-2">Cotización</th>
+            <th class="border px-4 py-2">Producto</th>
+            <th class="border px-4 py-2">Precio usado</th>
+            <th class="border px-4 py-2">Precio histórico</th>
+            <th class="border px-4 py-2">Cantidad</th>
+            <th class="border px-4 py-2">Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cotizacionPro in cotProduct %}
+        <tr>
+            <td class="border px-4 py-2">{{ cotizacionPro.cotizacion_id }}</td>
+            <td class="border px-4 py-2">{{ cotizacionPro.product_id.nombre }}</td>
+            <td class="border px-4 py-2">
+                {% if cotizacionPro.usar_precio_distribuidor %}
+                    ${{ cotizacionPro.product_id.precio_distribuidor }} (Distribuidor)
+                {% else %}
+                    ${{ cotizacionPro.product_id.precio_general }} (General)
+                {% endif %}
+            </td>
+            <td class="border px-4 py-2">${{ cotizacionPro.phistorico }}</td>
+            <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
+            <td class="border px-4 py-2">${{ cotizacionPro.subtotal }}</td>
+            <td class="border px-4 py-2"><a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
