@@ -10,7 +10,6 @@ from cotizaciones.views import (
     add_custom_product_to_quote,
     delete_product_from_quote,
     )
-from products.views import delete_product
 
 urlpatterns = [
     path('', quotes_view, name='list_quotes'),

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte</title>
+</head>
+<body class="bg-gray-100 p-6">
+{% if request.user.is_authenticated %}
+    {% include 'nav_bar.html' %}
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
+        <h1 class="text-2xl font-bold text-gray-700 mb-4">Modulo de reportes</h1>
+{% endif %}
+</body>
+</html>

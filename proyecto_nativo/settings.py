@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'products',
     'cotizaciones',
     'cliente',
+    'report',
     'tailwind',
     'theme',
     'django_browser_reload',

@@ -9,7 +9,6 @@ from cotizaciones.models import Cotizaciones, CotizacionProduct
 from products.models import Product
 from cliente.models import Cliente
 
-
 # Create your views here.
 def quotes_view(request):
     cotizaciones = Cotizaciones.objects.all()
@@ -19,24 +18,20 @@ def quotes_view(request):
 
 def details_view(request, id):
     cotizacion = get_object_or_404(Cotizaciones, id=id)
-
     # Filtrar los productos de la cotización:
     cotProduct = CotizacionProduct.objects.filter(cotizacion_id=cotizacion)
-
     # Filtrar los productos normales (listados previamente en la base de datos)
     productNormal = cotProduct.filter(product_id__otro=False)
-
     # Filtrar los productos personalizados (creados manualmente en la cotización)
     productPersonalizado = cotProduct.filter(product_id__otro=True)
-
     # Filtrar productos disponibles para agregar
     products = Product.objects.filter(otro=False)
 
     context = {
         'cotizaciones': cotizacion,
-        'cotProduct': productNormal,  # Solo los productos normales
-        'productOtro': productPersonalizado,  # Solo los productos personalizados
-        'products': products,  # Productos listados disponibles para agregar
+        'cotProduct': productNormal,
+        'productOtro': productPersonalizado,
+        'products': products,
     }
     return render(request, 'quotes/details.html', context)
 
@@ -63,8 +58,12 @@ def create_quote(request):
 
 
 def update_quote(request, id):
-    quote = Cotizaciones.objects.get(id=id)
+    quote = get_object_or_404(Cotizaciones, id=id)
+
     if request.method == "POST":
+        prev_status = quote.status  # Guardar el estado anterior
+
+        # Actualizar los campos con los datos del formulario
         quote.id = request.POST['id']
         quote.fecha = request.POST['fecha']
         quote.fecha_propuesta = request.POST['fecha_propuesta']
@@ -73,15 +72,26 @@ def update_quote(request, id):
         quote.metodo_pago = request.POST['metodo_pago']
         quote.servicio_envio = request.POST['servicio_envio']
         quote.costo_envio = request.POST['costo_envio']
+
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST
 
+        # Verificar si cambió el estado a "Aceptado"
+        if prev_status != "Aceptado" and quote.status == "Aceptado":
+            for item in quote.cotizaciones.all():
+                if item.product_id.inventario is not None:
+                    item.product_id.inventario -= item.cantidad
+                    item.product_id.save()
+
+        # Guardar los cambios
         quote.save()
+
         # Calcular el total con IVA
         quote.calcular_iva()
 
         return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
+
     context = {"quote": quote}
     return render(request, 'quotes/form.html', context)
 
