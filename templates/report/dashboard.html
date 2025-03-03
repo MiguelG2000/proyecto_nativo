@@ -1,14 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte</title>
+    <title>Reporte de Ventas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Incluir Chart.js -->
 </head>
 <body class="bg-gray-100 p-6">
+
 {% if request.user.is_authenticated %}
     {% include 'nav_bar.html' %}
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
-        <h1 class="text-2xl font-bold text-gray-700 mb-4">Modulo de reportes</h1>
+        <h1 class="text-2xl font-bold text-gray-700 mb-4">Reporte de Productos Más Vendidos</h1>
+
+        <!-- Contenedor de la gráfica -->
+        <canvas id="graficaProductos"></canvas>
+
+        <script>
+            var ctx = document.getElementById('graficaProductos').getContext('2d');
+            var graficaProductos = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        label: 'Cantidad Vendida',
+                        data: {{ data|safe }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+    {% else %}
+    <div class="text-center mt-10">
+        <h2 class="text-xl text-gray-700">No está autenticado</h2>
+        <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
+    </div>
 {% endif %}
+
 </body>
 </html>
