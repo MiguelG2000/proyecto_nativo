@@ -1,37 +1,39 @@
-<h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de Productos Personalizados</h2>
-<table class="w-full border-collapse border border-gray-300">
-    <thead>
-        <tr class="bg-gray-200">
-            <th class="border px-4 py-2">Producto</th>
-            <th class="border px-4 py-2">Cantidad</th>
-            <th class="border px-4 py-2">Largo</th>
-            <th class="border px-4 py-2">Ancho</th>
-            <th class="border px-4 py-2">Alto</th>
-            <th class="border px-4 py-2">Volumen Pza</th>
-            <th class="border px-4 py-2">Precio Unitario</th>
-            <th class="border px-4 py-2">Volumen Total</th>
-            <th class="border px-4 py-2">Subtotal</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cotizacionPro in productOtro %}
-            {% if cotizacionPro.product_id.otro %}
-                <tr>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.nombre }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.largo }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.ancho }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.alto }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.volumen }}</td>
-                    <td class="border px-4 py-2">${{ cotizacionPro.product_id.precio_general }}</td>
-                    <td class="border px-4 py-2">{{ cotizacionPro.product_id.volumen_total }}</td>
-                    <td class="border px-4 py-2">${{ cotizacionPro.subtotal }}</td>
-                    <td class="border px-4 py-2">
-                        <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</a>
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+<div class="bg-white p-6 rounded-lg shadow-md mt-10">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de Productos Personalizados</h2>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">Producto</th>
+                <th class="border px-4 py-2">Cantidad</th>
+                <th class="border px-4 py-2">Largo</th>
+                <th class="border px-4 py-2">Ancho</th>
+                <th class="border px-4 py-2">Alto</th>
+                <th class="border px-4 py-2">Volumen Pza</th>
+                <th class="border px-4 py-2">Precio Unitario</th>
+                <th class="border px-4 py-2">Volumen Total</th>
+                <th class="border px-4 py-2">Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cotizacionPro in productOtro %}
+                {% if cotizacionPro.product_id.otro %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.nombre }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.largo }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.ancho }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.alto }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.volumen }}</td>
+                        <td class="border px-4 py-2">${{ cotizacionPro.product_id.precio_general }}</td>
+                        <td class="border px-4 py-2">{{ cotizacionPro.product_id.volumen_total }}</td>
+                        <td class="border px-4 py-2">${{ cotizacionPro.subtotal }}</td>
+                        <td class="border px-4 py-2">
+                            <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

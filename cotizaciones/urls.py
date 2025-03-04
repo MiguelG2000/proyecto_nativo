@@ -9,7 +9,8 @@ from cotizaciones.views import (
     add_product_to_quote,
     add_custom_product_to_quote,
     delete_product_from_quote,
-    )
+)
+from cotizaciones.pdf import generate_quote_pdf
 
 urlpatterns = [
     path('', quotes_view, name='list_quotes'),
@@ -20,5 +21,7 @@ urlpatterns = [
     path('details/<str:id>/add-product/', add_product_to_quote, name='add_product_to_quote'),
     path('details/<str:id>/add-custom-product/', add_custom_product_to_quote, name='add_custom_product_to_quote'),
     path('details/<int:id>/delete-product/', delete_product_from_quote, name='delete_product_from_quote'),
+    path('cotizacion/<str:id>/pdf/', generate_quote_pdf, name='generate_quote_pdf'),
+
 
 ]

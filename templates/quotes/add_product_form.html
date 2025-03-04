@@ -1,19 +1,27 @@
-<h3 class="text-lg font-semibold mt-10">Agregar un nuevo producto</h3>
-<form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}" class="mb-4">
-    {% csrf_token %}
-    <div class="space-y-2">
-        <label for="producto" class="block">Selecciona un producto:</label>
-        <select name="producto" id="producto" class="border p-2 rounded w-full">
-            {% for producto in products %}
-                <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }} / ${{ producto.precio_distribuidor }}</option>
-            {% endfor %}
-        </select>
-        <label for="cantidad" class="block">Cantidad:</label>
-        <input type="number" name="cantidad" id="cantidad" min="1" required class="border p-2 rounded w-full">
-        <label for="usar_precio_distribuidor" class="inline-flex items-center">
-            <input type="checkbox" name="usar_precio_distribuidor" id="usar_precio_distribuidor" class="mr-2">
-            Usar precio de distribuidor
-        </label>
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Agregar</button>
-    </div>
-</form>
+<div class="bg-white p-6 rounded-lg shadow-md mt-10 max-w-3xl mx-auto">
+    <h3 class="text-lg font-semibold mb-4">Agregar un nuevo producto</h3>
+    <form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
+        {% csrf_token %}
+        <div class="space-y-4">
+            <div>
+                <label for="producto" class="block text-sm font-medium text-gray-700">Selecciona un producto:</label>
+                <select name="producto" id="producto" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    {% for producto in products %}
+                        <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }} / ${{ producto.precio_distribuidor }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="cantidad" class="block text-sm font-medium text-gray-700">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad" min="1" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" name="usar_precio_distribuidor" id="usar_precio_distribuidor" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                <label for="usar_precio_distribuidor" class="ml-2 block text-sm text-gray-900">Usar precio de distribuidor</label>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Agregar</button>
+            </div>
+        </div>
+    </form>
+</div>

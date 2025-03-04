@@ -1,20 +1,15 @@
-from itertools import product
-from lib2to3.fixes.fix_input import context
-
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-
-from cotizaciones.models import Cotizaciones, CotizacionProduct
 from products.models import Product
 from cliente.models import Cliente
+from cotizaciones.models import Cotizaciones, CotizacionProduct
 
 # Create your views here.
 def quotes_view(request):
     cotizaciones = Cotizaciones.objects.all()
     context = {'cotizaciones': cotizaciones}
     return render(request, 'quotes/cotizaciones.html', context)
-
 
 def details_view(request, id):
     cotizacion = get_object_or_404(Cotizaciones, id=id)

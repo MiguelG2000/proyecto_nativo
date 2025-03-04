@@ -47,10 +47,12 @@
     </select>
 
     <label for="iva_8" class="block mt-4 text-sm font-medium text-gray-700">IVA 8%</label>
-    <input type="checkbox" name="iva_8" id="iva_8" value="{{ quote.iva_8 }}" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+    <input type="checkbox" name="iva_8" id="iva_8" {% if quote.iva_8 %}checked{% endif %}
+       class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <label for="iva_16" class="block mt-4 text-sm font-medium text-gray-700">IVA 16%</label>
-    <input type="checkbox" name="iva_16" id="iva_16" value="{{ quote.iva_16 }}" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+    <input type="checkbox" name="iva_16" id="iva_16" {% if quote.iva_16 %}checked{% endif %}
+       class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Agregar</button>
 </form>
