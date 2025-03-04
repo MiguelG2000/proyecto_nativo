@@ -3,11 +3,38 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from cotizaciones.models import Cotizaciones, CotizacionProduct
+from datetime import datetime
+
+# Diccionario de traducción de días y meses en español
+dias_semana = {
+    "Monday": "lunes", "Tuesday": "martes", "Wednesday": "miércoles",
+    "Thursday": "jueves", "Friday": "viernes", "Saturday": "sábado", "Sunday": "domingo"
+}
+
+meses = {
+    "January": "enero", "February": "febrero", "March": "marzo", "April": "abril",
+    "May": "mayo", "June": "junio", "July": "julio", "August": "agosto",
+    "September": "septiembre", "October": "octubre", "November": "noviembre", "December": "diciembre"
+}
+
+def formatear_fecha(fecha):
+    fecha_dt = datetime.strptime(str(fecha), "%Y-%m-%d")  # Convertir a datetime
+    dia_semana = dias_semana[fecha_dt.strftime("%A")]  # Obtener día
+    dia = fecha_dt.strftime("%d")  # Obtener el número del día
+    mes = meses[fecha_dt.strftime("%B")]  # Obtener mes
+    anio = fecha_dt.strftime("%Y")  # Obtener año
+
+    return f"{dia_semana}, {dia} de {mes} del {anio}"
 
 def generate_quote_pdf(request, id):
     # Obtener la cotización y los productos relacionados
     cotizacion = Cotizaciones.objects.get(id=id)
-    productos = CotizacionProduct.objects.filter(cotizacion_id=cotizacion)
+    productos = CotizacionProduct.objects.filter(cotizacion_id=cotizacion, product_id__otro=False)
+    productosPer = CotizacionProduct.objects.filter(cotizacion_id=cotizacion, product_id__otro=True)
+
+    # Formatear fechas manualmente
+    fecha_cotizacion = formatear_fecha(cotizacion.fecha)
+    fecha_validez = formatear_fecha(cotizacion.fecha_propuesta)
 
     # Configurar la respuesta HTTP con tipo PDF
     response = HttpResponse(content_type='application/pdf')
@@ -32,7 +59,7 @@ def generate_quote_pdf(request, id):
     cotizacion_x = width - 250
 
     # Datos del Cliente a la izquierda
-    pdf.setFont("Helvetica-Bold", 10)
+    pdf.setFont("Helvetica-Bold", 9)
     pdf.drawString(40, height - 130, "Datos del cliente:")
     pdf.setFont("Helvetica", 10)
     pdf.drawString(40, height - 145, "Cliente: Presforza")
@@ -40,55 +67,93 @@ def generate_quote_pdf(request, id):
     pdf.drawString(40, height - 175, "Tuxtla Gutiérrez, Chiapas.")
 
     # Cotización más centrada
-    pdf.setFont("Helvetica-Bold", 10)
+    pdf.setFont("Helvetica-Bold", 9)
     pdf.drawString(cotizacion_x, height - 130, f"COTIZACIÓN: {cotizacion.id}")
     pdf.setFont("Helvetica", 10)
-    pdf.drawString(cotizacion_x, height - 145, f"Fecha: {cotizacion.fecha}")
-    pdf.drawString(cotizacion_x, height - 160, f"Válido hasta: {cotizacion.fecha_propuesta}")
+    pdf.drawString(cotizacion_x, height - 145, f"Fecha: {fecha_cotizacion}")
+    pdf.drawString(cotizacion_x, height - 160, f"Válido hasta: {fecha_validez}")
 
     # Mensaje de introducción
-    pdf.setFont("Helvetica", 10)
-    pdf.drawString(40, height - 200, "Estimado cliente, por medio del presente, le hago entrega de la cotización solicitada.")
+    pdf.setFont("Helvetica", 8)
+    pdf.drawString(40, height - 200, "Estimado cliente, por medio del presente, le hago entrega de la cotización solicitada. Puede corroborar a detalle la presente cotización.")
+    pdf.drawString(40, height -215, "Cualquier duda favor de contactarnos, con gusto se la resolvemos.")
 
-    # Coordenadas de la tabla
     y = height - 240
-    col_positions = [40, 100, 160, 320, 450, 550]  # Posiciones de las columnas
-    row_height = 20
 
-    # Dibujar la tabla con solo líneas horizontales
-    pdf.setFont("Helvetica-Bold", 10)
+    # *** TABLA DE PRODUCTOS NORMALES (si existen) ***
+    if productos.exists():
+        pdf.setFont("Helvetica-Bold", 10)
+        col_positions = [40, 100, 160, 320, 450, 550]
+        headers = ["Unidad", "Cantidad", "Descripción", "P.U.", "Total"]
 
-    # Dibujar encabezados centrados
-    headers = ["Unidad", "Cantidad", "Descripción", "P.U.", "Total"]
-    for i in range(len(headers)):
-        pdf.drawCentredString((col_positions[i] + col_positions[i + 1]) / 2, y, headers[i])
+        for i in range(len(headers)):
+            pdf.drawCentredString((col_positions[i] + col_positions[i + 1]) / 2, y, headers[i])
 
-    pdf.line(40, y + 10, width - 40, y + 10)  # Línea superior de la tabla
-    y -= row_height
+        pdf.line(40, y + 10, width - 40, y + 10)
+        y -= 20
 
-    pdf.setFont("Helvetica", 10)
-    for producto in productos:
-        pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.unidad)
-        pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
-        pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, producto.product_id.nombre)
-        pdf.drawCentredString((col_positions[3] + col_positions[4]) / 2, y, f"${producto.phistorico}")
-        pdf.drawCentredString((col_positions[4] + col_positions[5]) / 2, y, f"${producto.subtotal}")
+        pdf.setFont("Helvetica", 9)
+        for producto in productos:
+            pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.unidad)
+            pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
+            pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, producto.product_id.nombre)
+            pdf.drawCentredString((col_positions[3] + col_positions[4]) / 2, y, f"${producto.phistorico}")
+            pdf.drawCentredString((col_positions[4] + col_positions[5]) / 2, y, f"${producto.subtotal}")
 
-        pdf.line(40, y + 10, width - 40, y + 10)  # Solo líneas horizontales
-        y -= row_height
+            pdf.line(40, y + 10, width - 40, y + 10)
+            y -= 20
 
-    pdf.line(40, y + 10, width - 40, y + 10)  # Línea inferior de la tabla
+        pdf.line(40, y + 10, width - 40, y + 10)
+
+    # *** TABLA DE PRODUCTOS PERSONALIZADOS (si existen) ***
+    if productosPer.exists():
+        y -= 30
+        pdf.setFont("Helvetica-Bold", 10)
+        pdf.drawString(40, y, "Productos Personalizados")
+        y -= 20
+
+        col_positions = [40, 110, 180, 230, 280, 330, 390, 450, 510, 570]
+        encabezados = ["Concepto", "Cantidad", "Largo", "Ancho", "Alto", "Volumen por pieza", "P.U.", "Volumen total", "Total"]
+
+        pdf.setFont("Helvetica-Bold", 8)
+        for i in range(len(encabezados)):
+            pdf.drawCentredString((col_positions[i] + col_positions[i+1]) / 2, y, encabezados[i])
+
+        y -= 10
+        pdf.line(40, y, 570, y)
+        y -= 15
+
+        pdf.setFont("Helvetica", 8)
+        for producto in productosPer:
+            pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.nombre)
+            pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
+            pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, str(producto.product_id.largo))
+            pdf.drawCentredString((col_positions[3] + col_positions[4]) / 2, y, str(producto.product_id.ancho))
+            pdf.drawCentredString((col_positions[4] + col_positions[5]) / 2, y, str(producto.product_id.alto))
+            pdf.drawCentredString((col_positions[5] + col_positions[6]) / 2, y, str(producto.product_id.volumen))
+            pdf.drawCentredString((col_positions[6] + col_positions[7]) / 2, y, f"${producto.phistorico}")
+            pdf.drawCentredString((col_positions[7] + col_positions[8]) / 2, y, str(producto.product_id.volumen_total))
+            pdf.drawCentredString((col_positions[8] + col_positions[9]) / 2, y, f"${producto.subtotal}")
+
+            y -= 15
+            pdf.line(40, y, 570, y)
 
     # Subtotales alineados con términos y condiciones
     pdf.setFont("Helvetica-Bold", 10)
-    pdf.drawString(400, y - 10, "Subtotal:")
-    pdf.drawString(520, y - 10, f"${cotizacion.total}")
+    pdf.drawString(400, y - 10, "Envío a " + f"{cotizacion.servicio_envio}:")
+    pdf.drawString(520, y - 10, f"${cotizacion.costo_envio}")
 
-    pdf.drawString(400, y - 30, "I.V.A.:")
-    pdf.drawString(520, y - 30, f"${cotizacion.iva}")
+    pdf.drawString(400, y - 30, "Subtotal:")
+    pdf.drawString(520, y - 30, f"${cotizacion.total}")
 
-    pdf.drawString(400, y - 50, "Total a pagar:")
-    pdf.drawString(520, y - 50, f"${cotizacion.total_Civa}")
+    pdf.drawString(400, y - 50, "I.V.A.:")
+    pdf.drawString(520, y - 50, f"${cotizacion.iva}")
+
+    pdf.drawString(400, y - 70, "Anticipo:")
+    pdf.drawString(520, y - 70, f"${cotizacion.anticipo}")
+
+    pdf.drawString(400, y - 90, "Total a pagar:")
+    pdf.drawString(520, y - 90, f"${cotizacion.restante}")
 
     # Términos y condiciones alineados
     pdf.setFont("Helvetica-Bold", 7)

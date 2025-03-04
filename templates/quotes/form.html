@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Crear Cotización</title>
+</head>
+<body class="bg-gray-100 p-8">
 {% include 'nav_bar.html' %}
 <form method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
     {% csrf_token %}
@@ -7,11 +14,11 @@
            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <label for="fecha" class="block mt-4 text-sm font-medium text-gray-700">Fecha:</label>
-    <input type="text" name="fecha" id="fecha" required readonly
+    <input type="date" name="fecha" id="fecha" required readonly
            class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
 
     <label for="fecha_propuesta" class="block mt-4 text-sm font-medium text-gray-700">Fecha Propuesta:</label>
-    <input type="text" name="fecha_propuesta" id="fecha_propuesta" required readonly
+    <input type="date" name="fecha_propuesta" id="fecha_propuesta" required readonly
            class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
 
     <label for="status" class="block mt-4 text-sm font-medium text-gray-700">Status:</label>
@@ -56,19 +63,20 @@
 
     <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Agregar</button>
 </form>
+</body>
+</html>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        function formatDate(date) {
-            const options = {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'};
-            return date.toLocaleDateString('es-ES', options);
+        function formatDateToInput(date) {
+            return date.toISOString().split("T")[0];  // Formato YYYY-MM-DD
         }
 
         let today = new Date();
         let futureDate = new Date();
         futureDate.setDate(today.getDate() + 7);
 
-        document.getElementById("fecha").value = formatDate(today);
-        document.getElementById("fecha_propuesta").value = formatDate(futureDate);
+        document.getElementById("fecha").value = formatDateToInput(today);
+        document.getElementById("fecha_propuesta").value = formatDateToInput(futureDate);
     });
 </script>

@@ -8,8 +8,8 @@ from decimal import Decimal
 # Create your models here.
 class Cotizaciones(models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
-    fecha = models.CharField(max_length=100, blank=False, null=False)
-    fecha_propuesta = models.CharField(max_length=100, blank=False, null=False)
+    fecha = models.DateField(auto_now=False, auto_now_add=True)
+    fecha_propuesta = models.DateField(auto_now=False, auto_now_add=True)
     servicio_envio = models.CharField(max_length=100, blank=False, null=True, default=None)
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0) # Este total es el total sin IVA por cuestiones programaticas lo decidimos dejar así.
@@ -45,7 +45,6 @@ class Cotizaciones(models.Model):
         costo_envioDecimal = Decimal(str(self.costo_envio))
         # Calcular el IVA
         self.iva = total_decimal * iva_porcentaje
-        # Asegurarse de que self.total y self.iva son ambos Decimals al sumarlos
         self.total_Civa = total_decimal + self.iva + costo_envioDecimal
 
         anticipo_decimal = Decimal(str(self.anticipo))

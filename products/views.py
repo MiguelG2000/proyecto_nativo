@@ -3,6 +3,7 @@ from itertools import product
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.translation import activate
 
 from products.models import Product
 from cotizaciones.models import Cotizaciones, CotizacionProduct

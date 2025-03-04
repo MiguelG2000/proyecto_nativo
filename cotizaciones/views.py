@@ -1,13 +1,21 @@
+from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from babel.dates import format_date
+
+import cotizaciones
 from products.models import Product
-from cliente.models import Cliente
 from cotizaciones.models import Cotizaciones, CotizacionProduct
 
 # Create your views here.
 def quotes_view(request):
     cotizaciones = Cotizaciones.objects.all()
+
+    for cotizacion in cotizaciones:
+        cotizacion.fecha = format_date(cotizacion.fecha, format="full", locale="es")
+        cotizacion.fecha_propuesta = format_date(cotizacion.fecha_propuesta, format="full", locale="es")
+
     context = {'cotizaciones': cotizaciones}
     return render(request, 'quotes/cotizaciones.html', context)
 
@@ -21,6 +29,18 @@ def details_view(request, id):
     productPersonalizado = cotProduct.filter(product_id__otro=True)
     # Filtrar productos disponibles para agregar
     products = Product.objects.filter(otro=False)
+
+    def formatear_fecha(fecha):
+        if fecha:  # Verifica que la fecha no sea None
+            if isinstance(fecha, datetime):
+                return format_date(fecha, format="EEEE d 'de' MMMM 'del' y", locale='es')
+            else:
+                return format_date(datetime(fecha.year, fecha.month, fecha.day), format="EEEE d 'de' MMMM 'del' y",
+                                   locale='es')
+        return None
+
+    cotizacion.fecha = formatear_fecha(cotizacion.fecha)
+    cotizacion.fecha_propuesta = formatear_fecha(cotizacion.fecha_propuesta)
 
     context = {
         'cotizaciones': cotizacion,
@@ -59,18 +79,9 @@ def update_quote(request, id):
         prev_status = quote.status  # Guardar el estado anterior
 
         # Actualizar los campos con los datos del formulario
-        quote.id = request.POST['id']
-        quote.fecha = request.POST['fecha']
-        quote.fecha_propuesta = request.POST['fecha_propuesta']
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
-        quote.servicio_envio = request.POST['servicio_envio']
-        quote.costo_envio = request.POST['costo_envio']
-
-        # Capturar si se aplica IVA 8% o 16%
-        quote.iva_8 = 'iva_8' in request.POST
-        quote.iva_16 = 'iva_16' in request.POST
 
         # Verificar si cambió el estado a "Aceptado"
         if prev_status != "Aceptado" and quote.status == "Aceptado":
@@ -79,16 +90,13 @@ def update_quote(request, id):
                     item.product_id.inventario -= item.cantidad
                     item.product_id.save()
 
-        # Guardar los cambios
         quote.save()
-
-        # Calcular el total con IVA
         quote.calcular_iva()
 
         return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
 
     context = {"quote": quote}
-    return render(request, 'quotes/form.html', context)
+    return render(request, 'quotes/formUpdate.html', context)
 
 
 def delete_quote(request, id):
