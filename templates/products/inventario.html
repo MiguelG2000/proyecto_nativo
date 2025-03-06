@@ -3,37 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
-<div class="container mx-auto p-6 mt-20">
+<div class="container mx-auto p-6 mt-20 w-full"> <!-- Contenedor ocupa el ancho completo -->
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Inventario</h1>
     <h2 class="text-xl text-gray-600 mb-4">Lista de los productos</h2>
     <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Agregar producto</a>
-    <div class="overflow-x-auto mt-6">
-        <table class="min-w-full border border-gray-300 bg-white shadow-md rounded-lg">
+
+    <!-- Campo de búsqueda -->
+    <input type="text" id="searchInput" placeholder="Buscar producto..." class="border border-gray-300 p-2 rounded-lg w-full mb-4 mt-4">
+
+    <div class="overflow-x-auto mt-2 w-full"> <!-- Asegura que la tabla ocupe el ancho completo -->
+        <table id="productsTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg">
             <thead class="bg-gray-200">
                 <tr>
-                    <th class="py-2 px-4 border">Id</th>
-                    <th class="py-2 px-4 border">Nombre</th>
-                    <th class="py-2 px-4 border">Descripción</th>
-                    <th class="py-2 px-4 border">Categoría</th>
-                    <th class="py-2 px-4 border">Volumen</th>
-                    <th class="py-2 px-4 border">Unidad</th>
-                    <th class="py-2 px-4 border">Inventario</th>
-                    <th class="py-2 px-4 border">Precio Público</th>
-                    <th class="py-2 px-4 border">Precio Distribuidor</th>
-                    <th class="py-2 px-4 border">Imagen</th>
-                    <th class="py-2 px-4 border">Acciones</th>
+                    <th class="py-3 px-4 border w-[5%]">Id</th>
+                    <th class="py-3 px-4 border w-[10%]">Nombre</th>
+                    <th class="py-3 px-4 border w-[15%]">Descripción</th>
+                    <th class="py-3 px-4 border w-[10%]">Categoría</th>
+                    <th class="py-3 px-4 border w-[5%]">Volumen</th>
+                    <th class="py-3 px-4 border w-[5%]">Unidad</th>
+                    <th class="py-3 px-4 border w-[5%]">Inventario</th>
+                    <th class="py-3 px-4 border w-[10%]">Precio Público</th>
+                    <th class="py-3 px-4 border w-[10%]">Precio Distribuidor</th>
+                    <th class="py-3 px-4 border w-[10%]">Imagen</th>
+                    <th class="py-3 px-4 border w-[10%]">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                 <tr class="hover:bg-gray-100">
                     <td class="py-2 px-4 border">{{ product.id }}</td>
-                    <td class="py-2 px-4 border">{{ product.nombre }}</td>
-                    <td class="py-2 px-4 border">{{ product.descripcion }}</td>
+                    <td class="py-2 px-4 border product-name">{{ product.nombre }}</td>
+                    <td class="py-2 px-4 border whitespace-normal">{{ product.descripcion }}</td> <!-- Ajusta el texto largo -->
                     <td class="py-2 px-4 border">{{ product.categoria }}</td>
                     <td class="py-2 px-4 border">{{ product.volumen }}</td>
                     <td class="py-2 px-4 border">{{ product.unidad }}</td>
@@ -53,11 +58,32 @@
         </table>
     </div>
 </div>
+
 {% else %}
 <div class="flex flex-col items-center justify-center min-h-screen text-center">
     <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
     <a href="{% url 'login' %}" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Iniciar sesión</a>
 </div>
 {% endif %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableRows = document.querySelectorAll("#productsTable tbody tr");
+
+    searchInput.addEventListener("keyup", function () {
+        const query = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const productName = row.querySelector(".product-name").textContent.toLowerCase();
+
+            if (productName.includes(query)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

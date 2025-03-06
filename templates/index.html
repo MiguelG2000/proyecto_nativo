@@ -1,22 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pagina de Inicio</title>
-    {% load static tailwind_tags %}
-    {% tailwind_css %}
+    <title>Panel de Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-{% include 'nav_bar.html' %}
-{% if request.user.is_authenticated %}
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido {{ request.user.first_name }} </h1>
-    <div class="flex flex-wrap gap-4">
-        <a href="{% url 'products' %}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Inventario</a>
-        <a href="{% url 'list_quotes' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Cotización</a>
-        <a href="{% url 'report_dashboard' %}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all">Reporte</a>
+<body class="bg-gray-100">
+    {% include 'nav_bar.html' %}
+
+    {% if request.user.is_authenticated %}
+    <div class="container mx-auto p-6 mt-20">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Panel de Control</h1>
+
+        <!-- Botón de Notificaciones -->
+        <div class="fixed top-4 right-4 z-50 mt-20">
+            <button id="btnNotificaciones" class="relative bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none">
+                🔔 Notificaciones
+                <span id="notificacionesCount" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full {% if not products_alert %}hidden{% endif %}">
+                    {{ products_alert|length }}
+                </span>
+            </button>
+
+            <!-- Contenedor de Notificaciones -->
+            <div id="notificacionesContainer" class="hidden absolute top-full right-0 mt-3 w-80 bg-white shadow-lg rounded-lg p-4 border border-gray-300 max-h-[300px] overflow-y-auto">
+                <h2 class="text-base font-semibold text-gray-800">Notificaciones</h2>
+                <div class="mt-2 space-y-2 text-sm" id="notificacionesList">
+                    {% if products_alert %}
+                        {% for product in products_alert %}
+                            <div class="p-3 rounded-lg notification-item {% if product.inventario == 10 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                <strong>{{ product.nombre }}</strong><br>
+                                {% if product.inventario == 10 %}
+                                    ⚠️ Solo quedan 10 unidades en inventario.
+                                {% else %}
+                                    🚨 Urgente: Solo quedan {{ product.inventario }} unidades en inventario.
+                                {% endif %}
+                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">Marcar como visto</button>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-500">No hay notificaciones pendientes.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Accesos Directos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <a href="{% url 'create_product' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Agregar Producto</h2>
+                <p class="text-gray-600">Añade nuevos productos al inventario.</p>
+            </a>
+            <a href="{% url 'create_quote' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Crear Cotización</h2>
+                <p class="text-gray-600">Genera una nueva cotización para clientes.</p>
+            </a>
+
+            {% if not empleado %}
+            <a href="{% url 'report_dashboard' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Reportes</h2>
+                <p class="text-gray-600">Consulta los reportes de ventas y productos.</p>
+            </a>
+                {% endif %}
+
+            <a href="{% url 'products' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Inventario</h2>
+                <p class="text-gray-600">Gestiona el inventario de productos.</p>
+            </a>
+        </div>
+
+        <!-- Resumen Rápido -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Resumen Rápido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700">Productos en Inventario</h3>
+                    <p class="text-2xl font-bold text-blue-600">{{ productos }}</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700">Cotizaciones Pendientes</h3>
+                    <p class="text-2xl font-bold text-yellow-600">{{ cotizaciones }}</p>
+                </div>
+
+                {% if not empleado %}
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-700">Ventas del Mes (Con IVA)</h3>
+                    <p class="text-2xl font-bold text-green-600">${{ total_mes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-</div>
-{% endif %}
+    {% else %}
+    <div class="text-center mt-10">
+        <h2 class="text-xl text-gray-700">No está autenticado</h2>
+        <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
+    </div>
+    {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let btnNotificaciones = document.getElementById("btnNotificaciones");
+            let notificacionesContainer = document.getElementById("notificacionesContainer");
+            let notificacionesList = document.getElementById("notificacionesList");
+            let clearAllNotifications = document.getElementById("clearAllNotifications");
+            let notificacionesCount = document.getElementById("notificacionesCount");
+
+            function actualizarContador() {
+                let count = document.querySelectorAll(".notification-item").length;
+                if (count > 0) {
+                    notificacionesCount.textContent = count;
+                    notificacionesCount.classList.remove("hidden");
+                } else {
+                    notificacionesCount.classList.add("hidden");
+                }
+            }
+
+            // Mostrar/Ocultar notificaciones al hacer clic en el botón
+            btnNotificaciones.addEventListener("click", function (event) {
+                notificacionesContainer.classList.toggle("hidden");
+                event.stopPropagation(); // Evita que se cierre inmediatamente
+            });
+
+            // Cerrar el contenedor si se hace clic fuera
+            document.addEventListener("click", function (event) {
+                if (!notificacionesContainer.contains(event.target) && !btnNotificaciones.contains(event.target)) {
+                    notificacionesContainer.classList.add("hidden");
+                }
+            });
+
+            // Marcar como visto una notificación individual
+            notificacionesList.addEventListener("click", function (event) {
+                if (event.target.classList.contains("mark-as-read")) {
+                    let notificationItem = event.target.closest(".notification-item");
+                    notificationItem.style.opacity = "0.5"; // Indica que está vista
+                    setTimeout(() => {
+                        notificationItem.remove(); // Elimina la notificación después de un tiempo
+                        actualizarContador();
+                    }, 300);
+                }
+            });
+
+            // Limpiar todas las notificaciones
+            clearAllNotifications.addEventListener("click", function () {
+                notificacionesList.querySelectorAll(".notification-item").forEach(item => {
+                    item.style.opacity = "0.5";
+                    setTimeout(() => {
+                        item.remove();
+                        actualizarContador();
+                    }, 300);
+                });
+            });
+
+            actualizarContador();
+        });
+    </script>
 </body>
 </html>

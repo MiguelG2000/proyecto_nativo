@@ -4,7 +4,7 @@
         Agregar Producto Personalizado
     </button>
 
-    <div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
+    <div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto hidden">
         <form method="POST" action="{% url 'add_custom_product_to_quote' cotizaciones.id %}">
             {% csrf_token %}
             <input type="hidden" name="quote_id" value="{{ cotizaciones.id }}">
@@ -47,3 +47,8 @@
             </div>
         </form>
     </div>
+<script>
+        document.getElementById("btnAgregarProducto").addEventListener("click", function () {
+            document.getElementById("formularioProductoPersonalizado").classList.toggle("hidden");
+        });
+    </script>

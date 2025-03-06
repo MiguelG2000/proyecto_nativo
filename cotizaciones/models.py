@@ -1,6 +1,4 @@
 from django.db import models
-
-from cliente.models import Cliente
 from products.models import Product
 from decimal import Decimal
 
@@ -8,9 +6,10 @@ from decimal import Decimal
 # Create your models here.
 class Cotizaciones(models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
+    cliente = models.CharField(max_length=50, blank=False, null=True)
     fecha = models.DateField(auto_now=False, auto_now_add=True)
     fecha_propuesta = models.DateField(auto_now=False, auto_now_add=True)
-    servicio_envio = models.CharField(max_length=100, blank=False, null=True, default=None)
+    servicio_envio = models.CharField(max_length=100, blank=False, null=True, default="TGZ")
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0) # Este total es el total sin IVA por cuestiones programaticas lo decidimos dejar así.
     total_Civa = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)

@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from django.db.models import Sum
 from datetime import datetime
@@ -31,6 +32,8 @@ def report_dashboard(request):
     else:
         totalCiva = 0.0
         totalSiva = 0.0
+
+    request.session['totalCiva'] = totalCiva
 
     context = {
         'labels': labels,

@@ -61,6 +61,7 @@ def create_quote(request):
         quote.metodo_pago = request.POST['metodo_pago']
         quote.servicio_envio = request.POST['servicio_envio']
         quote.costo_envio = request.POST['costo_envio']
+        quote.cliente = request.POST['cliente']
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST

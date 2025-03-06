@@ -21,7 +21,9 @@
             <div class="hidden md:flex space-x-6">
                 <a href="{% url 'products' %}" class="text-gray-300 hover:text-white">Inventario</a>
                 <a href="{% url 'list_quotes' %}" class="text-gray-300 hover:text-white">Cotizaciones</a>
-                <a href="{% url 'report_dashboard' %}" class="text-gray-300 hover:text-white">Reporte</a>
+                {% if not empleado %}
+                    <a href="{% url 'report_dashboard' %}" class="text-gray-300 hover:text-white">Reporte</a>
+                {% endif %}
             </div>
 
             <!-- Botón de cerrar sesión -->
@@ -48,7 +50,9 @@
         <div class="hidden md:hidden space-y-2 px-2 pt-2 pb-3" id="navbarCollapse">
             <a href="{% url 'products' %}" class="block text-gray-300 hover:text-white">Inventario</a>
             <a href="{% url 'list_quotes' %}" class="block text-gray-300 hover:text-white">Cotizaciones</a>
+            {% if not jero %}
             <a class="text-gray-300 hover:text-white">Reporte</a>
+            {% endif %}
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit"
