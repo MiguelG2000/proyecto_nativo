@@ -5,52 +5,54 @@
     <title>Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen flex flex-col">
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
-<div class="container mx-auto p-6 mt-20 w-full"> <!-- Contenedor ocupa el ancho completo -->
-    <h1 class="text-3xl font-bold text-gray-800 mb-4">Inventario</h1>
-    <h2 class="text-xl text-gray-600 mb-4">Lista de los productos</h2>
-    <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Agregar producto</a>
+<div class="container mx-auto p-8 mt-20 w-full max-w-7xl bg-white rounded-xl shadow-lg">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6">Inventario</h1>
+    <h2 class="text-xl text-gray-700 mb-6">Lista de los productos</h2>
 
-    <!-- Campo de búsqueda -->
-    <input type="text" id="searchInput" placeholder="Buscar producto..." class="border border-gray-300 p-2 rounded-lg w-full mb-4 mt-4">
+    <div class="mb-6">
+        <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition">Agregar producto</a>
+    </div>
 
-    <div class="overflow-x-auto mt-2 w-full"> <!-- Asegura que la tabla ocupe el ancho completo -->
-        <table id="productsTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg">
-            <thead class="bg-gray-200">
-                <tr>
-                    <th class="py-3 px-4 border w-[5%]">Id</th>
-                    <th class="py-3 px-4 border w-[10%]">Nombre</th>
-                    <th class="py-3 px-4 border w-[15%]">Descripción</th>
-                    <th class="py-3 px-4 border w-[10%]">Categoría</th>
-                    <th class="py-3 px-4 border w-[5%]">Volumen</th>
-                    <th class="py-3 px-4 border w-[5%]">Unidad</th>
-                    <th class="py-3 px-4 border w-[5%]">Inventario</th>
-                    <th class="py-3 px-4 border w-[10%]">Precio Público</th>
-                    <th class="py-3 px-4 border w-[10%]">Precio Distribuidor</th>
-                    <th class="py-3 px-4 border w-[10%]">Imagen</th>
-                    <th class="py-3 px-4 border w-[10%]">Acciones</th>
+    <input type="text" id="searchInput" placeholder="Buscar producto..." class="border border-gray-300 p-3 rounded-lg w-full mb-4">
+
+    <div class="overflow-x-auto">
+        <table id="productsTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm">
+            <thead>
+                <tr class="bg-gray-300">
+                    <th class="py-3 px-4">Id</th>
+                    <th class="py-3 px-4">Nombre</th>
+                    <th class="py-3 px-4">Descripción</th>
+                    <th class="py-3 px-4">Categoría</th>
+                    <th class="py-3 px-4">Volumen</th>
+                    <th class="py-3 px-4">Unidad</th>
+                    <th class="py-3 px-4">Inventario</th>
+                    <th class="py-3 px-4">Precio Público</th>
+                    <th class="py-3 px-4">Precio Distribuidor</th>
+                    <th class="py-3 px-4">Imagen</th>
+                    <th class="py-3 px-4">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
-                <tr class="hover:bg-gray-100">
-                    <td class="py-2 px-4 border">{{ product.id }}</td>
-                    <td class="py-2 px-4 border product-name">{{ product.nombre }}</td>
-                    <td class="py-2 px-4 border whitespace-normal">{{ product.descripcion }}</td> <!-- Ajusta el texto largo -->
-                    <td class="py-2 px-4 border">{{ product.categoria }}</td>
-                    <td class="py-2 px-4 border">{{ product.volumen }}</td>
-                    <td class="py-2 px-4 border">{{ product.unidad }}</td>
-                    <td class="py-2 px-4 border">{{ product.inventario }}</td>
-                    <td class="py-2 px-4 border">{{ product.precio_general }}</td>
-                    <td class="py-2 px-4 border">{{ product.precio_distribuidor }}</td>
-                    <td class="py-2 px-4 border">
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border text-center">{{ product.id }}</td>
+                    <td class="py-2 px-4 border product-name text-center">{{ product.nombre }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.descripcion }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.categoria }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.volumen }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.unidad }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.inventario }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.precio_general }}</td>
+                    <td class="py-2 px-4 border text-center">{{ product.precio_distribuidor }}</td>
+                    <td class="py-2 px-4 border text-center">
                         <img src="http://127.0.0.1:8000/{{ product.thumbnail }}" class="h-16 w-16 object-cover rounded">
                     </td>
-                    <td class="py-2 px-4 border flex space-x-2">
-                        <a href="{% url 'update_product' product.id %}" class="text-blue-500 hover:underline">Editar</a>
-                        <a href="{% url 'delete_product' product.id %}" class="text-red-500 hover:underline">Eliminar</a>
+                    <td class="py-2 px-4 border flex justify-center space-x-2">
+                        <a href="{% url 'update_product' product.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Editar</a>
+                        <a href="{% url 'delete_product' product.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -62,28 +64,29 @@
 {% else %}
 <div class="flex flex-col items-center justify-center min-h-screen text-center">
     <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
-    <a href="{% url 'login' %}" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Iniciar sesión</a>
+    <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
 </div>
 {% endif %}
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const tableRows = document.querySelectorAll("#productsTable tbody tr");
+        const searchInput = document.getElementById("searchInput");
+        const tableRows = document.querySelectorAll("#productsTable tbody tr");
 
-    searchInput.addEventListener("keyup", function () {
-        const query = searchInput.value.toLowerCase();
+        searchInput.addEventListener("keyup", function () {
+            const query = searchInput.value.toLowerCase();
 
-        tableRows.forEach(row => {
-            const productName = row.querySelector(".product-name").textContent.toLowerCase();
+            tableRows.forEach(row => {
+                const productName = row.querySelector(".product-name").textContent.toLowerCase();
 
-            if (productName.includes(query)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+                if (productName.includes(query)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
         });
     });
-});
 </script>
 </body>
 </html>

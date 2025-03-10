@@ -3,6 +3,7 @@ from itertools import product
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.core.files.storage import default_storage
 from django.utils.translation import activate
 
 from products.models import Product
@@ -28,6 +29,10 @@ def create_product(request):
         product.inventario = request.POST['inventario']
         product.precio_general = request.POST['precio_general']
         product.precio_distribuidor = request.POST['precio_distribuidor']
+        # Manejo del archivo de imagen
+        if 'imagen' in request.FILES:
+            imagen = request.FILES['imagen']
+            product.thumbnail = default_storage.save(f'images/{imagen.name}', imagen)
         product.save()
         return redirect(reverse_lazy('products'))
     return render(request, 'products/form.html')
@@ -43,6 +48,10 @@ def update_product(request, product_id):
         product.inventario = request.POST['inventario']
         product.precio_general = request.POST['precio_general']
         product.precio_distribuidor = request.POST['precio_distribuidor']
+        # Manejo del archivo de imagen
+        if 'imagen' in request.FILES:
+            imagen = request.FILES['imagen']
+            product.thumbnail = default_storage.save(f'images/{imagen.name}', imagen)
         product.save()
 
         return redirect(reverse_lazy('products'))

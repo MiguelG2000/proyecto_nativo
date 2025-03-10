@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel de Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
     {% include 'nav_bar.html' %}
 
     {% if request.user.is_authenticated %}
     <div class="container mx-auto p-6 mt-20">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Panel de Control</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Panel de Control - Bienvenido, {{ request.user.get_full_name }}!</h1>
 
         <!-- Botón de Notificaciones -->
         <div class="fixed top-4 right-4 z-50 mt-20">

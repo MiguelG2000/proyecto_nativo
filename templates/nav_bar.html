@@ -3,26 +3,26 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    {% tailwind_css %}
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 
-<nav class="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
+<nav class="fixed top-0 left-0 w-full bg-gradient-to-r from-gray-800 to-black text-white shadow-xl z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+        <div class="flex items-center justify-center h-20 space-x-16">
             <!-- LOGO -->
             <div class="flex items-center">
                 <a href="{% url 'login' %}">
-                    <img src="{% static 'img/casa.png' %}" alt="Logo" class="h-10 w-auto mr-3">
+                    <img src="{% static 'img/casa.png' %}" alt="Logo" class="h-12 w-auto">
                 </a>
             </div>
 
             <!-- Menú principal (pantallas grandes) -->
-            <div class="hidden md:flex space-x-6">
-                <a href="{% url 'products' %}" class="text-gray-300 hover:text-white">Inventario</a>
-                <a href="{% url 'list_quotes' %}" class="text-gray-300 hover:text-white">Cotizaciones</a>
+            <div class="hidden md:flex space-x-10 text-lg font-semibold">
+                <a href="{% url 'products' %}" class="hover:text-blue-400 transition-all">Inventario</a>
+                <a href="{% url 'list_quotes' %}" class="hover:text-blue-400 transition-all">Cotizaciones</a>
                 {% if not empleado %}
-                    <a href="{% url 'report_dashboard' %}" class="text-gray-300 hover:text-white">Reporte</a>
+                    <a href="{% url 'report_dashboard' %}" class="hover:text-blue-400 transition-all">Reporte</a>
                 {% endif %}
             </div>
 
@@ -30,33 +30,30 @@
             <div class="hidden md:flex items-center">
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit"
-                            class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                    <button type="submit" class="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 transition-all shadow-lg">
                         Cerrar Sesión
                     </button>
                 </form>
-
             </div>
 
             <!-- Icono de menú hamburguesa (para móviles) -->
             <button class="md:hidden text-white focus:outline-none" id="mobile-menu-button">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
         </div>
 
         <!-- Menú desplegable en móviles -->
-        <div class="hidden md:hidden space-y-2 px-2 pt-2 pb-3" id="navbarCollapse">
-            <a href="{% url 'products' %}" class="block text-gray-300 hover:text-white">Inventario</a>
-            <a href="{% url 'list_quotes' %}" class="block text-gray-300 hover:text-white">Cotizaciones</a>
-            {% if not jero %}
-            <a class="text-gray-300 hover:text-white">Reporte</a>
+        <div class="hidden md:hidden space-y-4 text-center p-4" id="navbarCollapse">
+            <a href="{% url 'products' %}" class="block text-gray-300 hover:text-blue-400">Inventario</a>
+            <a href="{% url 'list_quotes' %}" class="block text-gray-300 hover:text-blue-400">Cotizaciones</a>
+            {% if not empleado %}
+            <a href="{% url 'report_dashboard' %}" class="block text-gray-300 hover:text-blue-400">Reporte</a>
             {% endif %}
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit"
-                        class="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
+                <button type="submit" class="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 transition-all shadow-lg">
                     Cerrar Sesión
                 </button>
             </form>
@@ -64,7 +61,6 @@
     </div>
 </nav>
 
-<!-- Script para el menú en móviles -->
 <script>
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         document.getElementById('navbarCollapse').classList.toggle('hidden');
