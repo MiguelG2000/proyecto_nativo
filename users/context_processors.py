@@ -1,4 +1,6 @@
 from django.contrib.auth.models import Group
+from django import template
+from decimal import Decimal
 
 def empleado_context(request):
     if request.user.is_authenticated:

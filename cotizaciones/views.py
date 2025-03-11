@@ -1,3 +1,5 @@
+import qrcode
+from io import BytesIO
 from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,6 +17,7 @@ def quotes_view(request):
     for cotizacion in cotizaciones:
         cotizacion.fecha = format_date(cotizacion.fecha, format="full", locale="es")
         cotizacion.fecha_propuesta = format_date(cotizacion.fecha_propuesta, format="full", locale="es")
+        cotizacion.fecha_entrega = format_date(cotizacion.fecha_entrega, format="full", locale="es")
 
     context = {'cotizaciones': cotizaciones}
     return render(request, 'quotes/cotizaciones.html', context)
@@ -39,16 +42,44 @@ def details_view(request, id):
                                    locale='es')
         return None
 
+    def formato_moneda(valor):
+        return "{:,.2f}".format(valor)
+
     cotizacion.fecha = formatear_fecha(cotizacion.fecha)
     cotizacion.fecha_propuesta = formatear_fecha(cotizacion.fecha_propuesta)
+    cotizacion.fecha_entrega = formatear_fecha(cotizacion.fecha_entrega)
+
+    # Formatear los valores de la cotización
+    cotizacion.costo_envio = formato_moneda(cotizacion.costo_envio)
+    cotizacion.total = formato_moneda(cotizacion.total)
+    cotizacion.total_Civa = formato_moneda(cotizacion.total_Civa)
+    cotizacion.anticipo = formato_moneda(cotizacion.anticipo)
+    cotizacion.restante = formato_moneda(cotizacion.restante)
+    cotizacion.iva = formato_moneda(cotizacion.iva)
+
+    qr_image = generate_qr(cotizacion.direccion_entrega)
 
     context = {
         'cotizaciones': cotizacion,
         'cotProduct': productNormal,
         'productOtro': productPersonalizado,
         'products': products,
+        'qr_image': qr_image,
+
     }
     return render(request, 'quotes/details.html', context)
+
+
+def generate_qr(direccion):
+    # Crear el código QR con la dirección de entrega
+    qr = qrcode.make(direccion)
+
+    # Guardar el código QR en un objeto BytesIO para poder ser enviado en la respuesta
+    qr_image = BytesIO()
+    qr.save(qr_image, format='PNG')
+    qr_image.seek(0)
+
+    return qr_image
 
 
 def create_quote(request):
@@ -62,6 +93,7 @@ def create_quote(request):
         quote.servicio_envio = request.POST['servicio_envio']
         quote.costo_envio = request.POST['costo_envio']
         quote.cliente = request.POST['cliente']
+        quote.telefono = request.POST['telefono']
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST
@@ -83,6 +115,9 @@ def update_quote(request, id):
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
+        fecha_entrega = request.POST.get('fecha_entrega', '').strip()
+        quote.fecha_entrega = fecha_entrega if fecha_entrega else None
+        quote.direccion_entrega = request.POST.get('direccion_entrega', '').strip()
 
         # Verificar si cambió el estado a "Aceptado"
         if prev_status != "Aceptado" and quote.status == "Aceptado":

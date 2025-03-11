@@ -40,9 +40,9 @@
         </div>
     </div>
 {% else %}
-    <div class="text-center mt-10">
-        <h2 class="text-xl text-gray-700">No está autenticado</h2>
-        <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
+    <div class="flex flex-col items-center justify-center min-h-screen text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+        <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
     </div>
 {% endif %}
 </body>

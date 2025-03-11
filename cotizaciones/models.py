@@ -7,8 +7,11 @@ from decimal import Decimal
 class Cotizaciones(models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
     cliente = models.CharField(max_length=50, blank=False, null=True)
+    telefono = models.IntegerField(blank=False, null=True)
     fecha = models.DateField(auto_now=False, auto_now_add=True)
     fecha_propuesta = models.DateField(auto_now=False, auto_now_add=True)
+    fecha_entrega = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    direccion_entrega = models.CharField(max_length=50, blank=False, null=True)
     servicio_envio = models.CharField(max_length=100, blank=False, null=True, default="TGZ")
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0) # Este total es el total sin IVA por cuestiones programaticas lo decidimos dejar así.

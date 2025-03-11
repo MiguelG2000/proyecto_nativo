@@ -3,33 +3,64 @@
 <head>
     <meta charset="utf-8">
     <title>Actualizar Cotización</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const statusSelect = document.getElementById("status");
+            const entregaFields = document.getElementById("entregaFields");
+
+            function toggleEntregaFields() {
+                if (statusSelect.value === "Aceptado") {
+                    entregaFields.style.display = "block";
+                } else {
+                    entregaFields.style.display = "none";
+                    document.getElementById("fecha_entrega").value = "";
+                    document.getElementById("direccion_entrega").value = "";
+                }
+            }
+
+            statusSelect.addEventListener("change", toggleEntregaFields);
+            toggleEntregaFields();  // Inicializa el estado correcto al cargar la página
+        });
+    </script>
 </head>
 <body class="bg-gray-100 p-8">
 {% include 'nav_bar.html' %}
 <form method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
     {% csrf_token %}
-    <label for="status" class="block mt-4 text-sm font-medium text-gray-700">Status:</label>
-        <select name="status" id="status" required
-                class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
-            <option value="Pendiente" selected>Pendiente</option>
-            <option value="Aceptado">Aceptado</option>
-            <option value="Completado">Completado</option>
-            <option value="Cancelado">Cancelado</option>
-            <option value="En proceso">En proceso</option>
-            <option value="Contraoferta">Contraoferta</option>
-        </select>
 
-        <label for="anticipo" class="block mt-4 text-sm font-medium text-gray-700">Anticipo</label>
-        <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" required
-                class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-     <label for="metodo_pago" class="block mt-4 text-sm font-medium text-gray-700">Metodo de Pago</label>
-        <select name="metodo_pago" id="metodo_pago" required
-                class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
-            <option value="No" selected>No</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="Tarjeta Debito/Credito">Tarjeta Debito/Credito</option>
-        </select>
+    <label for="status" class="block mt-4 text-sm font-medium text-gray-700">Status:</label>
+    <select name="status" id="status" required
+            class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
+        <option value="Pendiente" {% if quote.status == "Pendiente" %}selected{% endif %}>Pendiente</option>
+        <option value="Aceptado" {% if quote.status == "Aceptado" %}selected{% endif %}>Aceptado</option>
+        <option value="Completado" {% if quote.status == "Completado" %}selected{% endif %}>Completado</option>
+        <option value="Cancelado" {% if quote.status == "Cancelado" %}selected{% endif %}>Cancelado</option>
+        <option value="En proceso" {% if quote.status == "En proceso" %}selected{% endif %}>En proceso</option>
+        <option value="Contraoferta" {% if quote.status == "Contraoferta" %}selected{% endif %}>Contraoferta</option>
+    </select>
+
+    <div id="entregaFields" style="display: none;">
+        <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
+        <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|default:"" }}"
+               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+
+        <label for="direccion_entrega" class="block mt-4 text-sm font-medium text-gray-700">Dirección de Entrega:</label>
+        <input type="text" name="direccion_entrega" id="direccion_entrega" value="{{ quote.direccion_entrega|default:"" }}"
+               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+    </div>
+
+    <label for="anticipo" class="block mt-4 text-sm font-medium text-gray-700">Anticipo</label>
+    <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" required
+           class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+
+    <label for="metodo_pago" class="block mt-4 text-sm font-medium text-gray-700">Método de Pago</label>
+    <select name="metodo_pago" id="metodo_pago" required
+            class="w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
+        <option value="No" {% if quote.metodo_pago == "No" %}selected{% endif %}>No</option>
+        <option value="Efectivo" {% if quote.metodo_pago == "Efectivo" %}selected{% endif %}>Efectivo</option>
+        <option value="Transferencia" {% if quote.metodo_pago == "Transferencia" %}selected{% endif %}>Transferencia</option>
+        <option value="Tarjeta Debito/Credito" {% if quote.metodo_pago == "Tarjeta Debito/Credito" %}selected{% endif %}>Tarjeta Débito/Crédito</option>
+    </select>
 
     <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Agregar</button>
 </form>

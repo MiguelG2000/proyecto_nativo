@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Entregas</title>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo personalizado para el calendario */
+        .fc-event {
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+        .fc-event:hover {
+            transform: scale(1.05);
+        }
+
+        /* Estilo para la ventana flotante */
+        .floating-window {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center">
+    {% if request.user.is_authenticated %}
+    {% include 'nav_bar.html' %}
+
+    <!-- Título principal -->
+    <div class="w-full max-w-7xl px-4 mt-24">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">Calendario de Entregas</h1>
+        <p class="text-lg text-center text-gray-600">Gestión eficiente de fechas de entrega y cotizaciones</p>
+    </div>
+
+    <!-- Contenedor del calendario -->
+    <div class="w-full max-w-7xl px-4 mt-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div id="calendar" class="h-[700px]"></div>
+        </div>
+    </div>
+
+    <!-- Ventana flotante para agregar eventos -->
+    <div id="eventWindow" class="floating-window bg-white rounded-lg p-6 w-96 hidden">
+        <h2 class="text-xl font-bold mb-4">Agregar Evento</h2>
+        <form id="eventForm" method="POST" action="{% url 'add_event' %}" >
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="nombre" class="block text-sm font-medium text-gray-700">Título del Evento</label>
+                <input type="text" id="nombre" name="nombre" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="mb-4">
+                <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha del Evento</label>
+                <input type="date" id="fecha" name="fecha" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="flex justify-end">
+                <button type="button" onclick="closeWindow()" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    {% if messages %}
+    <div class="w-full max-w-7xl px-4 mt-4">
+        {% for message in messages %}
+            <div class="bg-green-500 text-white px-4 py-2 rounded-md mb-4">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+
+    <div class="flex flex-col items-center justify-center min-h-screen text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+        <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
+    </div>
+
+    {% endif %}
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        if (calendarEl) {
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                events: [
+                    {% for fecha in fechas %}
+                    {
+                        title: 'Entrega de: {{ fecha.id }}',
+                        start: '{{ fecha.fecha_entrega }}',
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#2563EB',
+                        textColor: '#FFFFFF'
+                    },
+                    {% endfor %}
+                    {% for event in events %}
+                    {
+                        title: '{{ event.nombre }}',
+                        start: '{{ event.fecha }}',
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#2563EB',
+                        textColor: '#FFFFFF'
+                    }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
+                },
+                eventDisplay: 'block',
+                dateClick: function(info) {
+                    openWindow(info.dateStr);
+                },
+                eventMouseEnter: function(info) {
+                    info.el.style.opacity = '0.9';
+                },
+                eventMouseLeave: function(info) {
+                    info.el.style.opacity = '1';
+                }
+            });
+
+            calendar.render();
+        } else {
+            console.error("El elemento #calendar no fue encontrado en el DOM.");
+        }
+    });
+        function openWindow(selectedDate) {
+            const eventWindow = document.getElementById('eventWindow');
+            const fechaInput = document.getElementById('fecha');
+
+            if (fechaInput) {
+                fechaInput.value = selectedDate; // Establece la fecha seleccionada
+            }
+
+            eventWindow.classList.remove('hidden');
+        }
+
+        function closeWindow() {
+            const eventWindow = document.getElementById('eventWindow');
+            eventWindow.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,10 @@
 <div class="bg-white p-6 rounded-lg shadow-md mt-20">
     <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }} - Cliente: {{ cotizaciones.cliente }}</h1>
+    {% if cotizaciones.status == "Aceptado" %}
+        <p class="text-lg font-semibold">Fecha de entrega - {{ cotizaciones.fecha_entrega }}</p>
+        <p class="text-lg font-semibold">Dirección de entrega - {{ cotizaciones.direccion_entrega }}</p>
+    {% endif %}
+     <hr class="my-4">
     <table class="w-full border-collapse border border-gray-300">
         <thead>
         <tr class="bg-gray-200">

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,15 +14,18 @@
 
         <!-- Botón de Notificaciones -->
         <div class="fixed top-4 right-4 z-50 mt-20">
-            <button id="btnNotificaciones" class="relative bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none">
+            <button id="btnNotificaciones"
+                    class="relative bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none">
                 🔔 Notificaciones
-                <span id="notificacionesCount" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full {% if not products_alert %}hidden{% endif %}">
-                    {{ products_alert|length }}
+                <span id="notificacionesCount"
+                      class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full {% if not products_alert and not upcoming_deliveries and not upcoming_events %}hidden{% endif %}">
+                    {{ products_alert|length|add:upcoming_deliveries|length|add:upcoming_events|length }}
                 </span>
             </button>
 
             <!-- Contenedor de Notificaciones -->
-            <div id="notificacionesContainer" class="hidden absolute top-full right-0 mt-3 w-80 bg-white shadow-lg rounded-lg p-4 border border-gray-300 max-h-[300px] overflow-y-auto">
+            <div id="notificacionesContainer"
+                 class="hidden absolute top-full right-0 mt-3 w-80 bg-white shadow-lg rounded-lg p-4 border border-gray-300 max-h-[300px] overflow-y-auto">
                 <h2 class="text-base font-semibold text-gray-800">Notificaciones</h2>
                 <div class="mt-2 space-y-2 text-sm" id="notificacionesList">
                     {% if products_alert %}
@@ -33,14 +37,49 @@
                                 {% else %}
                                     🚨 Urgente: Solo quedan {{ product.inventario }} unidades en inventario.
                                 {% endif %}
-                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">Marcar como visto</button>
+                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                    Marcar como visto
+                                </button>
                             </div>
                         {% endfor %}
-                    {% else %}
-                        <p class="text-gray-500">No hay notificaciones pendientes.</p>
+                    {% endif %}
+
+                    <!-- Notificaciones de Fechas de Entrega Próximas -->
+                    {% if upcoming_deliveries %}
+                        <h3 class="text-sm font-semibold text-gray-800 mt-4">Fechas de Entrega Próximas</h3>
+                        {% for entrega in upcoming_deliveries %}
+                            <div class="p-3 rounded-lg notification-item bg-blue-100 text-blue-800 h-20">
+                                <strong>Entrega de Cotización #{{ entrega.id }}</strong><br>
+                                📅 Fecha de entrega: {{ entrega.fecha_entrega }}<br>
+                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                    Marcar como visto
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Notificaciones de Eventos Próximos -->
+                    {% if upcoming_events %}
+                        <h3 class="text-sm font-semibold text-gray-800 mt-4">Eventos Próximos</h3>
+                        {% for event in upcoming_events %}
+                            <div class="p-3 rounded-lg notification-item bg-green-100 text-green-800 h-20">
+                                <strong>{{ event.nombre }}</strong><br>
+                                📅 Fecha del evento: {{ event.fecha }}<br>
+                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                    Marcar como visto
+                                </button>
+                            </div>
+                        {% endfor %}
                     {% endif %}
                 </div>
             </div>
+        </div>
+
+        <!-- Botón para el Calendario -->
+        <div class="fixed top-16 right-4 z-50 mt-20">
+            <a href="{% url 'calendar' %}">
+                <img src="{% static 'img/calendario.png' %}" alt="Logo" class="h-12 w-auto">
+            </a>
         </div>
 
         <!-- Accesos Directos -->
@@ -96,63 +135,53 @@
         <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
     </div>
     {% endif %}
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            let btnNotificaciones = document.getElementById("btnNotificaciones");
-            let notificacionesContainer = document.getElementById("notificacionesContainer");
-            let notificacionesList = document.getElementById("notificacionesList");
-            let clearAllNotifications = document.getElementById("clearAllNotifications");
-            let notificacionesCount = document.getElementById("notificacionesCount");
+    let btnNotificaciones = document.getElementById("btnNotificaciones");
+    let notificacionesContainer = document.getElementById("notificacionesContainer");
+    let notificacionesList = document.getElementById("notificacionesList");
+    let notificacionesCount = document.getElementById("notificacionesCount");
 
-            function actualizarContador() {
-                let count = document.querySelectorAll(".notification-item").length;
-                if (count > 0) {
-                    notificacionesCount.textContent = count;
-                    notificacionesCount.classList.remove("hidden");
-                } else {
-                    notificacionesCount.classList.add("hidden");
-                }
-            }
+    // Función para actualizar el contador de notificaciones
+    function actualizarContador() {
+        let count = document.querySelectorAll(".notification-item").length;
+        if (count > 0) {
+            notificacionesCount.textContent = count;
+            notificacionesCount.classList.remove("hidden");
+        } else {
+            notificacionesCount.textContent = "0"; // Mostrar 0 si no hay notificaciones
+            notificacionesCount.classList.add("hidden");
+        }
+    }
 
-            // Mostrar/Ocultar notificaciones al hacer clic en el botón
-            btnNotificaciones.addEventListener("click", function (event) {
-                notificacionesContainer.classList.toggle("hidden");
-                event.stopPropagation(); // Evita que se cierre inmediatamente
-            });
+    // Mostrar/Ocultar notificaciones al hacer clic en el botón
+    btnNotificaciones.addEventListener("click", function (event) {
+        notificacionesContainer.classList.toggle("hidden");
+        event.stopPropagation(); // Evita que se cierre inmediatamente
+    });
 
-            // Cerrar el contenedor si se hace clic fuera
-            document.addEventListener("click", function (event) {
-                if (!notificacionesContainer.contains(event.target) && !btnNotificaciones.contains(event.target)) {
-                    notificacionesContainer.classList.add("hidden");
-                }
-            });
+    // Cerrar el contenedor si se hace clic fuera
+    document.addEventListener("click", function (event) {
+        if (!notificacionesContainer.contains(event.target) && !btnNotificaciones.contains(event.target)) {
+            notificacionesContainer.classList.add("hidden");
+        }
+    });
 
-            // Marcar como visto una notificación individual
-            notificacionesList.addEventListener("click", function (event) {
-                if (event.target.classList.contains("mark-as-read")) {
-                    let notificationItem = event.target.closest(".notification-item");
-                    notificationItem.style.opacity = "0.5"; // Indica que está vista
-                    setTimeout(() => {
-                        notificationItem.remove(); // Elimina la notificación después de un tiempo
-                        actualizarContador();
-                    }, 300);
-                }
-            });
+    // Marcar como visto una notificación individual
+    notificacionesList.addEventListener("click", function (event) {
+        if (event.target.classList.contains("mark-as-read")) {
+            let notificationItem = event.target.closest(".notification-item");
+            notificationItem.style.opacity = "0.5"; // Indica que está vista
+            setTimeout(() => {
+                notificationItem.remove(); // Elimina la notificación después de un tiempo
+                actualizarContador(); // Actualiza el contador
+            }, 300);
+        }
+    });
 
-            // Limpiar todas las notificaciones
-            clearAllNotifications.addEventListener("click", function () {
-                notificacionesList.querySelectorAll(".notification-item").forEach(item => {
-                    item.style.opacity = "0.5";
-                    setTimeout(() => {
-                        item.remove();
-                        actualizarContador();
-                    }, 300);
-                });
-            });
-
-            actualizarContador();
-        });
+    // Inicializar el contador al cargar la página
+    actualizarContador();
+});
     </script>
 </body>
 </html>

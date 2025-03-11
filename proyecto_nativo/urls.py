@@ -24,7 +24,7 @@ from django.contrib.auth.views import(
     )
 
 from django.urls import path, include
-from users.views import login
+from users.views import login, calendar, add_event
 
 urlpatterns = [
     path('',login, name='login'),
@@ -33,6 +33,8 @@ urlpatterns = [
     path('products/', include("products.urls")),
     path('quotes/', include("cotizaciones.urls")),
     path('report/', include("report.urls")),
+    path('calendar/', calendar, name='calendar'),
+    path('add_event/', add_event, name='add_event'),
     path('__reload__/', include("django_browser_reload.urls")),
 ]
 
