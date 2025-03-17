@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 <body>
-
 <nav class="fixed top-0 left-0 w-full bg-gradient-to-r from-gray-800 to-black text-white shadow-xl z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-center h-20 space-x-16">
@@ -60,10 +60,14 @@
         </div>
     </div>
 </nav>
-
 <script>
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         document.getElementById('navbarCollapse').classList.toggle('hidden');
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.querySelector(".page-content");
+        content.classList.add("animate__animated", "animate__fadeIn");
     });
 </script>
 

@@ -22,7 +22,7 @@ class Product(models.Model):
     precio_distribuidor = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     otro = BooleanField(default=False)
     imagen = models.ImageField(upload_to='images_products/', blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='thumbs', blank=True, null=True, editable=False)
+    thumbnail = models.ImageField(upload_to='thumbs', blank=True, null=True, editable=True)
 
     def __str__(self):
         return self.nombre
@@ -79,3 +79,15 @@ class Product(models.Model):
         super(Product, self).save(update_fields=['thumbnail'])
 
         return True
+
+class Categorias(models.Model):
+    nombre = models.CharField(max_length=50, blank=True, null=False)
+
+    def __str__(self):
+        return self.nombre
+
+class Unidades(models.Model):
+    nombre = models.CharField(max_length=50, blank=True, null=False)
+
+    def __str__(self):
+        return self.nombre

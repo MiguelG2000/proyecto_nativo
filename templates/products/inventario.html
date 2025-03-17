@@ -1,71 +1,77 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Inventario</title>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
-<div class="container mx-auto p-8 mt-20 w-full max-w-7xl bg-white rounded-xl shadow-lg">
-    <h1 class="text-4xl font-bold text-gray-800 mb-6">Inventario</h1>
-    <h2 class="text-xl text-gray-700 mb-6">Lista de los productos</h2>
+    <div class="animate__animated animate__fadeIn">
+        <div class="container mx-auto p-8 mt-24 mb-10 w-full max-w-7xl bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl font-bold text-gray-800 mb-6">Inventario</h1>
+            <h2 class="text-xl text-gray-700 mb-6">Lista de los productos</h2>
 
-    <div class="mb-6">
-        <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition">Agregar producto</a>
+            <div class="mb-6">
+                <a href="{% url 'create_product' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition">Agregar producto</a>
+                <a href="{% url 'category_unit' %}" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition">Ver catalogo de categorias y unidades</a>
+            </div>
+
+            <input type="text" id="searchInput" placeholder="Buscar producto..." class="border border-gray-300 p-3 rounded-lg w-full mb-4">
+
+            <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+                <table id="productsTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm">
+                    <thead class="bg-gray-200 sticky top-0 z-10">
+                        <tr class="bg-gray-300">
+                            <th class="py-3 px-4">Id</th>
+                            <th class="py-3 px-4">Nombre</th>
+                            <th class="py-3 px-4">Descripción</th>
+                            <th class="py-3 px-4">Categoría</th>
+                            <th class="py-3 px-4">Volumen</th>
+                            <th class="py-3 px-4">Unidad</th>
+                            <th class="py-3 px-4">Inventario</th>
+                            <th class="py-3 px-4">Precio Público</th>
+                            <th class="py-3 px-4">Precio Distribuidor</th>
+                            <th class="py-3 px-4">Imagen</th>
+                            <th class="py-3 px-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 border text-center">{{ product.id }}</td>
+                            <td class="py-2 px-4 border product-name text-center">{{ product.nombre }}</td>
+                            <td class="py-2 px-4 border text-center">{{ product.descripcion }}</td>
+                            <td class="py-2 px-4 border text-center">{{ product.categoria }}</td>
+                            <td class="py-2 px-4 border text-center">{{ product.volumen }} cm³</td>
+                            <td class="py-2 px-4 border text-center">{{ product.unidad }}</td>
+                            <td class="py-2 px-4 border text-center">{{ product.inventario }}</td>
+                            <td class="py-2 px-4 border text-center">${{ product.precio_general }}</td>
+                            <td class="py-2 px-4 border text-center">${{ product.precio_distribuidor }}</td>
+                            <td class="py-2 px-4 border text-center">
+                                <img src="http://127.0.0.1:8000/{{ product.thumbnail }}" class="h-16 w-16 object-cover rounded">
+                            </td>
+                            <td class="py-5 px-4 border flex justify-center space-x-2">
+                                <a href="{% url 'update_product' product.id %}" class="p-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
+                                    <img src="{% static 'img/editar.png' %}" alt="editar" class="w-6 h-6">
+                                </a>
+                                <a href="{% url 'delete_product' product.id %}" class="p-2 rounded-lg bg-red-600 hover:bg-red-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
+                                    <img src="{% static 'img/basura.png' %}" alt="eliminar" class="w-6 h-6">
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-
-    <input type="text" id="searchInput" placeholder="Buscar producto..." class="border border-gray-300 p-3 rounded-lg w-full mb-4">
-
-    <div class="overflow-x-auto">
-        <table id="productsTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm">
-            <thead>
-                <tr class="bg-gray-300">
-                    <th class="py-3 px-4">Id</th>
-                    <th class="py-3 px-4">Nombre</th>
-                    <th class="py-3 px-4">Descripción</th>
-                    <th class="py-3 px-4">Categoría</th>
-                    <th class="py-3 px-4">Volumen</th>
-                    <th class="py-3 px-4">Unidad</th>
-                    <th class="py-3 px-4">Inventario</th>
-                    <th class="py-3 px-4">Precio Público</th>
-                    <th class="py-3 px-4">Precio Distribuidor</th>
-                    <th class="py-3 px-4">Imagen</th>
-                    <th class="py-3 px-4">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr class="hover:bg-gray-50">
-                    <td class="py-2 px-4 border text-center">{{ product.id }}</td>
-                    <td class="py-2 px-4 border product-name text-center">{{ product.nombre }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.descripcion }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.categoria }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.volumen }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.unidad }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.inventario }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.precio_general }}</td>
-                    <td class="py-2 px-4 border text-center">{{ product.precio_distribuidor }}</td>
-                    <td class="py-2 px-4 border text-center">
-                        <img src="http://127.0.0.1:8000/{{ product.thumbnail }}" class="h-16 w-16 object-cover rounded">
-                    </td>
-                    <td class="py-2 px-4 border flex justify-center space-x-2">
-                        <a href="{% url 'update_product' product.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Editar</a>
-                        <a href="{% url 'delete_product' product.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
 {% else %}
-<div class="flex flex-col items-center justify-center min-h-screen text-center">
-    <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
-    <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
-</div>
+    <div class="flex flex-col items-center justify-center min-h-screen text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+        <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
+    </div>
 {% endif %}
 
 <script>

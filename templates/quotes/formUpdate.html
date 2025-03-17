@@ -3,25 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>Actualizar Cotización</title>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const statusSelect = document.getElementById("status");
-            const entregaFields = document.getElementById("entregaFields");
-
-            function toggleEntregaFields() {
-                if (statusSelect.value === "Aceptado") {
-                    entregaFields.style.display = "block";
-                } else {
-                    entregaFields.style.display = "none";
-                    document.getElementById("fecha_entrega").value = "";
-                    document.getElementById("direccion_entrega").value = "";
-                }
-            }
-
-            statusSelect.addEventListener("change", toggleEntregaFields);
-            toggleEntregaFields();  // Inicializa el estado correcto al cargar la página
-        });
-    </script>
 </head>
 <body class="bg-gray-100 p-8">
 {% include 'nav_bar.html' %}
@@ -39,14 +20,10 @@
         <option value="Contraoferta" {% if quote.status == "Contraoferta" %}selected{% endif %}>Contraoferta</option>
     </select>
 
-    <div id="entregaFields" style="display: none;">
+    <div>
         <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
         <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|default:"" }}"
-               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-
-        <label for="direccion_entrega" class="block mt-4 text-sm font-medium text-gray-700">Dirección de Entrega:</label>
-        <input type="text" name="direccion_entrega" id="direccion_entrega" value="{{ quote.direccion_entrega|default:"" }}"
-               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+               class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
     </div>
 
     <label for="anticipo" class="block mt-4 text-sm font-medium text-gray-700">Anticipo</label>

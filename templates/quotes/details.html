@@ -7,11 +7,18 @@
 <body class="bg-gray-100 p-8">
     {% include 'nav_bar.html' %}
     {% if request.user.is_authenticated %}
+        <div class="animate__animated animate__fadeIn">
         {% include 'quotes/quote_details.html' %}
         {% include 'quotes/add_product_form.html' %}
         {% include 'quotes/products_table.html' %}
         {% include 'quotes/custom_product_form.html' %}
         {% include 'quotes/custom_products_table.html' %}
+    {% else %}
+        <div class="flex flex-col items-center justify-center min-h-screen text-center">
+            <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+            <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
+        </div>
     {% endif %}
+    </div>
 </body>
 </html>

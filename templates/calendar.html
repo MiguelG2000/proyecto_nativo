@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilo personalizado para el calendario */
         .fc-event {
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
@@ -16,7 +15,6 @@
             transform: scale(1.05);
         }
 
-        /* Estilo para la ventana flotante */
         .floating-window {
             position: fixed;
             top: 20px;
@@ -29,21 +27,18 @@
 <body class="bg-gray-50 min-h-screen flex flex-col items-center">
     {% if request.user.is_authenticated %}
     {% include 'nav_bar.html' %}
-
-    <!-- Título principal -->
+<div class="animate__animated animate__fadeIn w-full max-w-7xl px-4 mt-24">
     <div class="w-full max-w-7xl px-4 mt-24">
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">Calendario de Entregas</h1>
         <p class="text-lg text-center text-gray-600">Gestión eficiente de fechas de entrega y cotizaciones</p>
     </div>
 
-    <!-- Contenedor del calendario -->
     <div class="w-full max-w-7xl px-4 mt-8">
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div id="calendar" class="h-[700px]"></div>
         </div>
     </div>
 
-    <!-- Ventana flotante para agregar eventos -->
     <div id="eventWindow" class="floating-window bg-white rounded-lg p-6 w-96 hidden">
         <h2 class="text-xl font-bold mb-4">Agregar Evento</h2>
         <form id="eventForm" method="POST" action="{% url 'add_event' %}" >
@@ -71,14 +66,14 @@
             </div>
         {% endfor %}
     </div>
+        </div>
     {% endif %}
-    {% else %}
 
+    {% else %}
     <div class="flex flex-col items-center justify-center min-h-screen text-center">
         <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
         <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
     </div>
-
     {% endif %}
     <script>
        document.addEventListener('DOMContentLoaded', function () {

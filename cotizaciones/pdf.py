@@ -5,7 +5,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from cotizaciones.models import Cotizaciones, CotizacionProduct
 from datetime import datetime
-from babel.dates import format_date
 from cotizaciones.views import generate_qr
 
 # Diccionario de traducción de días y meses en español
@@ -39,7 +38,7 @@ def verificar_pagina(pdf, y, margen=100):
     if y < margen:  # Si el espacio es insuficiente, generar nueva página
         pdf.showPage()  # Crear nueva página
         agregar_encabezado(pdf)  # Redibujar encabezado
-        return letter[1] - 240  # Reiniciar la posición en la nueva página
+        return letter[1] - 160  # Reiniciar la posición en la nueva página
     return y
 
 
@@ -54,7 +53,6 @@ def agregar_encabezado(pdf):
     pdf.drawString(260, letter[1] - 65, "20 Poniente Sur #550B CP. 29070 | Tuxtla Gutiérrez, Chiapas.")
     pdf.drawString(260, letter[1] - 80, "                nativo.tu.mx@gmail.com | 961 693 66 44")
 
-
 def generate_quote_pdf(request, id):
     # Obtener la cotización y los productos relacionados
     cotizacion = Cotizaciones.objects.get(id=id)
@@ -63,8 +61,7 @@ def generate_quote_pdf(request, id):
 
     fecha_cotizacion = formatear_fecha(cotizacion.fecha)
     fecha_validez = formatear_fecha(cotizacion.fecha_propuesta)
-    if cotizacion.status == "Aceptado":
-        fecha_entrega = formatear_fecha(cotizacion.fecha_entrega)
+    fecha_entrega = formatear_fecha(cotizacion.fecha_entrega)
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="cotizacion_{cotizacion.id}.pdf"'
@@ -73,23 +70,19 @@ def generate_quote_pdf(request, id):
     width, height = letter
 
     agregar_encabezado(pdf)
+
     y = height - 240
 
     # Datos del Cliente a la izquierda
     y = verificar_pagina(pdf, y)
     pdf.setFont("Helvetica-Bold", 8)
-    pdf.drawString(40, y, "Datos del cliente:")
-    y -= 15
+    pdf.drawString(40, height - 130, "Datos del cliente:")
     y = verificar_pagina(pdf, y)
     pdf.setFont("Helvetica", 8)
-    pdf.drawString(40, y, f"Cliente: {cotizacion.cliente}")
-    y -= 15
-    pdf.drawString(40, y, f"Telefono: {cotizacion.telefono}")
-    y -= 15
+    pdf.drawString(40, height - 145, f"Cliente: {cotizacion.cliente}")
+    pdf.drawString(40, height - 160, f"Telefono: {cotizacion.telefono}")
     if cotizacion.status == "Aceptado":
-        pdf.drawString(40, y, f"Dirección de entrega: {cotizacion.direccion_entrega}")
-        y -= 15
-
+        pdf.drawString(40, height - 175, f"Dirección de entrega: {cotizacion.direccion_entrega}")
 
     # Definir la posición de alineación a la derecha
     margen_derecho = width - 40  # Ajusta el margen derecho según lo necesites
@@ -105,10 +98,8 @@ def generate_quote_pdf(request, id):
     # Mensaje de introducción
     y = verificar_pagina(pdf, y)
     pdf.setFont("Helvetica", 8)
-    pdf.drawString(40, y, "Estimado cliente, por medio del presente, le hago entrega de la cotización solicitada.")
-    y -= 10
-    pdf.drawString(40, y, "Puede corroborar a detalle la presente cotización. Cualquier duda favor de contactarnos.")
-    y -= 30
+    pdf.drawString(40, height - 200, "Estimado cliente, por medio del presente, le hago entrega de la cotización solicitada.")
+    pdf.drawString(40, height - 210, "Puede corroborar a detalle la presente cotización. Cualquier duda favor de contactarnos.")
 
 # *** TABLA DE PRODUCTOS NORMALES (si existen) ***
     if productos.exists():
@@ -128,7 +119,7 @@ def generate_quote_pdf(request, id):
 
         pdf.setFont("Helvetica", 8)
         for producto in productos:
-            y = verificar_pagina(pdf, y)
+            y = verificar_pagina(pdf, y, margen = 150)
             pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.unidad)
             pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
             pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, producto.product_id.nombre)
@@ -165,7 +156,7 @@ def generate_quote_pdf(request, id):
 
         pdf.setFont("Helvetica", 8)
         for producto in productosPer:
-            y = verificar_pagina(pdf, y)
+            y = verificar_pagina(pdf, y, margen = 150)
             pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.nombre[:22])
             pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
             pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, f"{producto.product_id.largo:,.2f}")
@@ -185,13 +176,10 @@ def generate_quote_pdf(request, id):
     pdf.setFont("Helvetica-Bold", 9)
     pdf.drawString(400, y - 10, "Envío a " + f"{cotizacion.servicio_envio}:")
     pdf.drawString(520, y - 10, formato_moneda(cotizacion.costo_envio))
-    y -= 20
     pdf.drawString(400, y - 30, "Subtotal:")
     pdf.drawString(520, y - 30, formato_moneda(cotizacion.total))
-    y -= 20
     pdf.drawString(400, y - 50, "I.V.A.:")
     pdf.drawString(520, y - 50, formato_moneda(cotizacion.iva))
-    y -= 20
 
     alineacion_x = 400
 
@@ -199,73 +187,60 @@ def generate_quote_pdf(request, id):
         y = verificar_pagina(pdf, y, margen=120)
         pdf.drawString(alineacion_x, y - 70, "Anticipo:")
         pdf.drawString(520, y - 70, formato_moneda(cotizacion.anticipo))
-        y -= 20
 
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(alineacion_x, y - 90, "Total a pagar:")
         pdf.drawString(520, y - 90, formato_moneda(cotizacion.restante))
-        y -= 40
     else:
         y = verificar_pagina(pdf, y, margen=120)
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(alineacion_x, y - 70, "Total a pagar:")
         pdf.drawString(520, y - 70, formato_moneda(cotizacion.restante))
-        y -= 40
 
     # Determinar la tasa de IVA aplicada
     iva_tasa = "8%" if cotizacion.iva_8 else "16%" if cotizacion.iva_16 else "0%"
 
     # Términos y condiciones
-    y = verificar_pagina(pdf, y, margen=150)
+    y = verificar_pagina(pdf, y, margen=120)
     pdf.setFont("Helvetica-Bold", 7)
     pdf.drawString(40, y - 10, "Términos y condiciones:")
-    y -= 10
     pdf.setFont("Helvetica", 7)
     pdf.drawString(40, y - 20, f"• La tasa de IVA calculada es del {iva_tasa}.")
-    y -= 10
     pdf.drawString(40, y - 30, "• Precios sujetos a cambios sin previo aviso.")
-    y -= 10
     pdf.drawString(40, y - 40, "• No incluye descarga en obra.")
-    y -= 10
     pdf.drawString(40, y - 50, "• Este documento es de carácter informativo sin validez oficial.")
-    y -= 10
     pdf.drawString(40, y - 60, "• Condiciones de pago: Pago de contado.")
-    y -= 40
 
     # Tiempo de entrega alineado con términos
     pdf.setFont("Helvetica-Bold", 7)
-    y = verificar_pagina(pdf, y, margen=150)
+    y = verificar_pagina(pdf, y, margen=120)
     pdf.drawString(40, y - 80, "Tiempo de entrega:")
-    y -= 10
     pdf.setFont("Helvetica", 7)
     if cotizacion.status == "Aceptado":
         pdf.drawString(40, y - 90, f"La entrega será el dia {fecha_entrega}, cubriendo el pago total de la cotización.")
-        y -= 10
         pdf.drawString(40, y - 100, "La descarga del producto corre a cuenta del cliente.")
-        y -= 10
         pdf.drawString(40, y - 110, "Sin más por el momento, quedo a sus órdenes por cualquier duda o aclaración.")
-        y -= 40
+        y -= 20
     else:
         pdf.drawString(40, y - 90, "La descarga del producto corre a cuenta del cliente.")
-        y -= 10
         pdf.drawString(40, y - 100, "Sin más por el momento, quedo a sus órdenes por cualquier duda o aclaración.")
-        y -= 40
+        y -= 20
 
     y = verificar_pagina(pdf, y, margen=120)
     # Ajustar la posición de la firma del arquitecto para que esté más arriba
-    firma_width = 100  # Ancho de la firma
-    firma_height = 40  # Altura de la firma
+    firma_width = 180  # Ancho de la firma
+    firma_height = 90  # Altura de la firma
     firma_x = (width / 3) - (firma_width / 2)  # Centrar firma con el texto
     firma_y = y - 125  # Ajustar la altura para que quede más arriba
 
     # Dibujar firma del arquitecto
-    firma_path = "static/img/logo.png"  # Cuando se tenga la firma, cambiar esta ruta
-    pdf.drawImage(ImageReader(firma_path), firma_x, firma_y, width=firma_width, height=firma_height,
+    firma_path = "static/img/firma.png"  # Cuando se tenga la firma, cambiar esta ruta
+    pdf.drawImage(ImageReader(firma_path), firma_x, firma_y - 50, width=firma_width, height=firma_height,
                   preserveAspectRatio=True, mask='auto')
 
     # Dibujar nombre del arquitecto alineado con la firma
     pdf.setFont("Helvetica-Bold", 9)
-    pdf.drawCentredString(width / 3, firma_y - 10, "Arq. Luis Alberto Hernández Lara.")
+    pdf.drawCentredString(width / 3, y - 150, "Arq. Luis Alberto Hernández Lara.")
 
     # Ajustar la posición de la firma del cliente
     firma_x = width - 200
@@ -280,8 +255,8 @@ def generate_quote_pdf(request, id):
     qr_reader = ImageReader(qr_image)  # Convertir el BytesIO en ImageReader
 
     # Definir el tamaño del QR
-    qr_width = 40  # Ancho del QR
-    qr_height = 40  # Alto del QR
+    qr_width = 80  # Ancho del QR
+    qr_height = 80  # Alto del QR
 
     # Posición lo más pegada posible a la esquina inferior derecha
     qr_x = width - qr_width - 10  # 10px de margen derecho

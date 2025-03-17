@@ -94,6 +94,8 @@ def create_quote(request):
         quote.costo_envio = request.POST['costo_envio']
         quote.cliente = request.POST['cliente']
         quote.telefono = request.POST['telefono']
+        quote.fecha_entrega = request.POST['fecha_entrega']
+        quote.direccion_entrega = request.POST['direccion_entrega']
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST
@@ -117,7 +119,6 @@ def update_quote(request, id):
         quote.metodo_pago = request.POST['metodo_pago']
         fecha_entrega = request.POST.get('fecha_entrega', '').strip()
         quote.fecha_entrega = fecha_entrega if fecha_entrega else None
-        quote.direccion_entrega = request.POST.get('direccion_entrega', '').strip()
 
         # Verificar si cambió el estado a "Aceptado"
         if prev_status != "Aceptado" and quote.status == "Aceptado":

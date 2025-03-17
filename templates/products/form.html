@@ -4,75 +4,151 @@
     <meta charset="utf-8">
     <title>Agregar Producto</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
 <body class="bg-gray-100 p-8">
 {% include 'nav_bar.html' %}
 <div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-20">
+    <!-- Mostrar mensajes de error -->
+    {% if messages %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let errorMessages = [];
+                {% for message in messages %}
+                    errorMessages.push("{{ message }}");
+                {% endfor %}
+                if (errorMessages.length > 0) {
+                    alert(errorMessages.join("\n"));
+                }
+            });
+        </script>
+    {% endif %}
+
     <form method="POST" enctype="multipart/form-data" class="space-y-4">
         {% csrf_token %}
         <input type="hidden" name="quote_id" value="{{ id }}">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Campos del formulario -->
             <div>
                 <label class="block text-gray-700 font-medium">Nombre</label>
-                <input type="text" name="nombre" placeholder="Nombre producto" value="{{ product.nombre }}"
+                <input type="text" name="nombre" placeholder="Nombre producto" value="{{ product.nombre }}" required
                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Descripción</label>
-                <input type="text" name="descripcion" placeholder="Descripción producto" value="{{ product.descripcion }}"
+                <input type="text" name="descripcion" placeholder="Descripción producto" value="{{ product.descripcion }}" required
                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Categoría</label>
-                <input type="text" name="categoria" placeholder="Categoría" value="{{ product.categoria }}"
-                       class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+                <select name="categoria" id="categoria" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.nombre }}">{{ categoria.nombre }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Volumen</label>
-                <input type="number" step="any" name="volumen" placeholder="Volumen del producto" value="{{ product.volumen }}"
+                <input type="number" step="any" name="volumen" placeholder="Volumen del producto" value="{{ product.volumen }}" required
                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Unidad</label>
-                <input type="text" name="unidad" placeholder="Unidad del producto" value="{{ product.unidad }}"
-                       class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+                <select name="unidad" id="unidad" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    {% for unidad in unidades %}
+                        <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Inventario</label>
-                <input type="number" name="inventario" placeholder="No de piezas del producto" value="{{ product.inventario }}"
+                <input type="number" name="inventario" placeholder="No de piezas del producto" value="{{ product.inventario }}" required
                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Precio general</label>
-                <input type="number" step="any" name="precio_general" placeholder="Precio al público del producto" value="{{ product.precio_general }}"
+                <input type="number" step="any" name="precio_general" placeholder="Precio al público del producto" value="{{ product.precio_general }}" required
                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium">Precio de distribuidor</label>
                 <input type="number" step="any" name="precio_distribuidor" placeholder="Precio al distribuidor del producto" value="{{ product.precio_distribuidor }}"
-                       class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+                       required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
             </div>
         </div>
 
         <div>
-    <label class="block text-gray-700 font-medium">Imagen del producto</label>
-    {% if product.thumbnail %}
-        <img src="{{ product.thumbnail.url }}" alt="Imagen actual" class="mb-2" style="max-width: 150px;">
-    {% endif %}
-    <input type="file" name="imagen" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
-</div>
-
+            <label class="block text-gray-700 font-medium">Imagen del producto</label>
+            {% if product.thumbnail %}
+                <img src="{{ product.thumbnail.url }}" alt="Imagen actual" class="mb-2" style="max-width: 150px;">
+            {% endif %}
+            <input type="file" name="imagen" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+        </div>
 
         <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">Agregar</button>
     </form>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function (event) {
+        let valid = true;
+        let messages = [];
+
+        // Validar campos requeridos
+        form.querySelectorAll("input").forEach(input => {
+            if (input.type !== "file" && input.value.trim() === "") {
+                valid = false;
+                messages.push(`${input.name} no puede estar vacío.`);
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        });
+
+        // Validar valores numéricos positivos
+        form.querySelectorAll("input[type='number']").forEach(input => {
+            if (input.value && parseFloat(input.value) < 0) {
+                valid = false;
+                messages.push(`${input.name} debe ser un número positivo.`);
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        });
+
+        // Mostrar errores si existen
+        if (!valid) {
+            event.preventDefault(); // Evita que el formulario se envíe
+            alert(messages.join("\n"));
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const selects = ['#categoria', '#unidad'];
+
+    selects.forEach(selector => {
+        new Choices(selector, {
+            searchEnabled: true,
+            itemSelectText: '',
+            noResultsText: 'Sin resultados',
+            placeholder: true,
+            placeholderValue: 'Busca un producto...',
+        });
+    });
+});
+
+</script>
 </body>
 </html>

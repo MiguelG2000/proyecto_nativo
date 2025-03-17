@@ -4,7 +4,7 @@ from decimal import Decimal
 
 
 # Create your models here.
-class Cotizaciones(models.Model):
+class Cotizaciones (models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
     cliente = models.CharField(max_length=50, blank=False, null=True)
     telefono = models.IntegerField(blank=False, null=True)
@@ -23,6 +23,7 @@ class Cotizaciones(models.Model):
     iva = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     iva_8 = models.BooleanField(default=False)
     iva_16 = models.BooleanField(default=False)
+
     def __str__(self):
         return str(self.id)
 
@@ -72,3 +73,13 @@ class CotizacionProduct(models.Model):
 
         super().save(*args, **kwargs)
         self.cotizacion_id.update_total()
+
+class Remisiones (models.Model):
+    cotizacion_id = models.ForeignKey(Cotizaciones, on_delete=models.CASCADE, related_name='remisiones')
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    entrega = models.IntegerField(default=0.0)
+    status = models.CharField(max_length=20, blank=False, null=False, default='Pendiente')
+
+    def __str__(self):
+        return f"Hoja de remisión de {self.cotizacion_id.id}"
+
