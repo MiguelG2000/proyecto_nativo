@@ -1,12 +1,4 @@
-<head>
-    <meta charset="utf-8">
-    <title>Agregar Producto</title>
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-   <div class="bg-white p-6 rounded-lg shadow-md mt-10 max-w-3xl mx-auto">
+<div class="bg-white p-6 rounded-lg shadow-md mt-10 max-w-3xl mx-auto">
     <h3 class="text-lg font-semibold mb-4">Agregar un nuevo producto</h3>
     <form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
         {% csrf_token %}
@@ -45,4 +37,3 @@
         });
     });
 </script>
-</body>

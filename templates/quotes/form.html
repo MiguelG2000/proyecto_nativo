@@ -3,51 +3,59 @@
 <head>
     <meta charset="utf-8">
     <title>Crear Cotización</title>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-8">
     {% include 'nav_bar.html' %}
     <form method="POST" class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-20">
         {% csrf_token %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="cliente" class="block text-sm font-medium text-gray-700">Cliente:</label>
-                <input type="text" name="cliente" id="cliente" value="{{ quote.cliente }}" required
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div>
-                <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono del Cliente:</label>
-                <input type="text" name="telefono" id="telefono" value="{{ quote.telefono }}" required
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
+        <!-- Checkbox para marcar como cotización -->
+        <div class="mb-4">
+            <input type="checkbox" id="es_cotizacion" name="es_cotizacion" class="mr-2">
+            <label for="es_cotizacion" class="text-sm font-medium text-gray-700">¿Es cotización?</label>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
-                <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|default:"" }}"
+                <label for="cliente" class="block text-sm font-medium text-gray-700">Cliente:</label>
+                <input type="text" name="cliente" id="cliente" value="{{ quote.cliente }}" placeholder="Nombre del Cliente" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-                <label for="direccion_entrega" class="block mt-4 text-sm font-medium text-gray-700">Dirección de Entrega:</label>
-                <input type="text" name="direccion_entrega" id="direccion_entrega" value="{{ quote.direccion_entrega|default:"" }}"
+                <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono del Cliente:</label>
+                <input type="text" name="telefono" id="telefono" value="{{ quote.telefono }}" placeholder="Teléfono del Cliente" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
+
+        <!-- Contenedor para ocultar si es cotización -->
+        <div id="datos_entrega">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
+                    <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|default:'' }}"
+                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="direccion_entrega" class="block mt-4 text-sm font-medium text-gray-700">Dirección de Entrega:</label>
+                    <input type="text" name="direccion_entrega" id="direccion_entrega" value="{{ quote.direccion_entrega|default:'Pendiente' }}"
+                           placeholder="Dirección de Entrega"
+                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <!-- Fila 2: Fecha y Fecha Propuesta -->
             <div>
                 <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha:</label>
-                <input type="date" name="fecha" id="fecha" required readonly
+                <input type="date" name="fecha" id="fecha" required
                        class="mt-1 block w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
             </div>
             <div>
                 <label for="fecha_propuesta" class="block text-sm font-medium text-gray-700">Fecha Propuesta:</label>
-                <input type="date" name="fecha_propuesta" id="fecha_propuesta" required readonly
+                <input type="date" name="fecha_propuesta" id="fecha_propuesta" required
                        class="mt-1 block w-full p-2 border border-gray-300 bg-gray-100 rounded-md">
             </div>
-
             <!-- Fila 3: Status y Anticipo -->
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700">Status:</label>
@@ -63,19 +71,19 @@
             </div>
             <div>
                 <label for="anticipo" class="block text-sm font-medium text-gray-700">Anticipo:</label>
-                <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" required
+                <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" placeholder="Agregar Anticipo" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
 
             <!-- Fila 4: Servicio de Envío y Costo de Envío -->
             <div>
                 <label for="servicio_envio" class="block text-sm font-medium text-gray-700">Servicio de Envío:</label>
-                <input type="text" name="servicio_envio" id="servicio_envio" value="{{ quote.servicio_envio }}" required
+                <input type="text" name="servicio_envio" id="servicio_envio" value="{{ quote.servicio_envio|default:'TGZ' }}" placeholder="Servicio de Envio"
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label for="costo_envio" class="block text-sm font-medium text-gray-700">Costo de Envío:</label>
-                <input type="number" step="0.01" name="costo_envio" id="costo_envio" value="{{ quote.costo_envio }}" required
+                <input type="number" step="0.01" name="costo_envio" id="costo_envio" value="{{ quote.costo_envio }}" placeholder="Costo de Envio" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
 
@@ -104,25 +112,36 @@
             </div>
         </div>
 
-        <!-- Botón de envío -->
         <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
             Agregar
         </button>
     </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function formatDateToInput(date) {
+                return date.toISOString().split("T")[0];
+            }
+
+            let today = new Date();
+            let futureDate = new Date();
+            futureDate.setDate(today.getDate() + 7);
+
+            document.getElementById("fecha").value = formatDateToInput(today);
+            document.getElementById("fecha_propuesta").value = formatDateToInput(futureDate);
+
+            // Manejo del checkbox para ocultar/mostrar datos de entrega
+            const checkboxCotizacion = document.getElementById("es_cotizacion");
+            const datosEntrega = document.getElementById("datos_entrega");
+
+            checkboxCotizacion.addEventListener("change", function () {
+                if (this.checked) {
+                    datosEntrega.style.display = "none";
+                } else {
+                    datosEntrega.style.display = "block";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function formatDateToInput(date) {
-            return date.toISOString().split("T")[0];  // Formato YYYY-MM-DD
-        }
-
-        let today = new Date();
-        let futureDate = new Date();
-        futureDate.setDate(today.getDate() + 7);
-
-        document.getElementById("fecha").value = formatDateToInput(today);
-        document.getElementById("fecha_propuesta").value = formatDateToInput(futureDate);
-    });
-</script>

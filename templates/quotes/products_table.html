@@ -1,6 +1,6 @@
 {% load custom_filters %}
 <div class="bg-white p-6 rounded-lg shadow-md mt-10">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de Productos</h2>
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de Productos</h2> <!-- Título de la tabla -->
     <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
         <thead>
             <tr class="bg-gray-200">
@@ -28,7 +28,9 @@
                 <td class="border px-4 py-2">${{ cotizacionPro.phistorico }}</td>
                 <td class="border px-4 py-2">{{ cotizacionPro.cantidad }}</td>
                 <td class="border px-4 py-2">${{ cotizacionPro.subtotal|moneda }}</td>
-                <td class="border px-4 py-2"><a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</a></td>
+                <td class="border px-4 py-2">
+                    <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}" class="bg-red-500 text-white px-2 py-1 rounded delete-product">Eliminar</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

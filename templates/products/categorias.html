@@ -8,7 +8,7 @@
 {% if request.user.is_authenticated %}
 {% include 'nav_bar.html' %}
     <div class="animate__animated animate__fadeIn">
-        <div class="container mx-auto p-8 mt-36 mb-24 w-full max-w-7xl bg-white rounded-xl shadow-lg">
+        <div class="container mx-auto p-8 mt-28 mb-24 w-full max-w-7xl bg-white rounded-xl shadow-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!--Formulario y tabla de categorias-->
                 <div class="w-full p-6 bg-white shadow-md rounded-lg">
@@ -24,7 +24,6 @@
                     <table id="categorysTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm mt-4">
                         <thead class="bg-gray-200">
                             <tr class="bg-gray-300">
-                                <th class="py-3 px-4">Id</th>
                                 <th class="py-3 px-4">Nombre</th>
                                 <th class="py-3 px-4">Acciones</th>
                             </tr>
@@ -32,7 +31,6 @@
                         <tbody>
                         {% for categoria in categorias %}
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4 border text-center">{{ categoria.id }}</td>
                                 <td class="py-2 px-4 border product-name text-center">{{ categoria.nombre }}</td>
                                 <td class="py-2 px-4 border flex justify-center space-x-2">
                                     <a href="{% url 'delete_category' categoria.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>
@@ -57,7 +55,6 @@
                     <table id="unitTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm mt-4">
                         <thead class="bg-gray-200">
                             <tr class="bg-gray-300">
-                                <th class="py-3 px-4">Id</th>
                                 <th class="py-3 px-4">Nombre</th>
                                 <th class="py-3 px-4">Acciones</th>
                             </tr>
@@ -65,7 +62,6 @@
                         <tbody>
                         {% for unidad in unidades %}
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4 border text-center">{{ unidad.id }}</td>
                                 <td class="py-2 px-4 border product-name text-center">{{ unidad.nombre }}</td>
                                 <td class="py-2 px-4 border flex justify-center space-x-2">
                                     <a href="{% url 'delete_unit' unidad.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>

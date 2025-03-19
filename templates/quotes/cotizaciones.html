@@ -1,45 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Cotizaciones</title>
+    <script src="{% static 'js/cotizaciones.js' %}"></script>
 </head>
 <body class="bg-gray-100 p-6">
 {% if request.user.is_authenticated %}
     {% include 'nav_bar.html' %}
     <div class="animate__animated animate__fadeIn">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
-        <h1 class="text-2xl font-bold text-gray-700 mb-4">Todas las cotizaciones</h1>
-        <h2 class="text-lg text-gray-600 mb-4">Lista de las cotizaciones</h2>
-        <a href="{% url 'create_quote' %}"
-           class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Crear una nueva
-            cotización</a>
-        <div class="overflow-x-auto mt-4">
-            <table class="w-full border-collapse bg-white shadow-md rounded-lg">
-                <thead>
-                <tr class="bg-gray-300 text-gray-700">
-                    <th class="px-4 py-2">Id</th>
-                    <th class="px-4 py-2">Fecha</th>
-                    <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for cotizacion in cotizaciones %}
-                    <tr class="border-b">
-                        <td class="px-4 py-2 text-center">{{ cotizacion.id }}</td>
-                        <td class="px-4 py-2 text-center">{{ cotizacion.fecha }}</td>
-                        <td class="px-4 py-2 text-center">{{ cotizacion.status }}</td>
-                        <td class="px-4 py-2 text-center">
-                            <a href="{% url 'details' cotizacion.id %}" class="text-blue-500 hover:underline">Ver
-                                detalles</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
+            <h1 class="text-2xl font-bold text-gray-700 mb-4">Todas las cotizaciones</h1>
+            <h2 class="text-lg text-gray-600 mb-4">Lista de las cotizaciones</h2>
+            <a href="{% url 'create_quote' %}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Crear una nueva cotización</a>
+
+            <div class="mt-4 flex gap-2">
+                <input type="text" id="search" onkeyup="filterQuotes()" placeholder="Buscar por numero de Cotización o Fecha" class="px-4 py-2 border rounded-lg w-full">
+            </div>
+
+            <div class="overflow-x-auto mt-4">
+                <table class="w-full border-collapse bg-white shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-300 text-gray-700">
+                            <th class="px-4 py-2">Id</th>
+                            <th class="px-4 py-2">Fecha</th>
+                            <th class="px-4 py-2">Status</th>
+                            <th class="px-4 py-2">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cotizacion in cotizaciones %}
+                        <tr class="border-b">
+                            <td class="px-4 py-2 text-center">{{ cotizacion.id }}</td>
+                            <td class="px-4 py-2 text-center">{{ cotizacion.fecha }}</td>
+                            <td class="px-4 py-2 text-center">{{ cotizacion.status }}</td>
+                            <td class="px-4 py-2 text-center">
+                                <a href="{% url 'details' cotizacion.id %}" class="text-blue-500 hover:underline">Ver detalles</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     </div>
 {% else %}
     <div class="flex flex-col items-center justify-center min-h-screen text-center">

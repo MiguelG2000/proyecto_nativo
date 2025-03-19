@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from babel.dates import format_date
+from django.utils.dateparse import parse_date
+from django.utils.timezone import now, timedelta
 
 import cotizaciones
 from products.models import Product
@@ -84,9 +86,12 @@ def generate_qr(direccion):
 
 def create_quote(request):
     if request.method == 'POST':
+        fecha_entrega = request.POST.get("fecha_entrega", "").strip()
+        fecha_entrega = parse_date(fecha_entrega) if fecha_entrega else None
+
         quote = Cotizaciones()
-        quote.fecha = request.POST['fecha']
-        quote.fecha_propuesta = request.POST['fecha_propuesta']
+        quote.fecha = request.POST.get('fecha')
+        quote.fecha_propuesta = request.POST.get('fecha_propuesta') or (now().date() + timedelta(days=7))
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
@@ -94,8 +99,9 @@ def create_quote(request):
         quote.costo_envio = request.POST['costo_envio']
         quote.cliente = request.POST['cliente']
         quote.telefono = request.POST['telefono']
-        quote.fecha_entrega = request.POST['fecha_entrega']
+        quote.fecha_entrega = fecha_entrega
         quote.direccion_entrega = request.POST['direccion_entrega']
+
         # Capturar si se aplica IVA 8% o 16%
         quote.iva_8 = 'iva_8' in request.POST
         quote.iva_16 = 'iva_16' in request.POST
@@ -119,6 +125,7 @@ def update_quote(request, id):
         quote.metodo_pago = request.POST['metodo_pago']
         fecha_entrega = request.POST.get('fecha_entrega', '').strip()
         quote.fecha_entrega = fecha_entrega if fecha_entrega else None
+        quote.direccion_entrega = request.POST['direccion_entrega']
 
         # Verificar si cambió el estado a "Aceptado"
         if prev_status != "Aceptado" and quote.status == "Aceptado":

@@ -1,7 +1,12 @@
+{% load static %}
 <div class="bg-white p-6 rounded-lg shadow-md mt-20">
     <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }} - Cliente: {{ cotizaciones.cliente }}</h1>
+    {% if cotizaciones.fecha_entrega != None %}
         <p class="text-lg font-semibold">Fecha de entrega - {{ cotizaciones.fecha_entrega }}</p>
+    {% endif %}
+    {% if cotizaciones.direccion_entrega != "Pendiente" %}
         <p class="text-lg font-semibold">Dirección de entrega - {{ cotizaciones.direccion_entrega }}</p>
+    {% endif %}
      <hr class="my-4">
     <table class="w-full border-collapse border border-gray-300">
         <thead>
@@ -34,10 +39,16 @@
             <td class="border px-4 py-2">${{ cotizaciones.iva }}</td>
             <td class="border px-4 py-2">${{ cotizaciones.total_Civa }}</td>
             <td class="border px-4 py-2">${{ cotizaciones.restante }}</td>
-            <td><a href="{% url 'update_quote' cotizaciones.id %}"
-                   class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Editar</a></td>
-            <td><a href="{% url 'delete_quote' cotizaciones.id %}"
-                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Eliminar</a></td>
+            <td class="px-2 py-2">
+                <a href="{% url 'update_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
+                    <img src="{% static 'img/editar.png' %}" alt="editar" class="w-6 h-6">
+                </a>
+            </td>
+            <td class="px-2 py-2">
+                <a href="{% url 'delete_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-red-600 hover:bg-red-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
+                    <img src="{% static 'img/basura.png' %}" alt="eliminar" class="w-6 h-6">
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

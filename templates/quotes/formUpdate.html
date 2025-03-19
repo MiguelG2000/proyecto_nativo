@@ -22,9 +22,13 @@
 
     <div>
         <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
-        <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|default:"" }}"
+        <input type="date" name="fecha_entrega" id="fecha_entrega" value="{{ quote.fecha_entrega|date:'Y-m-d'|default:'' }}" required
                class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
     </div>
+
+    <label for="direccion_entrega" class="block mt-4 text-sm font-medium text-gray-700">Dirección de entega</label>
+    <input type="text" name="direccion_entrega" id="direccion_entrega" value="{{ quote.direccion_entrega }}" required
+           class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
 
     <label for="anticipo" class="block mt-4 text-sm font-medium text-gray-700">Anticipo</label>
     <input type="number" step="0.01" name="anticipo" id="anticipo" value="{{ quote.anticipo }}" required
