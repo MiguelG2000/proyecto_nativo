@@ -26,7 +26,8 @@
                             <th class="px-4 py-2">Id</th>
                             <th class="px-4 py-2">Fecha</th>
                             <th class="px-4 py-2">Status</th>
-                            <th class="px-4 py-2">Acciones</th>
+                            <th class="px-4 py-2">Detalles</th>
+                            <th class="px-4 py-2">Remisiones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +38,9 @@
                             <td class="px-4 py-2 text-center">{{ cotizacion.status }}</td>
                             <td class="px-4 py-2 text-center">
                                 <a href="{% url 'details' cotizacion.id %}" class="text-blue-500 hover:underline">Ver detalles</a>
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                <a href="{% url 'view_remission' cotizacion.id %}" class="text-blue-500 hover:underline">Ver remisiones</a>
                             </td>
                         </tr>
                         {% endfor %}

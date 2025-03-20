@@ -78,8 +78,34 @@ class Remisiones (models.Model):
     cotizacion_id = models.ForeignKey(Cotizaciones, on_delete=models.CASCADE, related_name='remisiones')
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     entrega = models.IntegerField(default=0.0)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    restante = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     status = models.CharField(max_length=20, blank=False, null=False, default='Pendiente')
+
+    def actualizar_totales(self):
+        # Sumar todas las entregas realizadas
+        total_entregado = self.entregas.aggregate(total_entregado=models.Sum('cantidad_entregada'))['total_entregado'] or 0
+
+        # Obtener la cantidad original del producto en la cotización
+        cotizacion_producto = CotizacionProduct.objects.filter(
+            cotizacion_id=self.cotizacion_id, product_id=self.product_id
+        ).first()
+
+        cantidad_cotizada = cotizacion_producto.cantidad if cotizacion_producto else 0
+
+        # Calcular restante y actualizar status
+        self.total = total_entregado
+        self.restante = max(cantidad_cotizada - total_entregado, 0)
+        self.status = 'Completado' if self.restante == 0 else 'Pendiente'
+        self.save()
 
     def __str__(self):
         return f"Hoja de remisión de {self.cotizacion_id.id}"
+
+class Entregas(models.Model):
+    remision = models.ForeignKey(Remisiones, on_delete=models.CASCADE, related_name='entregas')
+    cantidad_entregada = models.IntegerField()
+
+    def __str__(self):
+        return f"Entrega del producto: {self.remision.product_id.nombre}"
 
