@@ -234,48 +234,60 @@ def delete_product_from_quote(request, id):
     return redirect(reverse('details', kwargs={'id': cotizacion_id}))
 
 #------------------------------------------------------------------------------------
+from collections import defaultdict
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Sum
+from .models import Cotizaciones, CotizacionProduct, Remisiones, Entregas
+
 def view_remission(request, id):
     cotizacion = get_object_or_404(Cotizaciones, id=id)
     productos_cotizacion = CotizacionProduct.objects.filter(cotizacion_id=cotizacion)
     remisiones = Remisiones.objects.filter(cotizacion_id=cotizacion)
 
     if request.method == "POST":
-        # Obtener listas de productos y cantidades
         productos_ids = request.POST.getlist("product_id")
         cantidades_entregadas = request.POST.getlist("cantidad_entregada")
 
+        # Validar antes de procesar
+        errores = []
         for producto_id, cantidad_entregada in zip(productos_ids, cantidades_entregadas):
             cantidad_entregada = int(cantidad_entregada)
 
-            # Obtener o crear la remisión para este producto
-            remision, created = Remisiones.objects.get_or_create(
-                cotizacion_id=cotizacion,
-                product_id_id=producto_id,
-                defaults={"total": 0, "restante": 0, "entrega": 0}
-            )
-
-            # Validar que no se exceda la cantidad cotizada
+            # Obtener el producto de la cotización
             cotizacion_producto = CotizacionProduct.objects.filter(
                 cotizacion_id=cotizacion,
                 product_id=producto_id
             ).first()
 
-            if cotizacion_producto:
-                total_entregado = remision.entregas.aggregate(total_entregado=Sum('cantidad_entregada'))['total_entregado'] or 0
-                if total_entregado + cantidad_entregada > cotizacion_producto.cantidad:
-                    # Manejar el error
-                    return render(request, "quotes/remisiones.html", {
-                        "cotizacion": cotizacion,
-                        "productos_cotizacion": productos_cotizacion,
-                        "remisiones_dict": defaultdict(list),
-                        "error": f"La cantidad entregada excede la cantidad cotizada para el producto {cotizacion_producto.product_id.nombre}."
-                    })
+            if not cotizacion_producto:
+                errores.append(f"El producto con ID {producto_id} no está en la cotización.")
+                continue
 
-            # Crear un nuevo registro en Entregas
+            # Obtener la remisión existente o crear una nueva
+            remision, created = Remisiones.objects.get_or_create(
+                cotizacion_id=cotizacion,
+                product_id_id=producto_id,
+                defaults={"total": 0, "restante": cotizacion_producto.cantidad, "status": "Pendiente"}
+            )
+
+            # Validar que no se exceda la cantidad cotizada
+            total_entregado = remision.entregas.aggregate(total_entregado=Sum('cantidad_entregada'))['total_entregado'] or 0
+            if total_entregado + cantidad_entregada > cotizacion_producto.cantidad:
+                errores.append(f"La cantidad entregada excede la cantidad cotizada para el producto {cotizacion_producto.product_id.nombre}.")
+                continue
+
+            # Si no hay errores, crear la entrega
             Entregas.objects.create(remision=remision, cantidad_entregada=cantidad_entregada)
-
-            # Actualizar los totales de la remisión
             remision.actualizar_totales()
+
+        # Si hay errores, mostrar mensajes y no guardar nada
+        if errores:
+            return render(request, "quotes/remisiones.html", {
+                "cotizacion": cotizacion,
+                "productos_cotizacion": productos_cotizacion,
+                "remisiones_dict": defaultdict(list),
+                "error": errores
+            })
 
         return redirect("view_remission", id=id)
 
@@ -284,7 +296,7 @@ def view_remission(request, id):
     for producto in productos_cotizacion:
         remision = remisiones.filter(product_id=producto.product_id).first()
         remisiones_dict[producto.product_id.id] = {
-            "entregas": Entregas.objects.filter(remision__product_id=producto.product_id).order_by("id"),
+            "entregas": Entregas.objects.filter(remision__product_id=producto.product_id, remision__cotizacion_id=cotizacion).order_by("id"),
             "remision": remision  # Incluir la instancia de Remisiones
         }
 

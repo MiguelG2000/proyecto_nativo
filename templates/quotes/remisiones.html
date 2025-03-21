@@ -1,11 +1,11 @@
-{% load static custom_filters%}
+{% load static custom_filters %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <title>Remisiones</title>
     <script src="https://cdn.tailwindcss.com"></script>
-<script>
+    <script>
         // Función para agregar una nueva fila de producto
         function agregarFila() {
             const contenedor = document.getElementById("filas-productos");
@@ -35,6 +35,25 @@
             const fila = button.closest(".producto-fila");
             fila.remove();
         }
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let valid = true;
+            document.querySelectorAll('.producto-fila').forEach(function(fila) {
+                const productoId = fila.querySelector('select[name="product_id"]').value;
+                const cantidadEntregada = parseInt(fila.querySelector('input[name="cantidad_entregada"]').value);
+                const cantidadCotizada = parseInt(document.querySelector(`#cantidad-cotizada-${productoId}`).value);
+
+                // Validar que no se exceda la cantidad cotizada
+                if (cantidadEntregada > cantidadCotizada) {
+                    alert(`La cantidad entregada (${cantidadEntregada}) excede la cantidad cotizada (${cantidadCotizada}) para el producto ${productoId}`);
+                    valid = false;
+                }
+            });
+
+            if (!valid) {
+                event.preventDefault(); // Evitar que el formulario se envíe
+            }
+        });
     </script>
 </head>
 <body class="bg-gray-100 p-8">
@@ -42,6 +61,16 @@
     {% if request.user.is_authenticated %}
         <div class="bg-white p-6 rounded-lg shadow-md mt-20">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Agregar Entrega</h2>
+        {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong>Error:</strong>
+                <ul>
+                    {% for err in error %}
+                        <li>{{ err }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
             <form method="POST" action="">
                 {% csrf_token %}
                 <div id="filas-productos">
@@ -75,6 +104,11 @@
             <hr class="mt-6">
             <a href="{% url 'generate_remission_pdf' cotizacion.id %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Imprimir nota de remisiones</a>
             <hr class="mt-6">
+
+            <!-- Campos ocultos para la cantidad cotizada de cada producto -->
+            {% for producto in productos_cotizacion %}
+                <input type="hidden" id="cantidad-cotizada-{{ producto.product_id.id }}" value="{{ producto.cantidad }}">
+            {% endfor %}
 
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de entregas</h2>
             <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
@@ -125,9 +159,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-
         </div>
-
     {% else %}
         <div class="flex flex-col items-center justify-center min-h-screen text-center">
             <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>

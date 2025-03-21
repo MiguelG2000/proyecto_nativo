@@ -74,7 +74,7 @@ class CotizacionProduct(models.Model):
         super().save(*args, **kwargs)
         self.cotizacion_id.update_total()
 
-class Remisiones (models.Model):
+class Remisiones(models.Model):
     cotizacion_id = models.ForeignKey(Cotizaciones, on_delete=models.CASCADE, related_name='remisiones')
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     entrega = models.IntegerField(default=0.0)
