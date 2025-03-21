@@ -137,12 +137,24 @@ def update_quote(request, id):
         quote.fecha_entrega = fecha_entrega if fecha_entrega else None
         quote.direccion_entrega = request.POST['direccion_entrega']
 
-        # Verificar si cambió el estado a "Aceptado"
+        # Verificar si el estado cambió a "Aceptado"
         if prev_status != "Aceptado" and quote.status == "Aceptado":
+            insuficiente_stock = False  # Variable para controlar el error
+
             for item in quote.cotizaciones.all():
                 if item.product_id.inventario is not None:
-                    item.product_id.inventario -= item.cantidad
-                    item.product_id.save()
+                    if item.product_id.inventario < item.cantidad:
+                        insuficiente_stock = True
+                        break  # No hay suficiente inventario, cancelar proceso
+
+            if insuficiente_stock:
+                messages.error(request, "No se puede aceptar la cotización: Inventario insuficiente.")
+                return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
+
+            # Si hay suficiente stock, proceder con la resta
+            for item in quote.cotizaciones.all():
+                item.product_id.inventario -= item.cantidad
+                item.product_id.save()
 
         quote.save()
         quote.calcular_iva()

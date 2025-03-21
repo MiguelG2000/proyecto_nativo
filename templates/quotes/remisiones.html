@@ -59,106 +59,106 @@
 <body class="bg-gray-100 p-8">
     {% include 'nav_bar.html' %}
     {% if request.user.is_authenticated %}
-        <div class="bg-white p-6 rounded-lg shadow-md mt-20">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Agregar Entrega</h2>
-        {% if error %}
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong>Error:</strong>
-                <ul>
-                    {% for err in error %}
-                        <li>{{ err }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-            <form method="POST" action="">
-                {% csrf_token %}
-                <div id="filas-productos">
-                    <!-- Fila inicial -->
-                    <div class="grid grid-cols-2 gap-4 producto-fila">
-                        <div>
-                            <label class="block text-gray-700">Producto:</label>
-                            <select name="product_id" class="w-full border rounded-lg p-2">
-                                {% for producto in productos_cotizacion %}
-                                    <option value="{{ producto.product_id.id }}">{{ producto.product_id.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700">Cantidad a entregar:</label>
-                            <input type="number" name="cantidad_entregada" class="w-full border rounded-lg p-2" min="1" required>
+        <div class="animate__animated animate__fadeIn">
+            <div class="bg-white p-6 rounded-lg shadow-md mt-20">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Agregar Entrega</h2>
+            {% if error %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong>Error:</strong>
+                    <ul>
+                        {% for err in error %}
+                            <li>{{ err }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+                <form method="POST" action="" class="mb-5">
+                    {% csrf_token %}
+                    <div id="filas-productos">
+                        <!-- Fila inicial -->
+                        <div class="grid grid-cols-2 gap-4 producto-fila">
+                            <div>
+                                <label class="block text-gray-700">Producto:</label>
+                                <select name="product_id" class="w-full border rounded-lg p-2">
+                                    {% for producto in productos_cotizacion %}
+                                        <option value="{{ producto.product_id.id }}">{{ producto.product_id.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700">Cantidad a entregar:</label>
+                                <input type="number" name="cantidad_entregada" class="w-full border rounded-lg p-2" min="1" required>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Botón para agregar más filas -->
-                <button type="button" onclick="agregarFila()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                    Agregar otro producto
-                </button>
+                    <!-- Botón para agregar más filas -->
+                    <button type="button" onclick="agregarFila()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                        Agregar otro producto
+                    </button>
 
-                <!-- Botón para enviar el formulario -->
-                <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    Agregar Entrega
-                </button>
-            </form>
-            <hr class="mt-6">
-            <a href="{% url 'generate_remission_pdf' cotizacion.id %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Imprimir nota de remisiones</a>
-            <hr class="mt-6">
+                    <!-- Botón para enviar el formulario -->
+                    <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Agregar Entrega
+                    </button>
+                </form>
 
-            <!-- Campos ocultos para la cantidad cotizada de cada producto -->
-            {% for producto in productos_cotizacion %}
-                <input type="hidden" id="cantidad-cotizada-{{ producto.product_id.id }}" value="{{ producto.cantidad }}">
-            {% endfor %}
+                <a href="{% url 'generate_remission_pdf' cotizacion.id %}" class="mt-4 mb-5 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Imprimir nota de remisiones</a>
+                <!-- Campos ocultos para la cantidad cotizada de cada producto -->
+                {% for producto in productos_cotizacion %}
+                    <input type="hidden" id="cantidad-cotizada-{{ producto.product_id.id }}" value="{{ producto.cantidad }}">
+                {% endfor %}
 
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Tabla de entregas</h2>
-            <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border px-4 py-2">Cotización</th>
-                        <th class="border px-4 py-2">Producto</th>
-                        <th class="border px-4 py-2">Cantidad</th>
-                        <th class="border px-4 py-2">Largo</th>
-                        <th class="border px-4 py-2">Ancho</th>
-                        <th class="border px-4 py-2">Alto</th>
-                        <th class="border px-4 py-2">Entrega</th>
-                        <th class="border px-4 py-2">Total</th>
-                        <th class="border px-4 py-2">Restante</th>
-                        <th class="border px-4 py-2">Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for producto in productos_cotizacion %}
-                        <tr>
-                            <td class="border px-4 py-2">{{ cotizacion.id }}</td>
-                            <td class="border px-4 py-2">{{ producto.product_id.nombre }}</td>
-                            <td class="border px-4 py-2">{{ producto.cantidad }}</td>
-                            <td class="border px-4 py-2">{{ producto.product_id.largo }}</td>
-                            <td class="border px-4 py-2">{{ producto.product_id.ancho }}</td>
-                            <td class="border px-4 py-2">{{ producto.product_id.alto }}</td>
-
-                            {% with remision_data=remisiones_dict|get_item:producto.product_id.id %}
-                                <td class="border px-4 py-2">
-                                    {% if remision_data.entregas %}
-                                        <ul>
-                                            {% for entrega in remision_data.entregas %}
-                                                <li>
-                                                    {{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}da{% endif %} entrega: {{ entrega.cantidad_entregada }}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        <p>Sin entregas</p>
-                                    {% endif %}
-                                </td>
-
-                                <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
-                                <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
-                                <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
-                            {% endwith %}
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 mt-4">Tabla de entregas</h2>
+                <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border px-4 py-2">Cotización</th>
+                            <th class="border px-4 py-2">Producto</th>
+                            <th class="border px-4 py-2">Cantidad</th>
+                            <th class="border px-4 py-2">Largo</th>
+                            <th class="border px-4 py-2">Ancho</th>
+                            <th class="border px-4 py-2">Alto</th>
+                            <th class="border px-4 py-2">Entrega</th>
+                            <th class="border px-4 py-2">Total</th>
+                            <th class="border px-4 py-2">Restante</th>
+                            <th class="border px-4 py-2">Estado</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos_cotizacion %}
+                            <tr>
+                                <td class="border px-4 py-2">{{ cotizacion.id }}</td>
+                                <td class="border px-4 py-2">{{ producto.product_id.nombre }}</td>
+                                <td class="border px-4 py-2">{{ producto.cantidad }}</td>
+                                <td class="border px-4 py-2">{{ producto.product_id.largo }}</td>
+                                <td class="border px-4 py-2">{{ producto.product_id.ancho }}</td>
+                                <td class="border px-4 py-2">{{ producto.product_id.alto }}</td>
+
+                                {% with remision_data=remisiones_dict|get_item:producto.product_id.id %}
+                                    <td class="border px-4 py-2">
+                                        {% if remision_data.entregas %}
+                                            <ul>
+                                                {% for entrega in remision_data.entregas %}
+                                                    <li>
+                                                        {{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}da{% endif %} entrega: {{ entrega.cantidad_entregada }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p>Sin entregas</p>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
+                                    <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
+                                    <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
+                                {% endwith %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {% else %}
         <div class="flex flex-col items-center justify-center min-h-screen text-center">

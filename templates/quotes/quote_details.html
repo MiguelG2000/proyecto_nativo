@@ -1,5 +1,14 @@
 {% load static %}
 <div class="bg-white p-6 rounded-lg shadow-md mt-20">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h1 class="text-xl font-bold mb-4">Detalles de la cotización: {{ cotizaciones.id }} - Status: {{ cotizaciones.status }} - Cliente: {{ cotizaciones.cliente }}</h1>
     {% if cotizaciones.fecha_entrega != None %}
         <p class="text-lg font-semibold">Fecha de entrega - {{ cotizaciones.fecha_entrega }}</p>

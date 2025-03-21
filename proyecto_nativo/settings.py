@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
+    'users.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'proyecto_nativo.urls'

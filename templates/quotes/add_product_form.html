@@ -7,7 +7,7 @@
                 <label for="producto" class="block text-sm font-medium text-gray-700">Selecciona un producto:</label>
                 <select name="producto" id="producto" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     {% for producto in products %}
-                        <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }} / ${{ producto.precio_distribuidor }}</option>
+                        <option value="{{ producto.id }}">{{ producto.nombre }} - ${{ producto.precio_general }} / ${{ producto.precio_distribuidor }} / Inventario: {{ producto.inventario }}</option>
                     {% endfor %}
                 </select>
             </div>

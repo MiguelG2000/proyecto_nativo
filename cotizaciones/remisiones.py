@@ -58,6 +58,8 @@ def generate_remission_pdf(request, id):
     width, height = letter
 
     agregar_encabezado(pdf)
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(230, height - 140, "NOTA DE REMISIÓN")
 
     y = height - 240
 
@@ -75,9 +77,20 @@ def generate_remission_pdf(request, id):
     pdf.setFont("Helvetica-Bold", 11)
     pdf.drawRightString(margen_derecho, height - 130, f"REMISIÓN: {cotizacion.id}")
     pdf.setFont("Helvetica", 8)
+    # Obtener la fecha actual formateada
+    fecha_dt = datetime.now()
+    mes_es = meses[fecha_dt.strftime("%B")]
+    fecha_actual = f"{fecha_dt.strftime('%d')} de {mes_es} de {fecha_dt.strftime('%Y')}"
+    pdf.setFont("Helvetica", 8)
+    pdf.drawRightString(margen_derecho, height - 145, f"Fecha: {fecha_actual}")
 
+    pdf.setFont("Helvetica", 8)
+    pdf.drawString(40, height - 200,
+                   "Estimado cliente, por medio del presente, le hago entrega de la cotización solicitada. Puede corroborar a detalle la presente cotización. ")
+    pdf.drawString(40, height - 210,
+                   "Cualquier duda favor de contactarnos.")
     # Encabezado de tabla
-    y -= 10
+    y += 10
     pdf.setFont("Helvetica-Bold", 7)
     col_positions = [30, 150, 180, 210, 240, 270, 300, 370, 440, 500, 580]
     headers = ["Concepto", "Cantidad", "Largo", "Ancho", "Alto", "Volumen", "Últimas Entregas", "Total Entregado", "Restante", "Estado"]
@@ -91,7 +104,7 @@ def generate_remission_pdf(request, id):
 
     pdf.setFont("Helvetica", 8)
     for remision in remisiones:
-        y = verificar_pagina(pdf, y, margen=150)
+        y = verificar_pagina(pdf, y + 5, margen=150)
 
         # Obtener entregas ordenadas de manera descendente
         entregas = Entregas.objects.filter(remision=remision).order_by('-id')
@@ -106,7 +119,7 @@ def generate_remission_pdf(request, id):
         # Formatear entregas en varias líneas dentro de la celda
         entregas_formateadas = "\n".join(entregas_lista)
 
-        pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, remision.product_id.nombre[:15])
+        pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, remision.product_id.nombre[:30])
         pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(cantidad_cotizada))
         pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y,
                               f"{remision.product_id.largo if remision.product_id.largo is not None else 0.00:.2f}")
@@ -133,11 +146,11 @@ def generate_remission_pdf(request, id):
         altura_fila = 15 + (8 * num_lineas_entregas)  # Ajustar espacio con más precisión
 
         # Ajustar la línea horizontal después de imprimir las entregas
-        line_y = y - (8 * (num_lineas_entregas - 1)) - 5  # Ajustar la posición final de la línea
+        line_y = y - (8 * (num_lineas_entregas - 1)) - 10  # Ajustar la posición final de la línea
         pdf.line(30, line_y, width - 40, line_y)
 
         # Reducir correctamente el espacio para la siguiente fila
-        y -= altura_fila
+        y -= altura_fila + 2
 
     # Términos y Condiciones
     y -= 10

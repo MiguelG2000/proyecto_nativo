@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 from .views import (
     products_view,
@@ -10,7 +11,10 @@ from .views import (
     create_unit,
     delete_unit,
     )
-from .pdf import product_report
+from .pdf import (
+    product_report,
+    product_inventory
+    )
 
 urlpatterns = [
     path("list/", products_view, name="products"),
@@ -18,6 +22,7 @@ urlpatterns = [
     path("update/<int:product_id>/", update_product , name="update_product"),
     path("delete/<int:product_id>/", delete_product, name="delete_product"),
     path("report/", product_report, name="product_report"),
+    path("inventory/", product_inventory, name="product_inventory"),
     path("category/", category_unit, name="category_unit"),
     path("category/create/", create_category, name="create_category"),
     path("category/delete/<int:category_id>/", delete_category, name="delete_category"),
