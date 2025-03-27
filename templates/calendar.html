@@ -27,54 +27,54 @@
 <body class="bg-gray-50 min-h-screen flex flex-col items-center">
     {% if request.user.is_authenticated %}
     {% include 'nav_bar.html' %}
-<div class="animate__animated animate__fadeIn w-full max-w-7xl px-4 mt-24">
-    <div class="w-full max-w-7xl px-4 mt-24">
-        <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">Calendario de Entregas</h1>
-        <p class="text-lg text-center text-gray-600">Gestión eficiente de fechas de entrega y cotizaciones</p>
-    </div>
-
-    <div class="w-full max-w-7xl px-4 mt-8">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div id="calendar" class="h-[700px]"></div>
+    <div class="animate__animated animate__fadeIn w-full max-w-7xl px-4 mt-24">
+        <div class="w-full max-w-7xl px-4 mt-10">
+            <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">Calendario de Entregas</h1>
+            <p class="text-lg text-center text-gray-600">Gestión eficiente de fechas de entrega y cotizaciones</p>
         </div>
-    </div>
 
-    <div id="eventWindow" class="floating-window bg-white rounded-lg p-6 w-96 hidden">
-        <h2 class="text-xl font-bold mb-4">Agregar Evento</h2>
-        <form id="eventForm" method="POST" action="{% url 'add_event' %}" >
-            {% csrf_token %}
-            <div class="mb-4">
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Título del Evento</label>
-                <input type="text" id="nombre" name="nombre" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+        <div class="w-full max-w-7xl px-4 mt-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div id="calendar" class="h-[700px]"></div>
             </div>
-            <div class="mb-4">
-                <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha del Evento</label>
-                <input type="date" id="fecha" name="fecha" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
-            </div>
-            <div class="flex justify-end">
-                <button type="button" onclick="closeWindow()" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Guardar</button>
-            </div>
-        </form>
-    </div>
-
-    {% if messages %}
-    <div class="w-full max-w-7xl px-4 mt-4">
-        {% for message in messages %}
-            <div class="bg-green-500 text-white px-4 py-2 rounded-md mb-4">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
         </div>
-    {% endif %}
 
-    {% else %}
-    <div class="flex flex-col items-center justify-center min-h-screen text-center">
-        <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
-        <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
-    </div>
-    {% endif %}
+        <div id="eventWindow" class="floating-window bg-white rounded-lg p-6 w-96 hidden">
+            <h2 class="text-xl font-bold mb-4">Agregar Evento</h2>
+            <form id="eventForm" method="POST" action="{% url 'add_event' %}" >
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="nombre" class="block text-sm font-medium text-gray-700">Título del Evento</label>
+                    <input type="text" id="nombre" name="nombre" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha del Evento</label>
+                    <input type="date" id="fecha" name="fecha" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeWindow()" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        {% if messages %}
+        <div class="w-full max-w-7xl px-4 mt-4">
+            {% for message in messages %}
+                <div class="bg-green-500 text-white px-4 py-2 rounded-md mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+            </div>
+        {% endif %}
+
+        {% else %}
+        <div class="flex flex-col items-center justify-center min-h-screen text-center">
+            <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
+            <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
+        </div>
+        {% endif %}
     <script>
        document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');

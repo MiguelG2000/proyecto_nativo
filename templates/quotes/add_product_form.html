@@ -1,6 +1,6 @@
 <div class="bg-white p-6 rounded-lg shadow-md mt-10 max-w-3xl mx-auto">
     <h3 class="text-lg font-semibold mb-4">Agregar un nuevo producto</h3>
-    <form method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
+    <form id="add-product-form" method="POST" action="{% url 'add_product_to_quote' cotizaciones.id %}">
         {% csrf_token %}
         <div class="space-y-4">
             <div>
@@ -24,8 +24,10 @@
             </div>
         </div>
     </form>
+    <div id="message-container" class="mt-4"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         new Choices('#producto', {
@@ -34,6 +36,43 @@
             noResultsText: 'Sin resultados',
             placeholder: true,
             placeholderValue: 'Busca un producto...',
+        });
+
+        const form = document.getElementById('add-product-form');
+        const messageContainer = document.getElementById('message-container');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            axios.post(form.action, formData)
+                .then(function(response) {
+                    // Mostrar mensaje de éxito
+                    messageContainer.innerHTML = `
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Éxito!</strong>
+                            <span class="block sm:inline">${response.data.message}</span>
+                        </div>
+                    `;
+
+                    // Limpiar el formulario (opcional)
+                    form.reset();
+
+                    // Ocultar el mensaje después de 3 segundos
+                    setTimeout(() => {
+                        messageContainer.innerHTML = '';
+                    }, 3000);
+                })
+                .catch(function(error) {
+                    // Mostrar mensaje de error
+                    messageContainer.innerHTML = `
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline">${error.response.data.error || 'Ocurrió un error al agregar el producto'}</span>
+                        </div>
+                    `;
+                });
         });
     });
 </script>

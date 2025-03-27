@@ -127,7 +127,7 @@ def product_inventory(request):
 
     # Dibujar tabla (más arriba para evitar desbordes)
     table.wrapOn(p, width, height)
-    table.drawOn(p, 80, height - 570)
+    table.drawOn(p, 80, height - 620)
 
     # Línea separadora y footer
     p.setStrokeColor(colors.lightgrey)

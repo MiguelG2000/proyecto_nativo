@@ -1,10 +1,9 @@
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
 <button id="btnAgregarProducto" class="bg-blue-500 text-white px-4 py-2 rounded mt-10 hover:bg-green-600">
     Agregar Producto Personalizado
 </button>
 
 <div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto hidden">
+    <h3 class="text-lg font-semibold mb-4">Agregar un nuevo producto personalizado</h3>
     <form method="POST" action="{% url 'add_custom_product_to_quote' cotizaciones.id %}">
         {% csrf_token %}
         <input type="hidden" name="quote_id" value="{{ cotizaciones.id }}">

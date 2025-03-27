@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <title>Cotizaciones</title>
     <script src="{% static 'js/cotizaciones.js' %}"></script>
+    <script>
+        function updateStatusColor(select) {
+            const colors = {
+                'Pendiente': 'bg-yellow-200 text-yellow-800',
+                'Aceptado': 'bg-green-200 text-green-800',
+                'Completado': 'bg-blue-200 text-blue-800',
+                'Cancelado': 'bg-red-200 text-red-800',
+                'En proceso': 'bg-purple-200 text-purple-800',
+                'Contraoferta': 'bg-orange-200 text-orange-800'
+            };
+
+            select.className = "w-full p-2 border border-gray-300 rounded-md " + (colors[select.value] || 'bg-gray-100');
+        }
+    </script>
 </head>
 <body class="bg-gray-100 p-6">
 {% if request.user.is_authenticated %}
@@ -16,7 +30,7 @@
             <a href="{% url 'create_quote' %}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Crear una nueva cotización</a>
 
             <div class="mt-4 flex gap-2">
-                <input type="text" id="search" onkeyup="filterQuotes()" placeholder="Buscar por numero de Cotización o Fecha" class="px-4 py-2 border rounded-lg w-full">
+                <input type="text" id="search" onkeyup="filterQuotes()" placeholder="Buscar por número de Cotización o Fecha" class="px-4 py-2 border rounded-lg w-full">
             </div>
 
             <div class="overflow-x-auto mt-4">
@@ -35,7 +49,11 @@
                         <tr class="border-b">
                             <td class="px-4 py-2 text-center">{{ cotizacion.id }}</td>
                             <td class="px-4 py-2 text-center">{{ cotizacion.fecha }}</td>
-                            <td class="px-4 py-2 text-center">{{ cotizacion.status }}</td>
+                            <td class="px-4 py-2 text-center">
+                                <span class="px-2 py-1 rounded text-sm {% if cotizacion.status == 'Pendiente' %}bg-yellow-200 text-yellow-800{% elif cotizacion.status == 'Aceptado' %}bg-green-200 text-green-800{% elif cotizacion.status == 'Completado' %}bg-blue-200 text-blue-800{% elif cotizacion.status == 'Cancelado' %}bg-red-200 text-red-800{% elif cotizacion.status == 'En proceso' %}bg-purple-200 text-purple-800{% elif cotizacion.status == 'Contraoferta' %}bg-orange-200 text-orange-800{% endif %}">
+                                    {{ cotizacion.status }}
+                                </span>
+                            </td>
                             <td class="px-4 py-2 text-center">
                                 <a href="{% url 'details' cotizacion.id %}" class="text-blue-500 hover:underline">Ver detalles</a>
                             </td>

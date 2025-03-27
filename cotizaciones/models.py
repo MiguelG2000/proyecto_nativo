@@ -4,7 +4,7 @@ from decimal import Decimal
 
 
 # Create your models here.
-class Cotizaciones (models.Model):
+class Cotizaciones(models.Model):
     id = models.CharField(max_length=10, primary_key=True, unique=True, blank=False, null=False)
     cliente = models.CharField(max_length=50, blank=False, null=True)
     telefono = models.IntegerField(blank=False, null=True)
@@ -14,21 +14,19 @@ class Cotizaciones (models.Model):
     direccion_entrega = models.CharField(max_length=50, default='Pendiente')
     servicio_envio = models.CharField(max_length=100, default="TGZ")
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=True, default=0)
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0) # Este total es el total sin IVA por cuestiones programaticas lo decidimos dejar así.
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)  # Total sin IVA
     total_Civa = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     status = models.CharField(max_length=20, blank=False, null=False, default='Pendiente')
     anticipo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     restante = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     metodo_pago = models.CharField(max_length=20, null=False, default='No')
     iva = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    iva_8 = models.BooleanField(default=False)
-    iva_16 = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
 
     def save(self, *args, **kwargs):
-        # Si es una nueva cotización y no tiene ID, generar uno automáticamente
+        # Generar ID automáticamente si es una nueva cotización
         if not self.id:
             last_quote = Cotizaciones.objects.order_by('-id').first()
             if last_quote:
@@ -43,12 +41,16 @@ class Cotizaciones (models.Model):
         self.save()
 
     def calcular_iva(self):
-        iva_porcentaje = Decimal('0.16') if self.iva_16 else Decimal('0.08') if self.iva_8 else Decimal('0')
+        # Obtener el IVA desde la configuración global (asumimos que hay solo un registro)
+        configuracion = ConfiguracionIVA.objects.first()
+        iva_porcentaje = Decimal(str(configuracion.porcentaje_iva)) / 100 if configuracion else Decimal('0.16')
+
         total_decimal = Decimal(str(self.total))
-        costo_envioDecimal = Decimal(str(self.costo_envio))
-        # Calcular el IVA
+        costo_envio_decimal = Decimal(str(self.costo_envio))
+
+        # Calcular IVA y total con IVA
         self.iva = total_decimal * iva_porcentaje
-        self.total_Civa = total_decimal + self.iva + costo_envioDecimal
+        self.total_Civa = total_decimal + self.iva + costo_envio_decimal
 
         anticipo_decimal = Decimal(str(self.anticipo))
         self.restante = self.total_Civa - anticipo_decimal
@@ -108,4 +110,10 @@ class Entregas(models.Model):
 
     def __str__(self):
         return f"Entrega del producto: {self.remision.product_id.nombre}"
+
+class ConfiguracionIVA(models.Model):
+    porcentaje_iva = models.DecimalField(max_digits=5, decimal_places=2, default=16.00,
+                                             help_text="Porcentaje de IVA (ejemplo: 8.00, 16.00)")
+    def __str__(self):
+        return f"IVA: {self.porcentaje_iva}%"
 

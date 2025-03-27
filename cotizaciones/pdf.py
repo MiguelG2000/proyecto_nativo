@@ -3,9 +3,12 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from rich.filesize import decimal
+
 from cotizaciones.models import Cotizaciones, CotizacionProduct
 from datetime import datetime
-from cotizaciones.views import generate_qr
+from .views import generate_qr
+from .models import ConfiguracionIVA
 
 # Diccionario de traducción de días y meses en español
 dias_semana = {
@@ -197,15 +200,16 @@ def generate_quote_pdf(request, id):
         pdf.drawString(alineacion_x, y - 70, "Total a pagar:")
         pdf.drawString(520, y - 70, formato_moneda(cotizacion.restante))
 
-    # Determinar la tasa de IVA aplicada
-    iva_tasa = "8%" if cotizacion.iva_8 else "16%" if cotizacion.iva_16 else "0%"
+    #Obtener el dato del atributo IVA y evitar errores
+    config_iva = ConfiguracionIVA.objects.first()
+    tasa_iva = config_iva.porcentaje_iva if config_iva else 0
 
     # Términos y condiciones
     y = verificar_pagina(pdf, y, margen=120)
     pdf.setFont("Helvetica-Bold", 7)
     pdf.drawString(40, y - 10, "Términos y condiciones:")
     pdf.setFont("Helvetica", 7)
-    pdf.drawString(40, y - 20, f"• La tasa de IVA calculada es del {iva_tasa}.")
+    pdf.drawString(40, y - 20, f"• La tasa de IVA calculada es del {int(tasa_iva)}%.")
     pdf.drawString(40, y - 30, "• Precios sujetos a cambios sin previo aviso.")
     pdf.drawString(40, y - 40, "• No incluye descarga en obra.")
     pdf.drawString(40, y - 50, "• Este documento es de carácter informativo sin validez oficial.")

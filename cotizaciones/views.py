@@ -1,5 +1,3 @@
-from lib2to3.fixes.fix_input import context
-from xml.sax.handler import property_interning_dict
 
 import qrcode
 from io import BytesIO
@@ -12,6 +10,7 @@ from django.utils.dateparse import parse_date
 from django.utils.timezone import now, timedelta
 from collections import defaultdict
 from django.db.models import Sum
+from django.http import JsonResponse
 
 from products.models import Product
 
@@ -128,13 +127,14 @@ def update_quote(request, id):
 
     if request.method == "POST":
         prev_status = quote.status  # Guardar el estado anterior
+        fecha_entrega = request.POST.get("fecha_entrega", "").strip()
+        fecha_entrega = parse_date(fecha_entrega) if fecha_entrega else None
 
         # Actualizar los campos con los datos del formulario
         quote.status = request.POST['status']
         quote.anticipo = request.POST['anticipo']
         quote.metodo_pago = request.POST['metodo_pago']
-        fecha_entrega = request.POST.get('fecha_entrega', '').strip()
-        quote.fecha_entrega = fecha_entrega if fecha_entrega else None
+        quote.fecha_entrega = fecha_entrega
         quote.direccion_entrega = request.POST['direccion_entrega']
 
         # Verificar si el estado cambió a "Aceptado"
@@ -173,30 +173,36 @@ def delete_quote(request, id):
 
 def add_product_to_quote(request, id):
     if request.method == "POST":
-        cotizacion = get_object_or_404(Cotizaciones, id=id)
-        product = get_object_or_404(Product, id=request.POST["producto"])
-        cantidad_nueva = int(request.POST["cantidad"])
-        usar_precio_distribuidor = request.POST.get("usar_precio_distribuidor") == "on"
+        try:
+            cotizacion = get_object_or_404(Cotizaciones, id=id)
+            product = get_object_or_404(Product, id=request.POST["producto"])
+            cantidad_nueva = int(request.POST["cantidad"])
+            usar_precio_distribuidor = request.POST.get("usar_precio_distribuidor") == "on"
 
-        # Buscar si el producto ya está en la cotización con el mismo tipo de precio
-        cotizacion_producto, created = CotizacionProduct.objects.get_or_create(
-            cotizacion_id=cotizacion,
-            product_id=product,
-            usar_precio_distribuidor=usar_precio_distribuidor,
-            defaults={'cantidad': cantidad_nueva}
-        )
+            # Buscar si el producto ya está en la cotización con el mismo tipo de precio
+            cotizacion_producto, created = CotizacionProduct.objects.get_or_create(
+                cotizacion_id=cotizacion,
+                product_id=product,
+                usar_precio_distribuidor=usar_precio_distribuidor,
+                defaults={'cantidad': cantidad_nueva}
+            )
 
-        if not created:
-            # Si ya existía, solo aumentar la cantidad
-            cotizacion_producto.cantidad += cantidad_nueva
-            cotizacion_producto.save()
+            if not created:
+                # Si ya existía, solo aumentar la cantidad
+                cotizacion_producto.cantidad += cantidad_nueva
+                cotizacion_producto.save()
 
-        # Actualizar total de la cotización
-        cotizacion.update_total()
-        cotizacion.calcular_iva()
+            # Actualizar total de la cotización
+            cotizacion.update_total()
+            cotizacion.calcular_iva()
 
-        messages.success(request, "Producto agregado correctamente.")
-        return redirect('details', id=cotizacion.id)
+            return JsonResponse({
+                'message': "Producto agregado correctamente.",
+                'total': cotizacion.total,
+                'iva': cotizacion.iva,
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 
 def add_custom_product_to_quote(request, id):
@@ -246,11 +252,6 @@ def delete_product_from_quote(request, id):
     return redirect(reverse('details', kwargs={'id': cotizacion_id}))
 
 #------------------------------------------------------------------------------------
-from collections import defaultdict
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Sum
-from .models import Cotizaciones, CotizacionProduct, Remisiones, Entregas
-
 def view_remission(request, id):
     cotizacion = get_object_or_404(Cotizaciones, id=id)
     productos_cotizacion = CotizacionProduct.objects.filter(cotizacion_id=cotizacion)

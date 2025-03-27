@@ -6,6 +6,7 @@
 </head>
 <body class="bg-gray-100 p-8">
     {% include 'nav_bar.html' %}
+    <div class="animate__animated animate__fadeIn w-full max-w-7xl px-4 mt-24">
     <form method="POST" class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-20">
         {% csrf_token %}
 
@@ -98,24 +99,13 @@
                     <option value="Tarjeta Debito/Credito">Tarjeta Debito/Credito</option>
                 </select>
             </div>
-
-            <!-- Fila 6: IVA 8% y IVA 16% -->
-            <div>
-                <label for="iva_8" class="block text-sm font-medium text-gray-700">IVA 8%:</label>
-                <input type="checkbox" name="iva_8" id="iva_8" {% if quote.iva_8 %}checked{% endif %}
-                       class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <div>
-                <label for="iva_16" class="block text-sm font-medium text-gray-700">IVA 16%:</label>
-                <input type="checkbox" name="iva_16" id="iva_16" {% if quote.iva_16 %}checked{% endif %}
-                       class="mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
         </div>
 
         <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
             Agregar
         </button>
     </form>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
