@@ -1,0 +1,30 @@
+.hero-slide {
+            transition: opacity 1s ease-in-out;
+        }
+        .hero-slide.active {
+            opacity: 1;
+        }
+        .hero-slide:not(.active) {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .product-card:hover .product-overlay {
+            opacity: 0.9;
+            transform: translateY(0);
+        }
+        .product-overlay {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .section-header {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }

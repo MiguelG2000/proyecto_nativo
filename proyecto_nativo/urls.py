@@ -33,6 +33,7 @@ urlpatterns = [
     path('products/', include("products.urls")),
     path('quotes/', include("cotizaciones.urls")),
     path('report/', include("report.urls")),
+    path('client/', include("cliente.urls")),
     path('calendar/', calendar, name='calendar'),
     path('add_event/', add_event, name='add_event'),
     path('__reload__/', include("django_browser_reload.urls")),
