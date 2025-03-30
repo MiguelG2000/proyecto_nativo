@@ -44,3 +44,4 @@ document.addEventListener("DOMContentLoaded", function () {
     // Inicializar el contador al cargar la página
     actualizarContador();
 });
+

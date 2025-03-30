@@ -1,0 +1,16 @@
+{% extends 'index/base.html' %}
+
+{% load static %}
+
+{% block title %}Panel de Control{% endblock %}
+
+{% block content %}
+    <!-- Accesos Directos -->
+    {% include 'index/quick_access.html' %}
+
+    <!-- Resumen Rápido -->
+    {% include 'index/stats.html' %}
+
+    <!-- Mensajes de Clientes -->
+    {% include 'index/messages.html' %}
+{% endblock %}

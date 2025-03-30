@@ -1,48 +1,47 @@
-<section id="contacto" class="contact-section py-20 bg-light">
-        <div class="container mx-auto px-4 max-w-6xl">
-            <div class="section-header text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Contacto</h2>
-                <div class="divider h-1 bg-secondary w-20 mx-auto mb-6"></div>
-                <p class="text-lg text-gray-600">Estamos listos para atenderte y asesorarte en tu próximo proyecto</p>
+<section id="contacto" class="contact-section py-20 bg-light dark:bg-dark-secondary transition-theme">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div class="section-header text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 dark:text-dark-text">Contacto</h2>
+            <div class="divider h-1 bg-secondary dark:bg-dark-accent w-20 mx-auto mb-6"></div>
+            <p class="text-lg text-gray-600 dark:text-gray-300">Estamos listos para atenderte y asesorarte en tu próximo proyecto</p>
+        </div>
+
+        <div class="contact-content grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="contact-info bg-white dark:bg-dark-primary p-8 rounded-xl shadow-md">
+                <div class="info-item flex items-start mb-6">
+                    <i class="fas fa-map-marker-alt text-secondary dark:text-dark-accent text-xl mt-1 mr-4"></i>
+                    <p class="text-gray-700 dark:text-gray-300">20 Poniente Sur #550B, Tuxtla Gutierrez, Chiapas</p>
+                </div>
+                <div class="info-item flex items-start mb-6">
+                    <i class="fas fa-phone-alt text-secondary dark:text-dark-accent text-xl mt-1 mr-4"></i>
+                    <p class="text-gray-700 dark:text-gray-300">961 693 6644</p>
+                </div>
+                <div class="info-item flex items-start mb-6">
+                    <i class="fas fa-envelope text-secondary dark:text-dark-accent text-xl mt-1 mr-4"></i>
+                    <p class="text-gray-700 dark:text-gray-300">nativo.ta.mx@gmail.com</p>
+                </div>
+                <div class="social-links flex space-x-4 mt-8">
+                    <a href="https://www.facebook.com/profile.php?id=100077340185701" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/nativo_ta?igsh=MTR0ODNwc2tsdm5oaA==" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/529616936644" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-whatsapp"></i></a>
+                </div>
             </div>
 
-            <div class="contact-content grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="contact-info bg-white p-8 rounded-xl shadow-md">
-                    <div class="info-item flex items-start mb-6">
-                        <i class="fas fa-map-marker-alt text-secondary text-xl mt-1 mr-4"></i>
-                        <p class="text-gray-700">20 Poniente Sur #550B, Tuxtla Gutierrez, Chiapas</p>
+            <div class="contact-form bg-white dark:bg-dark-primary p-8 rounded-xl shadow-md">
+                <form id="contactForm" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mb-4">
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark-secondary dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-secondary dark:focus:ring-dark-accent focus:border-transparent" required>
                     </div>
-                    <div class="info-item flex items-start mb-6">
-                        <i class="fas fa-phone-alt text-secondary text-xl mt-1 mr-4"></i>
-                        <p class="text-gray-700">961 693 6644</p>
+                    <div class="form-group mb-4">
+                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark-secondary dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-secondary dark:focus:ring-dark-accent focus:border-transparent">
                     </div>
-                    <div class="info-item flex items-start mb-6">
-                        <i class="fas fa-envelope text-secondary text-xl mt-1 mr-4"></i>
-                        <p class="text-gray-700">nativo.ta.mx@gmail.com</p>
+                    <div class="form-group mb-6">
+                        <textarea id="mensaje" name="mensaje" rows="5" placeholder="Mensaje" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-dark-secondary dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-secondary dark:focus:ring-dark-accent focus:border-transparent" required></textarea>
                     </div>
-                    <div class="social-links flex space-x-4 mt-8">
-                        <a href="https://www.facebook.com/profile.php?id=100077340185701" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/nativo_ta?igsh=MTR0ODNwc2tsdm5oaA==" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"><i class="fab fa-instagram"></i></a>
-                        <a href="https://wa.me/529616936644" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                </div>
-
-                <div class="contact-form bg-white p-8 rounded-xl shadow-md">
-                    <form id="contactForm" method="POST">
-                        {% csrf_token %}
-                        <div class="form-group mb-4">
-                            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" required>
-                        </div>
-                        <div class="form-group mb-4">
-                            <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
-                        </div>
-                        <div class="form-group mb-6">
-                            <textarea id="mensaje" name="mensaje" rows="5" placeholder="Mensaje" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" required></textarea>
-                        </div>
-                        <button type="submit" class="btn bg-secondary hover:bg-accent text-white px-8 py-3 rounded-md transition-colors duration-300 w-full">Enviar Mensaje</button>
-                    </form>
-                </div>
-
+                    <button type="submit" class="btn bg-secondary hover:bg-accent dark:bg-dark-accent dark:hover:bg-dark-highlight text-white px-8 py-3 rounded-md transition-colors duration-300 w-full">Enviar Mensaje</button>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>

@@ -1,12 +1,24 @@
-<nav class="navbar fixed w-full top-0 z-50 bg-primary/90 backdrop-blur-sm transition-all duration-300 py-4 shadow-md">
-        <div class="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center max-w-6xl">
-            <a href="#" class="logo text-white text-2xl font-bold mb-4 md:mb-0">GRUPO NATIVO</a>
-            <ul class="nav-links flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 text-center">
-                <li><a href="#inicio" class="text-white hover:text-secondary transition-colors">Inicio</a></li>
-                <li><a href="#nosotros" class="text-white hover:text-secondary transition-colors">Nosotros</a></li>
-                <li><a href="#productos" class="text-white hover:text-secondary transition-colors">Productos</a></li>
-                <li><a href="#aplicaciones" class="text-white hover:text-secondary transition-colors">Aplicaciones</a></li>
-                <li><a href="#contacto" class="text-white hover:text-secondary transition-colors">Contacto</a></li>
-            </ul>
+<nav class="navbar fixed w-full top-0 z-50 bg-primary/90 dark:bg-dark-primary/90 backdrop-blur-sm transition-all duration-300 py-4 shadow-md">
+    <div class="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center max-w-6xl">
+        <div class="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
+            <a href="#" class="logo text-white text-2xl font-bold">GRUPO NATIVO</a>
+            <button id="theme-toggle" class="md:hidden text-white hover:text-secondary transition-colors" onclick="toggleTheme()">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block"></i>
+            </button>
         </div>
-    </nav>
+        <div class="flex flex-col md:flex-row items-center w-full md:w-auto">
+            <ul class="nav-links flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 text-center w-full md:w-auto mb-2 md:mb-0">
+                <li><a href="#inicio" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Inicio</a></li>
+                <li><a href="#nosotros" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Nosotros</a></li>
+                <li><a href="#productos" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Productos</a></li>
+                <li><a href="#aplicaciones" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Aplicaciones</a></li>
+                <li><a href="#contacto" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Contacto</a></li>
+            </ul>
+            <button id="desktop-theme-toggle" class="hidden md:block text-white hover:text-secondary dark:hover:text-dark-accent transition-colors ml-8" onclick="toggleTheme()">
+                <i class="fas fa-moon dark:hidden text-xl"></i>
+                <i class="fas fa-sun hidden dark:block text-xl"></i>
+            </button>
+        </div>
+    </div>
+</nav>

@@ -1,6 +1,6 @@
-{%  load static %}
+{% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,14 +14,24 @@
     <script src="{% static 'js/page.js' %}"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
+                        // Modo día (colores originales)
                         primary: '#350202',
                         secondary: '#aa1628',
                         accent: '#42e73c',
                         light: '#ecf0f1',
-                        dark: '#2c3e50',
+                        dark: '#130000',
+
+                        // Modo noche
+                        'dark-primary': '#0a0f1a',
+                        'dark-secondary': '#000814',
+                        'dark-accent': '#e61e32',
+                        'dark-highlight': '#ff2e4a',
+                        'dark-text': '#ffffff',
+                        'dark-surface': '#111827'
                     },
                     fontFamily: {
                         montserrat: ['Montserrat', 'sans-serif'],
@@ -30,8 +40,33 @@
             }
         }
     </script>
+    <style>
+        /* Estilos para modo día y noche que se aplicarán dinámicamente */
+        .dark body {
+            background-color: theme('colors.current');
+            color: theme('colors.white');
+        }
+
+        .dark .navbar {
+            background-color: rgba(10, 15, 26, 0.9); /* dark-primary con transparencia */
+            backdrop-filter: blur(8px);
+        }
+
+        .dark .nav-links a {
+            color: theme('colors.white');
+        }
+
+        .dark .nav-links a:hover {
+            color: theme('colors.current');
+        }
+
+        /* Transición suave entre modos */
+        .transition-theme {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
 </head>
-<body class="font-montserrat bg-light text-dark">
+<body class="font-montserrat bg-light text-dark transition-theme dark:bg-dark-secondary dark:text-dark-text">
     <!-- Navegación -->
     {% include 'client/nav_bar.html' %}
     <!-- Hero Section -->
@@ -48,5 +83,27 @@
     {% include 'client/contact.html' %}
     <!-- Footer -->
     {% include 'client/footer.html' %}
+
+    <!-- Script para el cambio de tema -->
+    <script>
+        // Comprobar si existe preferencia de tema guardada
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Función para cambiar el tema
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
 </body>
 </html>

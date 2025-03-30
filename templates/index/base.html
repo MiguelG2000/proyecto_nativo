@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Control{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="{% static 'js/index.js' %}"></script>
+</head>
+<body class="bg-gray-100">
+    {% include 'nav_bar.html' %}
+
+    {% if request.user.is_authenticated %}
+        <div class="animate__animated animate__fadeIn">
+            <div class="container mx-auto p-6 mt-20">
+                <h1 class="text-3xl font-bold text-gray-800 mb-8">
+                    {% block header_title %}Panel de Control - Bienvenido, {{ request.user.get_full_name }}!{% endblock %}
+                </h1>
+
+                {% block notification_system %}
+                    {% include 'index/notifications.html' %}
+                {% endblock %}
+
+                {% block calendar_button %}
+                    <div class="fixed top-16 right-4 z-50 mt-20">
+                        <a href="{% url 'calendar' %}">
+                            <img src="{% static 'img/calendario.png' %}" alt="Logo" class="h-12 w-auto">
+                        </a>
+                    </div>
+                {% endblock %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center mt-10">
+            <h2 class="text-xl text-gray-700">No está autenticado</h2>
+            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
+        </div>
+    {% endif %}
+
+</body>
+</html>

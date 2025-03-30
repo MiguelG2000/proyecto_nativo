@@ -1,0 +1,19 @@
+<div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Resumen Rápido</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-700">Productos en Inventario</h3>
+            <p class="text-2xl font-bold text-blue-600">{{ productos }}</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-700">Cotizaciones Pendientes</h3>
+            <p class="text-2xl font-bold text-yellow-600">{{ cotizaciones }}</p>
+        </div>
+        {% if not empleado %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-700">Ventas del Mes (Con IVA)</h3>
+            <p class="text-2xl font-bold text-green-600">${{ total_mes }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
