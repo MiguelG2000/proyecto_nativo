@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 
 from cotizaciones.models import Cotizaciones
 from products.models import Product
+from cliente.models import Cliente
 from users.models import Event
 from datetime import timedelta
 from django.utils import timezone
@@ -42,6 +43,9 @@ def login(request):
 
     notificaciones = len(products_alert) + len(upcoming_deliveries) + len(upcoming_events)
 
+    #Extraer atributos de Cliente
+    mensajes = Cliente.objects.all()
+
     context = {
         'user': user,
         'name': name,
@@ -52,6 +56,7 @@ def login(request):
         'upcoming_deliveries': upcoming_deliveries,
         'upcoming_events': upcoming_events,
         'notificaciones': notificaciones,
+        'mensajes': mensajes,
     }
     return render(request, "index.html", context)
 
@@ -81,3 +86,7 @@ def add_event(request):
         messages.success(request, "Evento agregado correctamente.")
         return redirect(reverse_lazy('calendar'))
     return render(request, 'calendar.html')
+
+def delete_message(request, cliente_id):
+    Cliente.objects.get(cliente_id=cliente_id).delete()
+    return redirect(reverse_lazy('login'))

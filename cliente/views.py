@@ -1,3 +1,5 @@
+from lib2to3.fixes.fix_input import context
+
 from django.shortcuts import render
 
 from cliente.models import Cliente
@@ -8,7 +10,6 @@ def client_page(request):
     if request.method == 'POST':
         cliente = Cliente()
         cliente.nombre = request.POST['nombre']
-        cliente.email = request.POST['email']
         cliente.telefono = request.POST['telefono']
         cliente.mensaje = request.POST['mensaje']
         cliente.save()

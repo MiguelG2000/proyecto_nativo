@@ -8,134 +8,200 @@
 </head>
 <body class="bg-gray-100">
     {% include 'nav_bar.html' %}
+
     {% if request.user.is_authenticated %}
         <div class="animate__animated animate__fadeIn">
-    <div class="container mx-auto p-6 mt-20">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Panel de Control - Bienvenido, {{ request.user.get_full_name }}!</h1>
+            <div class="container mx-auto p-6 mt-20">
+                <h1 class="text-3xl font-bold text-gray-800 mb-8">
+                    Panel de Control - Bienvenido, {{ request.user.get_full_name }}!
+                </h1>
 
-        <!-- Botón de Notificaciones -->
-        <div class="fixed top-4 right-4 z-50 mt-20">
-            <button id="btnNotificaciones"
-                    class="relative bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none">
-                🔔 Notificaciones
-                <span id="notificacionesCount"
-                      class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full {% if not products_alert and not upcoming_deliveries and not upcoming_events %}hidden{% endif %}">
-                    {{ products_alert|length|add:upcoming_deliveries|length|add:upcoming_events|length }}
-                </span>
-            </button>
+                <!-- Botón de Notificaciones -->
+                <div class="fixed top-4 right-4 z-50 mt-20">
+                    <button id="btnNotificaciones"
+                            class="relative bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none">
+                        🔔 Notificaciones
+                        <span id="notificacionesCount"
+                              class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full {% if not products_alert and not upcoming_deliveries and not upcoming_events %}hidden{% endif %}">
+                            {{ products_alert|length|add:upcoming_deliveries|length|add:upcoming_events|length }}
+                        </span>
+                    </button>
 
-            <!-- Contenedor de Notificaciones -->
-            <div id="notificacionesContainer"
-                 class="hidden absolute top-full right-0 mt-3 w-80 bg-white shadow-lg rounded-lg p-4 border border-gray-300 max-h-[300px] overflow-y-auto">
-                <h2 class="text-base font-semibold text-gray-800">Notificaciones</h2>
-                <div class="mt-2 space-y-2 text-sm" id="notificacionesList">
-                    {% if products_alert %}
-                        {% for product in products_alert %}
-                            <div class="p-3 rounded-lg notification-item {% if product.inventario == 10 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
-                                <strong>{{ product.nombre }}</strong><br>
-                                {% if product.inventario == 10 %}
-                                    ⚠️ Solo quedan 10 unidades en inventario.
-                                {% else %}
-                                    🚨 Urgente: Solo quedan {{ product.inventario }} unidades en inventario.
-                                {% endif %}
-                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
-                                    Marcar como visto
-                                </button>
+                    <!-- Contenedor de Notificaciones -->
+                    <div id="notificacionesContainer"
+                         class="hidden absolute top-full right-0 mt-3 w-80 bg-white shadow-lg rounded-lg p-4 border border-gray-300 max-h-[300px] overflow-y-auto">
+                        <h2 class="text-base font-semibold text-gray-800">Notificaciones</h2>
+                        <div class="mt-2 space-y-2 text-sm" id="notificacionesList">
+                            {% if products_alert %}
+                                {% for product in products_alert %}
+                                    <div class="p-3 rounded-lg notification-item {% if product.inventario == 10 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                        <strong>{{ product.nombre }}</strong><br>
+                                        {% if product.inventario == 10 %}
+                                            ⚠️ Solo quedan 10 unidades en inventario.
+                                        {% else %}
+                                            🚨 Urgente: Solo quedan {{ product.inventario }} unidades en inventario.
+                                        {% endif %}
+                                        <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                            Marcar como visto
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <!-- Notificaciones de Fechas de Entrega Próximas -->
+                            {% if upcoming_deliveries %}
+                                <h3 class="text-sm font-semibold text-gray-800 mt-4">Fechas de Entrega Próximas</h3>
+                                {% for entrega in upcoming_deliveries %}
+                                    <div class="p-3 rounded-lg notification-item bg-blue-100 text-blue-800 h-20">
+                                        <strong>Entrega de Cotización #{{ entrega.id }}</strong><br>
+                                        📅 Fecha de entrega: {{ entrega.fecha_entrega }}<br>
+                                        <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                            Marcar como visto
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <!-- Notificaciones de Eventos Próximos -->
+                            {% if upcoming_events %}
+                                <h3 class="text-sm font-semibold text-gray-800 mt-4">Eventos Próximos</h3>
+                                {% for event in upcoming_events %}
+                                    <div class="p-3 rounded-lg notification-item bg-green-100 text-green-800 h-20">
+                                        <strong>{{ event.nombre }}</strong><br>
+                                        📅 Fecha del evento: {{ event.fecha }}<br>
+                                        <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
+                                            Marcar como visto
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón para el Calendario -->
+                <div class="fixed top-16 right-4 z-50 mt-20">
+                    <a href="{% url 'calendar' %}">
+                        <img src="{% static 'img/calendario.png' %}" alt="Logo" class="h-12 w-auto">
+                    </a>
+                </div>
+
+                <!-- Accesos Directos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <a href="{% url 'create_product' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Agregar Producto</h2>
+                        <p class="text-gray-600">Añade nuevos productos al inventario.</p>
+                    </a>
+                    <a href="{% url 'create_quote' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Crear Cotización</h2>
+                        <p class="text-gray-600">Genera una nueva cotización para clientes.</p>
+                    </a>
+                    <a href="{% url 'product_report' %}"
+                       class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Reporte de productos</h2>
+                        <p class="text-gray-600">Generar reporte de productos faltantes.</p>
+                    </a>
+                    <a href="{% url 'product_inventory' %}"
+                       class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Reporte de inventario</h2>
+                        <p class="text-gray-600">Generar reporte del inventario.</p>
+                    </a>
+                </div>
+
+                <!-- Resumen Rápido -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Resumen Rápido</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-700">Productos en Inventario</h3>
+                            <p class="text-2xl font-bold text-blue-600">{{ productos }}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-700">Cotizaciones Pendientes</h3>
+                            <p class="text-2xl font-bold text-yellow-600">{{ cotizaciones }}</p>
+                        </div>
+                        {% if not empleado %}
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-700">Ventas del Mes (Con IVA)</h3>
+                            <p class="text-2xl font-bold text-green-600">${{ total_mes }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Mensajes de Clientes -->
+                <div id="Mensajes" class="bg-white p-6 rounded-lg shadow-md w-full max-w-7xl mx-auto">
+                    <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Mensajes de Clientes</h1>
+                    <div id="mensaje-container" class="relative min-h-64 bg-white p-4 rounded-lg border border-gray-200">
+                        {% for mensaje in mensajes %}
+                        <div class="mensaje-slide absolute inset-0 flex flex-col justify-between bg-gray-100 p-6 rounded-lg shadow-md opacity-0 transition-opacity duration-1000 m-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">{{ mensaje.nombre }}</h4>
+                                <p class="text-gray-600 mt-2">{{ mensaje.mensaje }}</p>
                             </div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <!-- Notificaciones de Fechas de Entrega Próximas -->
-                    {% if upcoming_deliveries %}
-                        <h3 class="text-sm font-semibold text-gray-800 mt-4">Fechas de Entrega Próximas</h3>
-                        {% for entrega in upcoming_deliveries %}
-                            <div class="p-3 rounded-lg notification-item bg-blue-100 text-blue-800 h-20">
-                                <strong>Entrega de Cotización #{{ entrega.id }}</strong><br>
-                                📅 Fecha de entrega: {{ entrega.fecha_entrega }}<br>
-                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
-                                    Marcar como visto
-                                </button>
+                            <div class="flex space-x-4 mt-6">
+                                <!-- Botón de WhatsApp -->
+                                <a href="https://wa.me/{{ mensaje.telefono }}" target="_blank"
+                                   class="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition flex items-center justify-center w-12 h-12">
+                                    <i class="fab fa-whatsapp text-xl"></i>
+                                </a>
+                                <!-- Botón de Teléfono -->
+                                <a href="tel:{{ mensaje.telefono }}"
+                                   class="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition flex items-center justify-center w-12 h-12">
+                                    <i class="fas fa-phone text-xl"></i>
+                                </a>
+                                <!-- Botón de Eliminar -->
+                                <form action="{% url 'delete_message' mensaje.cliente_id %}" method="POST"
+                                      onsubmit="return confirm('¿Estás seguro de que quieres eliminar este mensaje?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition flex items-center justify-center w-12 h-12">
+                                        <i class="fas fa-trash text-xl"></i>
+                                    </button>
+                                </form>
                             </div>
+                        </div>
+                        {% empty %}
+                        <div class="mensaje-slide absolute inset-0 flex items-center justify-center text-gray-500 opacity-100">
+                            No hay mensajes disponibles.
+                        </div>
                         {% endfor %}
-                    {% endif %}
-
-                    <!-- Notificaciones de Eventos Próximos -->
-                    {% if upcoming_events %}
-                        <h3 class="text-sm font-semibold text-gray-800 mt-4">Eventos Próximos</h3>
-                        {% for event in upcoming_events %}
-                            <div class="p-3 rounded-lg notification-item bg-green-100 text-green-800 h-20">
-                                <strong>{{ event.nombre }}</strong><br>
-                                📅 Fecha del evento: {{ event.fecha }}<br>
-                                <button class="mark-as-read float-right text-xs text-gray-800 hover:text-gray-700 mt-2">
-                                    Marcar como visto
-                                </button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Botón para el Calendario -->
-        <div class="fixed top-16 right-4 z-50 mt-20">
-            <a href="{% url 'calendar' %}">
-                <img src="{% static 'img/calendario.png' %}" alt="Logo" class="h-12 w-auto">
-            </a>
-        </div>
-
-        <!-- Accesos Directos -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <a href="{% url 'create_product' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2">Agregar Producto</h2>
-                <p class="text-gray-600">Añade nuevos productos al inventario.</p>
-            </a>
-            <a href="{% url 'create_quote' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2">Crear Cotización</h2>
-                <p class="text-gray-600">Genera una nueva cotización para clientes.</p>
-            </a>
-
-            <a href="{% url 'product_report' %}"
-               class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2">Reporte de productos</h2>
-                <p class="text-gray-600">Generar reporte de productos faltantes.</p>
-            </a>
-
-             <a href="{% url 'product_inventory' %}"
-               class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2">Reporte de inventario</h2>
-                <p class="text-gray-600">Generar reporte del inventario.</p>
-            </a>
-        </div>
-
-        <!-- Resumen Rápido -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Resumen Rápido</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold text-gray-700">Productos en Inventario</h3>
-                    <p class="text-2xl font-bold text-blue-600">{{ productos }}</p>
-                </div>
-
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold text-gray-700">Cotizaciones Pendientes</h3>
-                    <p class="text-2xl font-bold text-yellow-600">{{ cotizaciones }}</p>
-                </div>
-
-                {% if not empleado %}
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold text-gray-700">Ventas del Mes (Con IVA)</h3>
-                    <p class="text-2xl font-bold text-green-600">${{ total_mes }}</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
         </div>
     {% else %}
-    <div class="text-center mt-10">
-        <h2 class="text-xl text-gray-700">No está autenticado</h2>
-        <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
-    </div>
+        <div class="text-center mt-10">
+            <h2 class="text-xl text-gray-700">No está autenticado</h2>
+            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Inicie sesión</a>
+        </div>
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let slides = document.querySelectorAll(".mensaje-slide");
+            let index = 0;
+
+            function showNextSlide() {
+                // Oculta el slide actual
+                if (slides.length > 0) {
+                    slides[index].classList.remove("opacity-100");
+                    slides[index].classList.add("opacity-0");
+
+                    // Mueve al siguiente slide
+                    index = (index + 1) % slides.length;
+
+                    // Muestra el siguiente slide
+                    slides[index].classList.remove("opacity-0");
+                    slides[index].classList.add("opacity-100");
+                }
+            }
+
+            // Inicializa el primer mensaje visible
+            if (slides.length > 0) {
+                slides[0].classList.add("opacity-100");
+                setInterval(showNextSlide, 10000); // Cambia cada 10 segundos
+            }
+        });
+    </script>
 </body>
 </html>
