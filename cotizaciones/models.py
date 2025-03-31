@@ -1,6 +1,7 @@
 from django.db import models
 from products.models import Product
 from decimal import Decimal
+from django.utils import timezone
 
 
 # Create your models here.
@@ -26,14 +27,18 @@ class Cotizaciones(models.Model):
         return str(self.id)
 
     def save(self, *args, **kwargs):
-        # Generar ID automáticamente si es una nueva cotización
         if not self.id:
-            last_quote = Cotizaciones.objects.order_by('-id').first()
+            current_year = timezone.now().year % 100  # Obtiene los últimos dos dígitos del año
+            last_quote = Cotizaciones.objects.filter(id__startswith=f'COT{current_year}-').order_by('-id').first()
+
             if last_quote:
-                num = int(last_quote.id.replace('COT', '')) + 1
-                self.id = f'COT{num:02d}'
+                last_number = int(last_quote.id.split('-')[1])  # Obtiene el número de la última cotización del año
+                new_number = last_number + 1
             else:
-                self.id = 'COT01'
+                new_number = 1  # Si es el primer registro del año, inicia en 1
+
+            self.id = f'COT{current_year}-{new_number:03d}'
+
         super().save(*args, **kwargs)
 
     def update_total(self):

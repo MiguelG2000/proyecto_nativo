@@ -27,13 +27,13 @@ from django.urls import path, include
 from users.views import login, calendar, add_event, delete_message
 
 urlpatterns = [
-    path('',login, name='login'),
+    path('employee/',login, name='login'),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('admin/', admin.site.urls),
     path('products/', include("products.urls")),
     path('quotes/', include("cotizaciones.urls")),
     path('report/', include("report.urls")),
-    path('client/', include("cliente.urls")),
+    path('', include("cliente.urls")),
     path('calendar/', calendar, name='calendar'),
     path('add_event/', add_event, name='add_event'),
     path('delete_message/<int:cliente_id>/', delete_message, name='delete_message'),
