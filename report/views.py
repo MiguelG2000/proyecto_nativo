@@ -1,4 +1,4 @@
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from datetime import datetime
 
 from django.shortcuts import render
@@ -12,7 +12,7 @@ def report_dashboard(request):
     grafica = (
         CotizacionProduct.objects
         .filter(
-            cotizacion_id__status="Aceptado",
+            Q(cotizacion_id__status="Aceptado") | Q(cotizacion_id__status="Completado"),
             product_id__otro=False,
             cotizacion_id__fecha__month=mes_seleccionado
         )
@@ -25,28 +25,9 @@ def report_dashboard(request):
         .order_by('-total_vendido')[:10]
     )
 
-    # Consulta para obtener las ventas por categoría
-    ventas_por_categoria = (
-        CotizacionProduct.objects
-        .filter(
-            cotizacion_id__status="Aceptado",
-            product_id__otro=False,
-            cotizacion_id__fecha__month=mes_seleccionado
-        )
-        .values('product_id__categoria')  # Agrupar por categoría
-        .annotate(
-            total_vendido=Sum('cantidad')  # Sumar la cantidad vendida por categoría
-        )
-        .order_by('-total_vendido')
-    )
-
     # Preparar los datos para la gráfica de productos más vendidos
     labels = [producto['product_id__nombre'] for producto in grafica]
     data = [producto["total_vendido"] for producto in grafica]
-
-    # Preparar los datos para la gráfica de ventas por categoría
-    categorias = [item['product_id__categoria'] for item in ventas_por_categoria]
-    ventas_categorias = [item['total_vendido'] for item in ventas_por_categoria]
 
     # Calcular totales con y sin IVA
     if grafica:
@@ -62,8 +43,6 @@ def report_dashboard(request):
     context = {
         'labels': labels,
         'data': data,
-        'categorias': categorias,  # Datos para la gráfica de categorías
-        'ventas_categorias': ventas_categorias,  # Datos para la gráfica de categorías
         'totalCiva': totalCiva,
         'totalSiva': totalSiva,
         'mes_seleccionado': mes_seleccionado

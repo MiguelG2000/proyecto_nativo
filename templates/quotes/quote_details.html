@@ -1,5 +1,5 @@
 {% load static %}
-<div class="bg-white p-6 rounded-lg shadow-md mt-20">
+<div class="bg-white p-6 rounded-lg shadow-md mt-20 overflow-x-auto">
 
     {% if messages %}
         {% for message in messages %}
@@ -17,56 +17,58 @@
         <p class="text-lg font-semibold">Dirección de entrega - {{ cotizaciones.direccion_entrega }}</p>
     {% endif %}
      <hr class="my-4">
-    <table class="w-full border-collapse border border-gray-300">
-        <thead>
-        <tr class="bg-gray-200">
-            <th class="border px-4 py-2">ID</th>
-            <th class="border px-4 py-2">Fecha</th>
-            <th class="border px-4 py-2">Fecha límite</th>
-            <th class="border px-4 py-2">Total sin IVA</th>
-            <th class="border px-4 py-2">Anticipo</th>
-            <th class="border px-4 py-2">Metodo de Pago</th>
-            <th class="border px-4 py-2">Servicio de Envío</th>
-            <th class="border px-4 py-2">Costo de Envío</th>
-            <th class="border px-4 py-2">I.V.A.</th>
-            <th class="border px-4 py-2">Total con IVA</th>
-            <th class="border px-4 py-2">Restante</th>
-            <th class="border px-4 py-2"></th>
-            <th class="border px-4 py-2"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="text-center">
-            <td class="border px-4 py-2">{{ cotizaciones.id }}</td>
-            <td class="border px-4 py-2">{{ cotizaciones.fecha }}</td>
-            <td class="border px-4 py-2">{{ cotizaciones.fecha_propuesta }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.total }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.anticipo }}</td>
-            <td class="border px-4 py-2">{{ cotizaciones.metodo_pago }}</td>
-            <td class="border px-4 py-2">{{ cotizaciones.servicio_envio }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.costo_envio }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.iva }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.total_Civa }}</td>
-            <td class="border px-4 py-2">${{ cotizaciones.restante }}</td>
-            <td class="px-2 py-2">
-                <a href="{% url 'update_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
-                    <img src="{% static 'img/editar.png' %}" alt="editar" class="w-6 h-6">
-                </a>
-            </td>
-            <td class="px-2 py-2">
-                <a href="{% url 'delete_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-red-600 hover:bg-red-700 transition flex items-center justify-center" style="width: 50px; height: 50px;">
-                    <img src="{% static 'img/basura.png' %}" alt="eliminar" class="w-6 h-6">
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-300 min-w-max">
+            <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">ID</th>
+                <th class="border px-4 py-2">Fecha</th>
+                <th class="border px-4 py-2">Fecha límite</th>
+                <th class="border px-4 py-2">Total sin IVA</th>
+                <th class="border px-4 py-2">Anticipo</th>
+                <th class="border px-4 py-2">Metodo de Pago</th>
+                <th class="border px-4 py-2">Servicio de Envío</th>
+                <th class="border px-4 py-2">Costo de Envío</th>
+                <th class="border px-4 py-2">I.V.A.</th>
+                <th class="border px-4 py-2">Total con IVA</th>
+                <th class="border px-4 py-2">Restante</th>
+                <th class="border px-4 py-2"></th>
+                <th class="border px-4 py-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center">
+                <td class="border px-4 py-2">{{ cotizaciones.id }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.fecha }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.fecha_propuesta }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.total }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.anticipo }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.metodo_pago }}</td>
+                <td class="border px-4 py-2">{{ cotizaciones.servicio_envio }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.costo_envio }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.iva }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.total_Civa }}</td>
+                <td class="border px-4 py-2">${{ cotizaciones.restante }}</td>
+                <td class="px-2 py-2">
+                    <a href="{% url 'update_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 transition flex items-center justify-center w-12 h-12">
+                        <img src="{% static 'img/editar.png' %}" alt="editar" class="w-6 h-6">
+                    </a>
+                </td>
+                <td class="px-2 py-2">
+                    <a href="{% url 'delete_quote' cotizaciones.id %}" class="p-2 rounded-lg bg-red-600 hover:bg-red-700 transition flex items-center justify-center w-12 h-12">
+                        <img src="{% static 'img/basura.png' %}" alt="eliminar" class="w-6 h-6">
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <hr class="my-4">
 
-   <div class="flex justify-between items-center mt-4">
+   <div class="flex flex-col md:flex-row justify-between items-center mt-4">
         <p class="text-lg font-semibold">Total con IVA: <span id="total_con_iva">${{ cotizaciones.total_Civa }}</span></p>
         <a href="{% url 'generate_quote_pdf' cotizaciones.id %}"
-        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Descargar PDF</a>
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition mt-4 md:mt-0">Descargar PDF</a>
     </div>
 </div>

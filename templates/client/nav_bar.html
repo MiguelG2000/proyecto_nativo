@@ -2,12 +2,11 @@
     <div class="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center max-w-6xl">
         <div class="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
             <a href="#" class="logo text-white text-2xl font-bold">GRUPO NATIVO</a>
-            <button id="theme-toggle" class="md:hidden text-white hover:text-secondary transition-colors" onclick="toggleTheme()">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:block"></i>
+            <button id="menu-toggle" class="md:hidden text-white hover:text-secondary transition-colors">
+                <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
-        <div class="flex flex-col md:flex-row items-center w-full md:w-auto">
+        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center w-full md:w-auto">
             <ul class="nav-links flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 text-center w-full md:w-auto mb-2 md:mb-0">
                 <li><a href="#inicio" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Inicio</a></li>
                 <li><a href="#nosotros" class="text-white hover:text-secondary dark:hover:text-dark-accent transition-colors">Nosotros</a></li>
@@ -22,3 +21,9 @@
         </div>
     </div>
 </nav>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.getElementById('menu').classList.toggle('hidden');
+    });
+</script>

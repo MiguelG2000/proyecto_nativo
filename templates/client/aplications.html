@@ -1,3 +1,4 @@
+{% load static %}
 <section id="aplicaciones" class="applications-section py-20 bg-white dark:bg-dark-secondary transition-theme">
     <div class="container mx-auto px-4 max-w-6xl">
         <div class="section-header text-center mb-12">
@@ -8,23 +9,26 @@
 
         <div class="applications-tabs bg-light dark:bg-dark-primary rounded-xl shadow-md overflow-hidden">
             <div class="tabs-header flex flex-col sm:flex-row border-b border-gray-200 dark:border-gray-700">
-                <button class="tab-btn active py-4 px-6 font-medium text-primary dark:text-dark-text border-b-2 border-accent dark:border-dark-accent bg-white dark:bg-dark-primary transition-colors" data-tab="construccion">Construcción</button>
-                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-dark-secondary/50 transition-colors" data-tab="agricultura">Sector Agropecuario</button>
-                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-dark-secondary/50 transition-colors" data-tab="industrial">Industrial</button>
+                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-tab="construccion">Construcción</button>
+                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-tab="agricultura">Sector Agropecuario</button>
+                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-tab="industrial">Industrial</button>
+                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-tab="carpinteria">Carpinteria</button>
+                <button class="tab-btn py-4 px-6 font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-dark-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" data-tab="acabados">Acabados</button>
             </div>
+
 
             <div class="tabs-content p-6 dark:bg-dark-primary">
                 <div class="tab-pane active" id="construccion">
                     <div class="app-slider grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-construccion-1.jpg" alt="Aplicación en construcción" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/muroE.webp' %}" alt="Aplicación en construcción" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Muros Estructurales</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Nuestros sistemas permiten construir muros estructurales sismorresistentes para edificios de hasta 20 pisos.</p>
                             </div>
                         </div>
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-construccion-2.jpg" alt="Aplicación en construcción" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/techoL.webp' %}" alt="Aplicación en construcción" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Techos y Losas</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Sistemas aligerantes para techos y losas que reducen peso manteniendo resistencia estructural.</p>
@@ -36,14 +40,14 @@
                 <div class="tab-pane hidden" id="agricultura">
                     <div class="app-slider grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-agro-1.jpg" alt="Aplicación agropecuaria" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/uvas.webp' %}" alt="Aplicación agropecuaria" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Embalaje para Fruta</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Cajas especiales para uva de mesa que mantienen el producto en óptimas condiciones durante transporte y almacenamiento.</p>
                             </div>
                         </div>
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-agro-2.jpg" alt="Aplicación agropecuaria" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/cajaM.webp' %}" alt="Aplicación agropecuaria" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Almacenamiento de Mariscos</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Cajas diseñadas para mantener la frescura de pescados y mariscos durante el tiempo necesario.</p>
@@ -55,14 +59,14 @@
                 <div class="tab-pane hidden" id="industrial">
                     <div class="app-slider grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-industrial-1.jpg" alt="Aplicación industrial" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/construpanel.webp' %}" alt="Aplicación industrial" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Naves Industriales</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Sistemas constructivos ideales para naves industriales, bodegas y almacenes con excelente aislamiento térmico.</p>
                             </div>
                         </div>
                         <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
-                            <img src="img/app-industrial-2.jpg" alt="Aplicación industrial" class="w-full h-48 object-cover">
+                            <img src="{% static 'img/infraestructuraP.webp' %}" alt="Aplicación industrial" class="w-full h-48 object-cover">
                             <div class="app-info p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Infraestructura Pesada</h3>
                                 <p class="text-gray-600 dark:text-gray-300">Soluciones para carreteras, puentes, aeropuertos y otras infraestructuras que requieren materiales ligeros y resistentes.</p>
@@ -70,7 +74,73 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-pane hidden" id="carpinteria">
+                    <div class="app-slider grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
+                            <img src="{% static 'img/mueblesP.webp' %}" alt="Aplicación en carpintería" class="w-full h-48 object-cover">
+                            <div class="app-info p-6">
+                                <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Muebles Personalizados</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Diseños personalizados para muebles de madera con alta durabilidad.</p>
+                            </div>
+                        </div>
+                        <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
+                            <img src="{% static 'img/estructuraM.webp' %}" alt="Aplicación en carpintería" class="w-full h-48 object-cover">
+                            <div class="app-info p-6">
+                                <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Estructuras de Madera</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Sistemas constructivos de madera ideales para interiores y exteriores.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane hidden" id="acabados">
+                    <div class="app-slider grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
+                            <img src="{% static 'img/revestimientoD.webp' %}" alt="Aplicación en acabados" class="w-full h-48 object-cover">
+                            <div class="app-info p-6">
+                                <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Revestimientos Decorativos</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Acabados de alta calidad para interiores y exteriores.</p>
+                            </div>
+                        </div>
+                        <div class="app-slide bg-white dark:bg-dark-secondary rounded-lg overflow-hidden shadow-md">
+                            <img src="{% static 'img/piso.webp' %}" alt="Aplicación en acabados" class="w-full h-48 object-cover">
+                            <div class="app-info p-6">
+                                <h3 class="text-xl font-bold mb-2 dark:text-dark-text">Pisos y Recubrimientos</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Sistemas de pisos con alta resistencia y diseño moderno.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    function activateTab(tabId) {
+        tabButtons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+    }
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            activateTab(tabId);
+        });
+    });
+
+    // Activar el primer tab por defecto (opcional)
+    if (tabButtons.length > 0) {
+        const firstTabId = tabButtons[0].getAttribute('data-tab');
+        activateTab(firstTabId);
+    }
+});
+</script>

@@ -26,12 +26,14 @@ buffer = BytesIO()
 c = canvas.Canvas(buffer, pagesize=letter)
 
 def formatear_fecha(fecha):
-    fecha_dt = datetime.strptime(str(fecha), "%Y-%m-%d")
-    dia_semana = dias_semana[fecha_dt.strftime("%A")]
-    dia = fecha_dt.strftime("%d")
-    mes = meses[fecha_dt.strftime("%B")]
-    anio = fecha_dt.strftime("%Y")
-    return f"{dia_semana}, {dia} de {mes} del {anio}"
+    if fecha != None:
+        fecha_dt = datetime.strptime(str(fecha), "%Y-%m-%d")
+        dia_semana = dias_semana[fecha_dt.strftime("%A")]
+        dia = fecha_dt.strftime("%d")
+        mes = meses[fecha_dt.strftime("%B")]
+        anio = fecha_dt.strftime("%Y")
+        return f"{dia_semana}, {dia} de {mes} del {anio}"
+    pass
 
 def formato_moneda(valor):
     return "${:,.2f}".format(valor)
@@ -220,7 +222,7 @@ def generate_quote_pdf(request, id):
     y = verificar_pagina(pdf, y, margen=120)
     pdf.drawString(40, y - 80, "Tiempo de entrega:")
     pdf.setFont("Helvetica", 7)
-    if cotizacion.status == "Aceptado":
+    if cotizacion.status == "Aceptado" or "Completado" or "En proceso":
         pdf.drawString(40, y - 90, f"La entrega será el dia {fecha_entrega}, cubriendo el pago total de la cotización.")
         pdf.drawString(40, y - 100, "La descarga del producto corre a cuenta del cliente.")
         pdf.drawString(40, y - 110, "Sin más por el momento, quedo a sus órdenes por cualquier duda o aclaración.")

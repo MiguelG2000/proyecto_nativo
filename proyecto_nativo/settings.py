@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 import os.path
+import socket
 from pathlib import Path
 
 from django.urls import reverse_lazy
@@ -28,7 +29,14 @@ SECRET_KEY = 'django-insecure-)0pa!kipua92en3#o)*-gbq44)%i^f1=pa36e99s9(ua)!u3fg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ip
+hostname = socket.gethostname()
+local_ip = socket.gethostbyname(hostname)
+
+# Guardar en una variable
+mi_ip = local_ip
+
+ALLOWED_HOSTS = [mi_ip, 'localhost', '127.0.0.1', '*']
 
 
 # Application definition

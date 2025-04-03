@@ -1,3 +1,4 @@
+{% load static %}
 <section id="contacto" class="contact-section py-20 bg-light dark:bg-dark-secondary transition-theme">
     <div class="container mx-auto px-4 max-w-6xl">
         <div class="section-header text-center mb-12">
@@ -24,6 +25,17 @@
                     <a href="https://www.facebook.com/profile.php?id=100077340185701" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.instagram.com/nativo_ta?igsh=MTR0ODNwc2tsdm5oaA==" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-instagram"></i></a>
                     <a href="https://wa.me/529616936644" class="w-10 h-10 rounded-full bg-primary dark:bg-dark-accent text-white flex items-center justify-center hover:bg-secondary dark:hover:bg-dark-highlight transition-colors"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="download-links flex flex-col space-y-4 mt-8">
+                    <a href="{% static 'pdf/Catálogo General.pdf' %}" class="flex items-center text-secondary dark:text-dark-accent hover:text-accent dark:hover:text-dark-highlight transition-colors">
+                        <i class="fas fa-download text-xl mr-2"></i> Descargar catálogo general
+                    </a>
+                    <a href="{% static 'pdf/Catálogo 3D.pdf' %}" class="flex items-center text-secondary dark:text-dark-accent hover:text-accent dark:hover:text-dark-highlight transition-colors">
+                        <i class="fas fa-download text-xl mr-2"></i> Descargar catálogo 3D
+                    </a>
+                    <a href="{% static 'pdf/Catálogo Lambrin WPC.pdf' %}" class="flex items-center text-secondary dark:text-dark-accent hover:text-accent dark:hover:text-dark-highlight transition-colors">
+                        <i class="fas fa-download text-xl mr-2"></i> Descargar catálogo lambrín WPC
+                    </a>
                 </div>
             </div>
 

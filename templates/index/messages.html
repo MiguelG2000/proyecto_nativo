@@ -1,17 +1,16 @@
-<!-- Mensajes de Clientes -->
 <div id="Mensajes" class="bg-white p-6 rounded-lg shadow-md w-full max-w-7xl mx-auto">
     <h1 class="text-xl font-bold text-gray-800 mb-4 text-center">Mensajes de Clientes</h1>
 
-    <div id="mensaje-container" class="w-full">
+    <div id="mensaje-container" class="w-full space-y-4">
         {% for mensaje in mensajes %}
-            <div class="mensaje-slide opacity-0 hidden w-full bg-gray-100 p-6 rounded-lg shadow-md transition-opacity duration-1000 mx-auto">
+            <div class="mensaje-slide w-full bg-gray-100 p-6 rounded-lg shadow-md mx-auto">
                 <div class="flex flex-col items-center justify-center text-center w-full">
                     <h4 class="text-lg font-semibold text-gray-800">{{ mensaje.nombre }}</h4>
                     <p class="text-gray-600 mt-2 max-h-48 overflow-y-auto w-full text-justify">{{ mensaje.mensaje }}</p>
 
                     <div class="flex space-x-4 mt-6">
                         <!-- Botón de WhatsApp -->
-                        <a href="https://wa.me/{{ mensaje.telefono }}" target="_blank"
+                        <a href="https://wa.me/+52{{ mensaje.telefono }}" target="_blank"
                            class="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition flex items-center justify-center w-12 h-12">
                             <i class="fab fa-whatsapp text-xl"></i>
                         </a>
@@ -32,39 +31,9 @@
                 </div>
             </div>
         {% empty %}
-            <div class="mensaje-slide opacity-100 w-full text-gray-500 text-center">
+            <div class="mensaje-slide w-full text-gray-500 text-center">
                 No hay mensajes disponibles.
             </div>
         {% endfor %}
     </div>
 </div>
-<script>
-    // Lógica del carrusel de mensajes de clientes
-document.addEventListener("DOMContentLoaded", function() {
-    let slides = document.querySelectorAll(".mensaje-slide");
-    let index = 0;
-
-    function showNextSlide() {
-        if (slides.length > 0) {
-            // Ocultar todos los slides
-            slides.forEach(slide => {
-                slide.classList.remove("opacity-100");
-                slide.classList.add("opacity-0", "hidden");
-            });
-
-            // Mostrar el slide actual
-            index = (index + 1) % slides.length;
-            slides[index].classList.remove("opacity-0", "hidden");
-            slides[index].classList.add("opacity-100");
-        }
-    }
-
-    // Inicializa el primer mensaje visible
-    if (slides.length > 0) {
-        slides.forEach(slide => slide.classList.add("hidden"));
-        slides[0].classList.remove("hidden");
-        slides[0].classList.add("opacity-100");
-        setInterval(showNextSlide, 10000); // Cambia cada 10 segundos
-    }
-});
-</script>
