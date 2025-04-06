@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'cotizaciones',
     'cliente',
     'report',
+    'mfa',
     'tailwind',
     'theme',
     'django_browser_reload',
@@ -153,8 +154,8 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL=reverse_lazy('login')
+LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = reverse_lazy('login')
-
-LOGOUT_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')
+

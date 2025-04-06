@@ -49,7 +49,7 @@
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Bienvenido</h2>
         <p class="text-center text-gray-500 mb-6">Ingrese sus credenciales para acceder a su cuenta</p>
 
-        {% if form.errors %}
+         {% if form.errors %}
             <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-4 text-sm">
                 <strong>Error:</strong> Usuario, contraseña o código incorrectos.
             </div>
@@ -71,6 +71,11 @@
                         <i id="togglePasswordIcon" class="fas fa-eye text-gray-500"></i>
                     </span>
                 </div>
+            </div>
+
+            <div class="mb-5">
+                <label for="inputToken" class="block text-sm font-medium text-gray-700">Código OTP</label>
+                <input type="text" id="inputToken" name="token" class="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="6 dígitos" pattern="\d{6}" required>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg hover:bg-blue-700 transition">Ingresar</button>

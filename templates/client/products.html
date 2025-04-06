@@ -1,165 +1,165 @@
-{% load  static %}
-<section id="productos" class="products-section py-20 bg-light dark:bg-dark-secondary transition-theme">
+{% load static %}
+<section id="productos" class="products-section py-12 md:py-20 bg-light dark:bg-dark-secondary transition-theme">
     <div class="container mx-auto px-4 max-w-6xl">
-        <div class="section-header text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 dark:text-dark-text">Nuestros Productos</h2>
-            <div class="divider h-1 bg-secondary dark:bg-dark-accent w-20 mx-auto mb-6"></div>
-            <p class="text-lg text-gray-600 dark:text-gray-300">Sistemas constructivos innovadores para todo tipo de proyectos</p>
+        <div class="section-header text-center mb-8 md:mb-12">
+            <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 dark:text-dark-text">Nuestros Productos</h2>
+            <div class="divider h-1 bg-secondary dark:bg-dark-accent w-16 md:w-20 mx-auto mb-4 md:mb-6"></div>
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-300">Sistemas constructivos innovadores para todo tipo de proyectos</p>
         </div>
 
-        <div class="products-grid grid grid-cols-2 gap-8 mb-12">
+        <div class="products-grid grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12">
             <!-- Productos principales -->
             <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                <div class="product-image relative h-64 overflow-hidden">
+                <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                     <img src="{% static 'img/construpanel.webp' %}" alt="Construpanel" class="w-full h-full object-cover">
-                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                        <h3 class="text-2xl font-bold">CONSTRUPANEL</h3>
+                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold">CONSTRUPANEL</h3>
                     </div>
                 </div>
-                <div class="product-info p-6">
-                    <p class="mb-4 dark:text-dark-text text-justify">Sistema constructivo de muros estructurales, sismorresistentes y aislante para construcciones de hasta 20 pisos.</p>
+                <div class="product-info p-4 md:p-6">
+                    <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Sistema constructivo de muros estructurales, sismorresistentes y aislante para construcciones de hasta 20 pisos.</p>
                 </div>
             </div>
 
             <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                <div class="product-image relative h-64 overflow-hidden">
+                <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                     <img src="{% static 'img/stealfoam.webp' %}" alt="SteelFoam" class="w-full h-full object-cover">
-                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                        <h3 class="text-2xl font-bold">STEELFOAM</h3>
+                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold">STEELFOAM</h3>
                     </div>
                 </div>
-                <div class="product-info p-6">
-                    <p class="mb-4 dark:text-dark-text text-justify">Sistema constructivo de alto rendimiento para muros prefabricados que maximiza la eficiencia energética.</p>
+                <div class="product-info p-4 md:p-6">
+                    <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Sistema constructivo de alto rendimiento para muros prefabricados que maximiza la eficiencia energética.</p>
                 </div>
             </div>
 
             <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                <div class="product-image relative h-64 overflow-hidden">
+                <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                     <img src="{% static 'img/insupanel.webp' %}" alt="Insulpanel" class="w-full h-full object-cover">
-                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                        <h3 class="text-2xl font-bold">INSULPANEL</h3>
+                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold">INSULPANEL</h3>
                     </div>
                 </div>
-                <div class="product-info p-6">
-                    <p class="mb-4 dark:text-dark-text text-justify">Panel modular compuesto por un núcleo de poliestireno expandido auto extinguible recubierto con lámina de acero.</p>
+                <div class="product-info p-4 md:p-6">
+                    <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Panel modular compuesto por un núcleo de poliestireno expandido auto extinguible recubierto con lámina de acero.</p>
                 </div>
             </div>
 
             <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                <div class="product-image relative h-64 overflow-hidden">
+                <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                     <img src="{% static 'img/geofoam.webp' %}" alt="Geofoam" class="w-full h-full object-cover">
-                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                        <h3 class="text-2xl font-bold">GEOFOAM</h3>
+                    <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold">GEOFOAM</h3>
                     </div>
                 </div>
-                <div class="product-info p-6">
-                    <p class="mb-4 dark:text-dark-text text-justify">Bloque de poliestireno expandido (EPS) usado como material de relleno para absorber cargas estructurales.</p>
+                <div class="product-info p-4 md:p-6">
+                    <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Bloque de poliestireno expandido (EPS) usado como material de relleno para absorber cargas estructurales.</p>
                 </div>
             </div>
 
             <!-- Productos adicionales, ocultos inicialmente -->
-            <div id="extra-products" class="hidden opacity-0 col-span-2 transition-opacity duration-500 grid grid-cols-2 gap-8">
+            <div id="extra-products" class="hidden opacity-0 col-span-1 sm:col-span-2 transition-opacity duration-500 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/caseton.webp' %}" alt="Casetón" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">CASETÓN</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">CASETÓN</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Bloques de EPS ajustables para aligerar losas de techo o entrepisos. Ahorra tiempo y materiales en construcciones reticulares.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Bloques de EPS ajustables para aligerar losas de techo o entrepisos. Ahorra tiempo y materiales en construcciones reticulares.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/bovedilla.webp' %}" alt="Bovedilla" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">BOVEDILLA</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">BOVEDILLA</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Elemento aligerante de EPS para losas estructurales. Actúa como cimbra perdida soportando el concreto hasta su fraguado.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Elemento aligerante de EPS para losas estructurales. Actúa como cimbra perdida soportando el concreto hasta su fraguado.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/placas.webp' %}" alt="Placas Aislantes" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">PLACAS AISLANTES</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">PLACAS AISLANTES</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Paneles de poliestireno expandido para revestimiento térmico en muros, techos y pisos. Ideal para hospitales y naves industriales.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Paneles de poliestireno expandido para revestimiento térmico en muros, techos y pisos. Ideal para hospitales y naves industriales.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/politerm.webp' %}" alt="Politerm blu" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">POLITERM BLU</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">POLITERM BLU</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Son perlas de poliestireno expandido con diámetros de 3 a 6 mm. que se utiliza como agregado ultraligero para mezclas de mortero y concreto. las perlas son recubiertas con el aditivo e.i.a. que permite su distribución homogénea por toda la mezcla y la eliminación del problema de flotación</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Son perlas de poliestireno expandido con diámetros de 3 a 6 mm. que se utiliza como agregado ultraligero para mezclas de mortero y concreto. las perlas son recubiertas con el aditivo e.i.a. que permite su distribución homogénea por toda la mezcla y la eliminación del problema de flotación</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/molduras.webp' %}" alt="Molduras" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">MOLDURAS</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">MOLDURAS</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Elementos decorativos en poliestireno expandido para acabados arquitectónicos. Disponibles en diversos diseños y perfiles.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Elementos decorativos en poliestireno expandido para acabados arquitectónicos. Disponibles en diversos diseños y perfiles.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/uvas.webp' %}" alt="Caja para Uva" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">CAJA PARA UVA</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">CAJA PARA UVA</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Embalaje aislante de poliestireno expandido que mantiene la frescura de la uva de mesa durante el transporte.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Embalaje aislante de poliestireno expandido que mantiene la frescura de la uva de mesa durante el transporte.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/losetas.webp' %}" alt="Losetas 3D" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">LOSETAS 3D</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">LOSETAS 3D</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Losetas decorativas en diversos modelos (Ondas, Hexágonos, Pirámide, Estrella, Diamante) en tamaños de 30x30cm y 20x20cm. Precios desde $391.50.</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Losetas decorativas en diversos modelos (Ondas, Hexágonos, Pirámide, Estrella, Diamante) en tamaños de 30x30cm y 20x20cm. Precios desde $391.50.</p>
                     </div>
                 </div>
 
                 <div class="product-card bg-white dark:bg-dark-primary rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                    <div class="product-image relative h-64 overflow-hidden">
+                    <div class="product-image relative h-48 sm:h-56 md:h-64 overflow-hidden">
                         <img src="{% static 'img/lambrin.webp' %}" alt="Lambrin WPC" class="w-full h-full object-cover">
-                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-6">
-                            <h3 class="text-2xl font-bold">LAMBRIN WPC</h3>
+                        <div class="product-overlay absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 md:p-6">
+                            <h3 class="text-xl md:text-2xl font-bold">LAMBRIN WPC</h3>
                         </div>
                     </div>
-                    <div class="product-info p-6">
-                        <p class="mb-4 dark:text-dark-text text-justify">Panel para interiores compuesto por 60% resina de madera y 40% PVC, con acabado texturizado. Disponible en varios modelos y colores. 14 piezas por caja (6.49 m²).</p>
+                    <div class="product-info p-4 md:p-6">
+                        <p class="mb-4 dark:text-dark-text text-justify text-sm md:text-base">Panel para interiores compuesto por 60% resina de madera y 40% PVC, con acabado texturizado. Disponible en varios modelos y colores. 14 piezas por caja (6.49 m²).</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="text-center">
-            <a href="#" id="toggle-products" class="btn bg-secondary hover:bg-accent text-white dark:bg-dark-accent dark:hover:bg-dark-highlight px-8 py-3 rounded-md transition-colors duration-300 inline-block">Ver todos los productos</a>
+            <button id="toggle-products" class="btn bg-secondary hover:bg-accent text-white dark:bg-dark-accent dark:hover:bg-dark-highlight px-6 py-2 md:px-8 md:py-3 rounded-md transition-colors duration-300 inline-block text-sm md:text-base">Ver todos los productos</button>
         </div>
     </div>
 </section>
