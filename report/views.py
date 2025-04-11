@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from cotizaciones.models import CotizacionProduct
 
+
 def report_dashboard(request):
     mes_seleccionado = request.GET.get('mes', str(datetime.now().month))
 
@@ -18,9 +19,7 @@ def report_dashboard(request):
         )
         .values('product_id__nombre')
         .annotate(
-            total_vendido=Sum('cantidad'),
-            totalCiva=Sum('cotizacion_id__total_Civa'),
-            totalSiva=Sum('cotizacion_id__total')
+            total_vendido=Sum('cantidad')
         )
         .order_by('-total_vendido')[:10]
     )
@@ -29,14 +28,24 @@ def report_dashboard(request):
     labels = [producto['product_id__nombre'] for producto in grafica]
     data = [producto["total_vendido"] for producto in grafica]
 
-    # Calcular totales con y sin IVA
-    if grafica:
-        totalCiva = float(grafica[0]['totalCiva'])
-        totalSiva = float(grafica[0]['totalSiva'])
-    else:
-        totalCiva = 0.0
-        totalSiva = 0.0
+    # Calcular totales con y sin IVA de manera separada para todo el mes
+    total_query = (
+        CotizacionProduct.objects
+        .filter(
+            Q(cotizacion_id__status="Aceptado") | Q(cotizacion_id__status="Completado"),
+            cotizacion_id__fecha__month=mes_seleccionado
+        )
+        .aggregate(
+            totalCiva=Sum('cotizacion_id__total_Civa'),
+            totalSiva=Sum('cotizacion_id__total')
+        )
+    )
 
+    # Extraer los valores o usar 0 si son None
+    totalCiva = float(total_query['totalCiva'] or 0.0)
+    totalSiva = float(total_query['totalSiva'] or 0.0)
+
+    # Guardar en la sesión para uso en otras vistas
     request.session['totalCiva'] = totalCiva
 
     # Pasar los datos al contexto

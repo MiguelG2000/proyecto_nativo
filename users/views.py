@@ -3,8 +3,9 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
-
-from cotizaciones.models import Cotizaciones
+from django.db.models import Sum, Q
+from datetime import datetime
+from cotizaciones.models import Cotizaciones, CotizacionProduct
 from products.models import Product
 from cliente.models import Cliente
 from users.models import Event
@@ -39,18 +40,35 @@ def login(request):
 
     notificaciones = len(products_alert) + len(upcoming_deliveries) + len(upcoming_events)
     mensajes = Cliente.objects.all()
+    mes_actual = datetime.now().month
+
+    total_mes_query = (
+        CotizacionProduct.objects
+        .filter(
+            Q(cotizacion_id__status="Aceptado") | Q(cotizacion_id__status="Completado"),
+            cotizacion_id__fecha__month=mes_actual
+        )
+        .aggregate(total_civa=Sum('cotizacion_id__total_Civa'))
+    )
+
+    # Extraer el valor del total con IVA o usar 0 si es None
+    total_mes = total_mes_query['total_civa'] or 0.0
+
+    # Guardarlo en la sesión para mantener consistencia con el código existente
+    request.session['totalCiva'] = float(total_mes)
 
     context = {
         'user': user,
         'name': name,
         'products_alert': products_alert,
-        'total_mes': request.session.get('totalCiva', 0),
+        'total_mes': float(total_mes),  # Usar el valor calculado directamente
         'cotizaciones': cotizaciones,
         'productos': productos,
         'upcoming_deliveries': upcoming_deliveries,
         'upcoming_events': upcoming_events,
         'notificaciones': notificaciones,
         'mensajes': mensajes,
+        'empleado': not user.is_staff,  # Asumiendo que "empleado" indica si no es staff
     }
     return render(request, "index/index.html", context)
 

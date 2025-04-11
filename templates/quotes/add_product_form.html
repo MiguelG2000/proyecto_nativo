@@ -19,12 +19,17 @@
                 <input type="checkbox" name="usar_precio_distribuidor" id="usar_precio_distribuidor" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                 <label for="usar_precio_distribuidor" class="ml-2 block text-sm text-gray-900">Usar precio de distribuidor</label>
             </div>
-            <div class="flex justify-end">
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Agregar</button>
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="add-more-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Agregar Producto</button>
+                <button type="button" id="save-and-finish-btn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Guardar y Terminar</button>
             </div>
         </div>
     </form>
     <div id="message-container" class="mt-4"></div>
+    <div id="added-products-list" class="mt-6">
+        <h4 class="text-md font-medium mb-2">Productos agregados:</h4>
+        <ul id="products-list" class="list-disc pl-5"></ul>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -40,10 +45,12 @@
 
         const form = document.getElementById('add-product-form');
         const messageContainer = document.getElementById('message-container');
+        const productsList = document.getElementById('products-list');
+        const addMoreBtn = document.getElementById('add-more-btn');
+        const saveAndFinishBtn = document.getElementById('save-and-finish-btn');
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
+        // Función para agregar un producto
+        function addProduct() {
             const formData = new FormData(form);
 
             axios.post(form.action, formData)
@@ -56,8 +63,19 @@
                         </div>
                     `;
 
-                    // Limpiar el formulario (opcional)
-                    form.reset();
+                    // Agregar producto a la lista
+                    const productoSelect = document.getElementById('producto');
+                    const productoText = productoSelect.options[productoSelect.selectedIndex].text;
+                    const cantidad = document.getElementById('cantidad').value;
+                    const precio = document.getElementById('usar_precio_distribuidor').checked ? 'distribuidor' : 'general';
+
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${cantidad}x ${productoText.split('-')[0].trim()} (Precio: ${precio})`;
+                    productsList.appendChild(listItem);
+
+                    // Limpiar el formulario pero mantenerlo abierto
+                    document.getElementById('cantidad').value = '1';
+                    document.getElementById('usar_precio_distribuidor').checked = false;
 
                     // Ocultar el mensaje después de 3 segundos
                     setTimeout(() => {
@@ -69,10 +87,35 @@
                     messageContainer.innerHTML = `
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                             <strong class="font-bold">Error!</strong>
-                            <span class="block sm:inline">${error.response.data.error || 'Ocurrió un error al agregar el producto'}</span>
+                            <span class="block sm:inline">${error.response?.data?.error || 'Ocurrió un error al agregar el producto'}</span>
                         </div>
                     `;
                 });
+        }
+
+        // Evento para el botón "Agregar Producto"
+        addMoreBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addProduct();
+        });
+
+        // Evento para el botón "Guardar y Terminar"
+        saveAndFinishBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Si hay productos pendientes de agregar, los agregamos primero
+            if (document.getElementById('cantidad').value !== '') {
+                addProduct();
+
+                // Esperar un momento para que se complete la adición del último producto
+                setTimeout(() => {
+                    // Recargar la página
+                    window.location.reload();
+                }, 1000);
+            } else {
+                // Si no hay productos pendientes, simplemente recargamos
+                window.location.reload();
+            }
         });
     });
 </script>
