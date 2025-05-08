@@ -86,7 +86,6 @@ def calendar (request):
         'fechas': fechas,
         'events': events,
     }
-    print(events)
     return render (request, "calendar.html", context)
 
 def add_event(request):
@@ -102,3 +101,6 @@ def add_event(request):
 def delete_message(request, cliente_id):
     Cliente.objects.get(cliente_id=cliente_id).delete()
     return redirect(reverse_lazy('login'))
+
+def creators(request):
+    return render(request, 'creators.html')

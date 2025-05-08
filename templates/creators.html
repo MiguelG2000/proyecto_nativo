@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desarrolladores</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Para los iconos -->
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  {% include 'nav_bar.html' %}
+
+  <section class="max-w-7xl mx-auto py-16 px-4">
+    <h1 class="text-4xl font-bold text-center mt-11 mb-12">Conoce a los Desarrolladores</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Carta: Miguel -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center text-center transition-transform hover:scale-105">
+        <div class="w-32 h-32 mb-4 rounded-full overflow-hidden shadow-md">
+          <img src="/static/img/miguel.webp" alt="Miguel Angel Gonzalez Rodriguez" class="object-cover object-top w-full h-full">
+        </div>
+        <h2 class="text-2xl font-semibold mb-2">Miguel Angel Gonzalez Rodriguez</h2>
+        <p class="text-justify text-gray-600 mb-4">
+          Estudiante del Instituto Tecnológico de Tuxtla Gutiérrez, especializado en desarrollo backend. Cuento con una sólida experiencia en Django, conocimientos intermedios en Express y una base inicial en TypeScript. Además, poseo habilidades básicas en diversos lenguajes de programación como Java, C y C++, así como un marcado interés y manejo en bases de datos SQL. También he explorado el desarrollo frontend, adquiriendo experiencia básica en React y Tailwind CSS.
+        </p>
+        <div class="flex space-x-4">
+            <a href="https://github.com/MiguelG2000/MiguelG2000" target="_blank" class="text-gray-500 hover:text-black text-xl"><i class="fab fa-github"></i></a>
+            <a href="mailto:mikewhite2000@live.com.mx" class="text-red-500 hover:text-red-700"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.facebook.com/miguelangel.gonsalezrodriguez" target="_blank" class="text-blue-700 hover:text-blue-900"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/mikesb2000/" target="_blank" class="text-pink-500 hover:text-pink-700"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <!-- Carta: Armando -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center text-center transition-transform hover:scale-105">
+        <div class="w-32 h-32 mb-4 rounded-full overflow-hidden shadow-md">
+          <img src="/static/img/armando.webp" alt="Miguel Angel Gonzalez Rodriguez" class="object-cover object-top w-full h-full">
+        </div>
+        <h2 class="text-2xl font-semibold mb-2">Armando de Jesus Arizmendis Nucamendi</h2>
+        <p class="text-gray-600 text-justify mb-4">
+            Estudiante de Ingeniería en Sistemas Computacionales en el Instituto Tecnológico de Tuxtla Gutiérrez, especializado en desarrollo frontend. Experiencia en aplicaciones con Java y Python, y conocimientos en backend con Django y Express. Manejo avanzado de bases de datos MySQL. Familiarizado con lenguajes como C, C++ y C#. Actualmente profundizando en Tailwind CSS para crear interfaces modernas y responsivas, combinando habilidades técnicas con una formación sólida en desarrollo de software.
+        </p>
+        <div class="flex space-x-4">
+          <a href="https://www.instagram.com/fxchon_?igsh=MThmeTR0ZDJ4ZTlnNg==" target="_blank" class="text-pink-500 hover:text-pink-700 text-xl">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://www.facebook.com/share/19CzQEkvWg/" target="_blank" class="text-blue-700 hover:text-blue-900 text-xl">
+            <i class="fab fa-facebook"></i>
+          </a>
+          <a href="mailto:menligi40@gmail.com" class="text-red-500 hover:text-red-700 text-xl">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://github.com/Fxchon" target="_blank" class="text-gray-500 hover:text-black text-xl">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>

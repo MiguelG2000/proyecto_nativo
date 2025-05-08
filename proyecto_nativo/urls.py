@@ -24,7 +24,13 @@ from django.contrib.auth.views import(
     )
 
 from django.urls import path, include
-from users.views import login, calendar, add_event, delete_message
+from users.views import (
+    login,
+    calendar,
+    add_event,
+    delete_message,
+    creators,
+)
 
 urlpatterns = [
     path('employee/',login, name='login'),
@@ -33,6 +39,7 @@ urlpatterns = [
     path('products/', include("products.urls")),
     path('quotes/', include("cotizaciones.urls")),
     path('report/', include("report.urls")),
+    path('creators/', creators, name='creators'),
     path('', include("cliente.urls")),
     path('calendar/', calendar, name='calendar'),
     path('add_event/', add_event, name='add_event'),
