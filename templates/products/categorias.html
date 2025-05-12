@@ -1,79 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Catalogo de categorias y unidades</title>
+  <meta charset="UTF-8">
+  <title>Catálogo de Categorías y Unidades</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-KM+2d+..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 {% if request.user.is_authenticated %}
-{% include 'nav_bar.html' %}
-    <div class="animate__animated animate__fadeIn">
-        <div class="container mx-auto p-8 mt-28 mb-24 w-full max-w-7xl bg-white rounded-xl shadow-lg">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!--Formulario y tabla de categorias-->
-                <div class="w-full p-6 bg-white shadow-md rounded-lg">
-                    <h1 class="text-xl text-gray-700 mb-6">Catalogo de categorias</h1>
-                    <form method="POST" action="{% url 'create_category' %}" enctype="multipart/form-data" class="space-y-4">
-                        {% csrf_token %}
-                        <label class="block text-gray-700 font-medium">Nombre</label>
-                        <input type="text" name="nombre" placeholder="Nombre categoria"
-                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
-                        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">Agregar nueva categoria</button>
-                    </form>
+  {% include 'nav_bar.html' %}
+  <div class="animate__animated animate__fadeIn">
+    <div class="container mx-auto p-4 md:p-8 mt-28 mb-24 w-full max-w-7xl bg-white rounded-xl shadow-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Categorías -->
+        <div class="w-full p-6 bg-white shadow-md rounded-lg">
+          <h2 class="text-2xl font-semibold text-black mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-tags text-blue-500"></i> Catálogo de Categorías
+          </h2>
+          <form method="POST" action="{% url 'create_category' %}" class="space-y-4">
+            {% csrf_token %}
+            <label class="block text-gray-700 font-medium">Nombre</label>
+            <input type="text" name="nombre" placeholder="Nombre categoría" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Agregar nueva categoría
+            </button>
+          </form>
 
-                    <table id="categorysTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm mt-4">
-                        <thead class="bg-gray-200">
-                            <tr class="bg-gray-300">
-                                <th class="py-3 px-4">Nombre</th>
-                                <th class="py-3 px-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for categoria in categorias %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4 border product-name text-center">{{ categoria.nombre }}</td>
-                                <td class="py-2 px-4 border flex justify-center space-x-2">
-                                    <a href="{% url 'delete_category' categoria.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!--Formulario y tabla de unidades-->
-                <div class="w-full p-6 bg-white shadow-md rounded-lg">
-                    <h1 class="text-xl text-gray-700 mb-6">Catalogo de unidades</h1>
-                    <form method="POST" action="{% url 'create_unit' %}" enctype="multipart/form-data" class="space-y-4">
-                        {% csrf_token %}
-                        <label class="block text-gray-700 font-medium">Nombre</label>
-                        <input type="text" name="nombre" placeholder="Nombre unidad"
-                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
-                        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">Agregar nueva unidad</button>
-                    </form>
-
-                    <table id="unitTable" class="w-full border border-gray-300 bg-white shadow-md rounded-lg text-sm mt-4">
-                        <thead class="bg-gray-200">
-                            <tr class="bg-gray-300">
-                                <th class="py-3 px-4">Nombre</th>
-                                <th class="py-3 px-4">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for unidad in unidades %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4 border product-name text-center">{{ unidad.nombre }}</td>
-                                <td class="py-2 px-4 border flex justify-center space-x-2">
-                                    <a href="{% url 'delete_unit' unidad.id %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Eliminar</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+          <table class="w-full mt-6 text-sm text-center border border-gray-200 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-blue-100 text-blue-800">
+              <tr>
+                <th class="py-3 px-4">Nombre</th>
+                <th class="py-3 px-4">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              {% for categoria in categorias %}
+              <tr class="hover:bg-gray-50 border-b">
+                <td class="py-2 px-4">{{ categoria.nombre }}</td>
+                <td class="py-2 px-4">
+                  <a href="{% url 'delete_category' categoria.id %}" class="text-red-600 hover:text-red-800 transition">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+
+        <!-- Unidades -->
+        <div class="w-full p-6 bg-white shadow-md rounded-lg">
+          <h2 class="text-2xl font-semibold text-black mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-ruler-combined text-blue-500"></i> Catálogo de Unidades
+          </h2>
+          <form method="POST" action="{% url 'create_unit' %}" class="space-y-4">
+            {% csrf_token %}
+            <label class="block text-gray-700 font-medium">Nombre</label>
+            <input type="text" name="nombre" placeholder="Nombre unidad" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Agregar nueva unidad
+            </button>
+          </form>
+
+          <table class="w-full mt-6 text-sm text-center border border-gray-200 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-blue-100 text-blue-800">
+              <tr>
+                <th class="py-3 px-4">Nombre</th>
+                <th class="py-3 px-4">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              {% for unidad in unidades %}
+              <tr class="hover:bg-gray-50 border-b">
+                <td class="py-2 px-4">{{ unidad.nombre }}</td>
+                <td class="py-2 px-4">
+                  <a href="{% url 'delete_unit' unidad.id %}" class="text-red-600 hover:text-red-800 transition">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+  </div>
 {% endif %}
 </body>
 </html>

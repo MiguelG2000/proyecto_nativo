@@ -4,13 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>Remisiones</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a2e0f1f8f5.js" crossorigin="anonymous"></script>
     <script>
-        // Función para agregar una nueva fila de producto
         function agregarFila() {
             const contenedor = document.getElementById("filas-productos");
             const nuevaFila = document.createElement("div");
-            nuevaFila.classList.add("grid", "grid-cols-2", "gap-4", "producto-fila");
+            nuevaFila.classList.add("grid", "grid-cols-1", "md:grid-cols-2", "gap-4", "producto-fila", "mb-4");
 
             nuevaFila.innerHTML = `
                 <div>
@@ -21,62 +22,69 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div>
-                    <label class="block text-gray-700">Cantidad a entregar:</label>
-                    <input type="number" name="cantidad_entregada" class="w-full border rounded-lg p-2" min="1" required>
+                <div class="flex gap-2 items-end">
+                    <div class="w-full">
+                        <label class="block text-gray-700">Cantidad a entregar:</label>
+                        <input type="number" name="cantidad_entregada" class="w-full border rounded-lg p-2" min="1" required>
+                    </div>
+                    <button type="button" onclick="eliminarFila(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash-alt text-xl"></i>
+                    </button>
                 </div>
             `;
-
             contenedor.appendChild(nuevaFila);
         }
 
-        // Función para eliminar una fila de producto
         function eliminarFila(button) {
             const fila = button.closest(".producto-fila");
             fila.remove();
         }
 
-        document.querySelector('form').addEventListener('submit', function(event) {
-            let valid = true;
-            document.querySelectorAll('.producto-fila').forEach(function(fila) {
-                const productoId = fila.querySelector('select[name="product_id"]').value;
-                const cantidadEntregada = parseInt(fila.querySelector('input[name="cantidad_entregada"]').value);
-                const cantidadCotizada = parseInt(document.querySelector(`#cantidad-cotizada-${productoId}`).value);
-
-                // Validar que no se exceda la cantidad cotizada
-                if (cantidadEntregada > cantidadCotizada) {
-                    alert(`La cantidad entregada (${cantidadEntregada}) excede la cantidad cotizada (${cantidadCotizada}) para el producto ${productoId}`);
-                    valid = false;
-                }
-            });
-
-            if (!valid) {
-                event.preventDefault(); // Evitar que el formulario se envíe
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    let valid = true;
+                    document.querySelectorAll('.producto-fila').forEach(function(fila) {
+                        const productoId = fila.querySelector('select[name="product_id"]').value;
+                        const cantidadEntregada = parseInt(fila.querySelector('input[name="cantidad_entregada"]').value);
+                        const cantidadCotizada = parseInt(document.querySelector(`#cantidad-cotizada-${productoId}`).value);
+                        if (cantidadEntregada > cantidadCotizada) {
+                            alert(`La cantidad entregada (${cantidadEntregada}) excede la cantidad cotizada (${cantidadCotizada}) para el producto ${productoId}`);
+                            valid = false;
+                        }
+                    });
+                    if (!valid) event.preventDefault();
+                });
             }
         });
     </script>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
     {% include 'nav_bar.html' %}
     {% if request.user.is_authenticated %}
         <div class="animate__animated animate__fadeIn">
-            <div class="bg-white p-6 rounded-lg shadow-md mt-20">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Agregar Entrega</h2>
-            {% if error %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong>Error:</strong>
-                    <ul>
-                        {% for err in error %}
-                            <li>{{ err }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-                <form method="POST" action="" class="mb-5">
+            <div class="bg-white p-6 rounded-lg shadow-lg mt-24 max-w-6xl mx-auto">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-truck-loading text-blue-600"></i> Agregar Entrega
+                </h2>
+
+                {% if error %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                        <strong>Error:</strong>
+                        <ul>
+                            {% for err in error %}
+                                <li>{{ err }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="POST" class="space-y-4">
                     {% csrf_token %}
-                    <div id="filas-productos">
+                    <div id="filas-productos" class="space-y-4">
                         <!-- Fila inicial -->
-                        <div class="grid grid-cols-2 gap-4 producto-fila">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 producto-fila">
                             <div>
                                 <label class="block text-gray-700">Producto:</label>
                                 <select name="product_id" class="w-full border rounded-lg p-2">
@@ -92,78 +100,82 @@
                         </div>
                     </div>
 
-                    <!-- Botón para agregar más filas -->
-                    <button type="button" onclick="agregarFila()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                        Agregar otro producto
-                    </button>
+                    <div class="flex flex-wrap gap-4 mt-4">
+                        <button type="button" onclick="agregarFila()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+                            <i class="fas fa-plus"></i> Agregar producto
+                        </button>
 
-                    <!-- Botón para enviar el formulario -->
-                    <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        Agregar Entrega
-                    </button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+                            <i class="fas fa-paper-plane"></i> Agregar Entrega
+                        </button>
+
+                        <a href="{% url 'generate_remission_pdf' cotizacion.id %}" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition flex items-center gap-2">
+                            <i class="fas fa-file-pdf"></i> Imprimir remisión
+                        </a>
+                    </div>
+
+                    {% for producto in productos_cotizacion %}
+                        <input type="hidden" id="cantidad-cotizada-{{ producto.product_id.id }}" value="{{ producto.cantidad }}">
+                    {% endfor %}
                 </form>
 
-                <a href="{% url 'generate_remission_pdf' cotizacion.id %}" class="mt-4 mb-5 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Imprimir nota de remisiones</a>
-                <!-- Campos ocultos para la cantidad cotizada de cada producto -->
-                {% for producto in productos_cotizacion %}
-                    <input type="hidden" id="cantidad-cotizada-{{ producto.product_id.id }}" value="{{ producto.cantidad }}">
-                {% endfor %}
-
-                <h2 class="text-lg font-semibold text-gray-900 mb-4 mt-4">Tabla de entregas</h2>
-                <table id="tabla-productos" class="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border px-4 py-2">Cotización</th>
-                            <th class="border px-4 py-2">Producto</th>
-                            <th class="border px-4 py-2">Cantidad</th>
-                            <th class="border px-4 py-2">Largo</th>
-                            <th class="border px-4 py-2">Ancho</th>
-                            <th class="border px-4 py-2">Alto</th>
-                            <th class="border px-4 py-2">Entrega</th>
-                            <th class="border px-4 py-2">Total</th>
-                            <th class="border px-4 py-2">Restante</th>
-                            <th class="border px-4 py-2">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for producto in productos_cotizacion %}
-                            <tr>
-                                <td class="border px-4 py-2">{{ cotizacion.id }}</td>
-                                <td class="border px-4 py-2">{{ producto.product_id.nombre }}</td>
-                                <td class="border px-4 py-2">{{ producto.cantidad }}</td>
-                                <td class="border px-4 py-2">{{ producto.product_id.largo }}</td>
-                                <td class="border px-4 py-2">{{ producto.product_id.ancho }}</td>
-                                <td class="border px-4 py-2">{{ producto.product_id.alto }}</td>
-
-                                {% with remision_data=remisiones_dict|get_item:producto.product_id.id %}
-                                    <td class="border px-4 py-2">
-                                        {% if remision_data.entregas %}
-                                            <ul>
-                                                {% for entrega in remision_data.entregas %}
-                                                    <li>
-                                                        {{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}da{% endif %} entrega: {{ entrega.cantidad_entregada }}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        {% else %}
-                                            <p>Sin entregas</p>
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
-                                    <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
-                                    <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
-                                {% endwith %}
+                <h2 class="text-xl font-semibold text-gray-800 mt-10 mb-4 flex items-center gap-2">
+                    <i class="fas fa-table"></i> Tabla de entregas
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-gray-300 text-sm">
+                        <thead>
+                            <tr class="bg-gray-200 text-left">
+                                <th class="border px-4 py-2">Cotización</th>
+                                <th class="border px-4 py-2">Producto</th>
+                                <th class="border px-4 py-2">Cantidad</th>
+                                <th class="border px-4 py-2">Largo</th>
+                                <th class="border px-4 py-2">Ancho</th>
+                                <th class="border px-4 py-2">Alto</th>
+                                <th class="border px-4 py-2">Entrega</th>
+                                <th class="border px-4 py-2">Total</th>
+                                <th class="border px-4 py-2">Restante</th>
+                                <th class="border px-4 py-2">Estado</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos_cotizacion %}
+                                <tr class="bg-white hover:bg-gray-100">
+                                    <td class="border px-4 py-2">{{ cotizacion.id }}</td>
+                                    <td class="border px-4 py-2">{{ producto.product_id.nombre }}</td>
+                                    <td class="border px-4 py-2">{{ producto.cantidad }}</td>
+                                    <td class="border px-4 py-2">{{ producto.product_id.largo }}</td>
+                                    <td class="border px-4 py-2">{{ producto.product_id.ancho }}</td>
+                                    <td class="border px-4 py-2">{{ producto.product_id.alto }}</td>
+                                    {% with remision_data=remisiones_dict|get_item:producto.product_id.id %}
+                                        <td class="border px-4 py-2">
+                                            {% if remision_data.entregas %}
+                                                <ul class="list-disc pl-5">
+                                                    {% for entrega in remision_data.entregas %}
+                                                        <li>{{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}da{% endif %} entrega: {{ entrega.cantidad_entregada }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <span class="text-gray-500 italic">Sin entregas</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
+                                        <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
+                                        <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
+                                    {% endwith %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     {% else %}
-        <div class="flex flex-col items-center justify-center min-h-screen text-center">
+        <div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
             <h2 class="text-2xl font-semibold text-gray-700">No está autenticado</h2>
-            <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar sesión</a>
+            <a href="{% url 'login' %}" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </a>
         </div>
     {% endif %}
 </body>

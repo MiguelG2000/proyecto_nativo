@@ -12,7 +12,7 @@
 
         <!-- Checkbox para marcar como cotización -->
         <div class="mb-4">
-            <input type="checkbox" id="es_cotizacion" name="es_cotizacion" class="mr-2">
+            <input type="checkbox" id="es_cotizacion" name="es_cotizacion" class="mr-2" checked>
             <label for="es_cotizacion" class="text-sm font-medium text-gray-700">¿Es cotización?</label>
         </div>
 
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Contenedor para ocultar si es cotización -->
-        <div id="datos_entrega">
+        <div id="datos_entrega" style="display: block;"> <!-- Inicialmente visible -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="fecha_entrega" class="block mt-4 text-sm font-medium text-gray-700">Fecha de Entrega:</label>
@@ -123,6 +123,11 @@
             // Manejo del checkbox para ocultar/mostrar datos de entrega
             const checkboxCotizacion = document.getElementById("es_cotizacion");
             const datosEntrega = document.getElementById("datos_entrega");
+
+            // Al cargar, verificamos el estado del checkbox
+            if (checkboxCotizacion.checked) {
+                datosEntrega.style.display = "none";
+            }
 
             checkboxCotizacion.addEventListener("change", function () {
                 if (this.checked) {

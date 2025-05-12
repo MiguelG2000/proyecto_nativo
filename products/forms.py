@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['nombre', 'descripcion', 'categoria', 'volumen', 'unidad', 'inventario', 'precio_general', 'precio_distribuidor', 'thumbnail']
+        fields = ['nombre', 'descripcion', 'categoria', 'volumen', 'unidad', 'inventario', 'precio_general', 'precio_distribuidor']
 
     def clean_volumen(self):
         volumen = self.cleaned_data.get('volumen')

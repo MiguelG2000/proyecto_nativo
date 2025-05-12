@@ -22,15 +22,6 @@ def create_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
-
-            # Guardar imagen si existe
-            if 'thumbnail' in request.FILES:
-                imagen = request.FILES['thumbnail']
-                if imagen.size > 5 * 1024 * 1024:  # Limitar tamaño de imagen a 5MB
-                    form.add_error("thumbnail", "La imagen no puede superar los 5MB.")
-                else:
-                    product.thumbnail = default_storage.save(f'images/{imagen.name}', imagen)
-
             product.save()
             return redirect(reverse_lazy('products'))
         else:
@@ -59,15 +50,6 @@ def update_product(request, product_id):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             product = form.save(commit=False)
-
-            # Manejo del archivo de imagen
-            if 'imagen' in request.FILES:
-                imagen = request.FILES['imagen']
-                if imagen.size > 5 * 1024 * 1024:  # Limitar tamaño de imagen a 5MB
-                    form.add_error("thumbnail", "La imagen no puede superar los 5MB.")
-                else:
-                    product.thumbnail = default_storage.save(f'images/{imagen.name}', imagen)
-
             product.save()
             return redirect(reverse_lazy('products'))
         else:

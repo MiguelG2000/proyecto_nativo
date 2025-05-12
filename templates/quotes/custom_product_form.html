@@ -1,9 +1,10 @@
-<button id="btnAgregarProducto" class="bg-blue-500 text-white px-4 py-2 rounded mt-10 hover:bg-green-600">
-    Agregar Producto Personalizado
+<button id="btnAgregarProducto" class="bg-blue-600 text-white px-4 py-2 rounded mt-10 hover:bg-green-600 flex items-center gap-2 shadow-md">
+    <i class="fas fa-plus-circle"></i> Agregar Producto Personalizado
 </button>
-
-<div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto hidden">
-    <h3 class="text-lg font-semibold mb-4">Agregar un nuevo producto personalizado</h3>
+<div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-6 hidden">
+    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
+        <i class="fas fa-box"></i> Agregar un nuevo producto personalizado
+    </h3>
     <form method="POST" action="{% url 'add_custom_product_to_quote' cotizaciones.id %}">
         {% csrf_token %}
         <input type="hidden" name="quote_id" value="{{ cotizaciones.id }}">
@@ -11,37 +12,37 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" name="nombre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="nombre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Cantidad</label>
-                <input type="number" name="cantidad" min="1" value="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" name="cantidad" min="1" value="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Largo</label>
-                <input type="number" step="any" name="largo" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" step="any" name="largo" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Ancho</label>
-                <input type="number" step="any" name="ancho" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" step="any" name="ancho" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Alto</label>
-                <input type="number" step="any" name="alto" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" step="any" name="alto" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">Precio Unitario</label>
-            <input type="number" step="any" name="precio_general" value="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            <input type="number" step="any" name="precio_general" value="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <div class="flex justify-end">
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Guardar
+        <div class="flex justify-end gap-4">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2 shadow-md">
+                <i class="fas fa-save"></i> Guardar
             </button>
         </div>
     </form>
