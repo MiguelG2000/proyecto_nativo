@@ -12,7 +12,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 
 from products.models import Product
-
+from cliente.models import Cliente
 from cotizaciones.models import (
     Cotizaciones,
     CotizacionProduct,
@@ -93,6 +93,7 @@ def generate_qr(direccion):
 
 
 def create_quote(request):
+    clientes = Cliente.objects.all()
     if request.method == 'POST':
         fecha_entrega = request.POST.get("fecha_entrega", "").strip()
         fecha_entrega = parse_date(fecha_entrega) if fecha_entrega else None
@@ -118,7 +119,10 @@ def create_quote(request):
         quote.calcular_iva()
 
         return redirect(reverse_lazy('list_quotes'))
-    return render(request, 'quotes/form.html')
+    context = {
+        'clientes': clientes,
+    }
+    return render(request, 'quotes/form.html', context)
 
 
 def update_quote(request, id):

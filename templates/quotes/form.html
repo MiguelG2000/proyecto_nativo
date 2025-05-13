@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Crear Cotización</title>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
 <body class="bg-gray-100 p-8">
     {% include 'nav_bar.html' %}
@@ -17,15 +19,24 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Cliente -->
             <div>
-                <label for="cliente" class="block text-sm font-medium text-gray-700">Cliente:</label>
-                <input type="text" name="cliente" id="cliente" value="{{ quote.cliente }}" placeholder="Nombre del Cliente" required
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-gray-700 font-medium">Cliente</label>
+                <select name="cliente" id="cliente" required class="...">
+                    <option value="">Seleccione un cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.nombre }}" data-telefono="{{ cliente.telefono }}">
+                            {{ cliente.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
+
+            <!-- Teléfono autocompletado -->
             <div>
-                <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono del Cliente:</label>
-                <input type="text" name="telefono" id="telefono" value="{{ quote.telefono }}" placeholder="Teléfono del Cliente" required
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-gray-700 font-medium">Teléfono</label>
+                <input type="text" name="telefono" id="telefono" readonly
+                       class="mt-1 block w-full p-2 border border-gray-300 bg-gray-100 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
@@ -137,6 +148,27 @@
                 }
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        // Choices.js para el select de cliente
+        const clienteSelect = new Choices('#cliente', {
+            searchEnabled: true,
+            itemSelectText: '',
+            noResultsText: 'Sin resultados',
+            placeholder: true,
+            placeholderValue: 'Selecciona un cliente...',
+        });
+
+        const telefonoInput = document.getElementById("telefono");
+        const clienteElement = document.getElementById("cliente");
+
+        // Al cambiar el cliente, actualiza el campo teléfono
+        clienteElement.addEventListener("change", function () {
+            const selectedOption = clienteElement.options[clienteElement.selectedIndex];
+            const telefono = selectedOption.getAttribute("data-telefono") || '';
+            telefonoInput.value = telefono;
+        });
+    });
     </script>
 </body>
 </html>

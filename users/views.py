@@ -39,7 +39,7 @@ def login(request):
     ).order_by('fecha')[:5]
 
     notificaciones = len(products_alert) + len(upcoming_deliveries) + len(upcoming_events)
-    mensajes = Cliente.objects.all()
+    mensajes = Cliente.objects.exclude(mensaje = None)
     mes_actual = datetime.now().month
 
     total_mes_query = (

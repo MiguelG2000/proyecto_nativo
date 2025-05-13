@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Catálogo de Clientes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-KM+2d+..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+{% if request.user.is_authenticated %}
+  {% include 'nav_bar.html' %}
+
+  <div class="animate__animated animate__fadeIn">
+    <div class="container mx-auto px-4 md:px-6 lg:px-8 mt-28 mb-24 max-w-7xl">
+      <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-8">
+        <h2 class="text-2xl font-semibold text-black flex items-center gap-2">
+          <i class="fa-solid fa-users text-blue-500"></i> Catálogo de Clientes
+        </h2>
+
+        <!-- Formulario -->
+        <form method="POST" action="{% if cliente %}{% url 'edit_client' cliente.cliente_id %}{% else %}{% url 'create_client' %}{% endif %}" class="space-y-4">
+          {% csrf_token %}
+
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Nombre</label>
+            <input type="text" name="nombre" placeholder="Nombre del cliente" value="{{ cliente.nombre|default:'' }}" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Teléfono</label>
+            <input type="number" name="telefono" placeholder="Teléfono del cliente" value="{{ cliente.telefono|default:'' }}" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+          </div>
+
+          <button type="submit" class="w-full {{ cliente|yesno:'bg-yellow-600 hover:bg-yellow-700,bg-blue-600 hover:bg-blue-700' }} text-white py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
+            <i class="fa-solid {{ cliente|yesno:'fa-save,fa-plus' }}"></i>
+            {% if cliente %}Guardar cambios{% else %}Agregar nuevo cliente{% endif %}
+          </button>
+        </form>
+
+        <!-- Tabla -->
+        <div class="overflow-x-auto">
+          <table class="w-full mt-6 text-sm text-center border border-gray-200 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-blue-100 text-blue-800">
+              <tr>
+                <th class="py-3 px-4 whitespace-nowrap">Nombre</th>
+                <th class="py-3 px-4 whitespace-nowrap">Teléfono</th>
+                <th class="py-3 px-4 whitespace-nowrap">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              {% for cliente in clientes %}
+              <tr class="hover:bg-gray-50 border-b">
+                <td class="py-2 px-4">{{ cliente.nombre }}</td>
+                <td class="py-2 px-4">{{ cliente.telefono }}</td>
+                <td class="py-2 px-4 space-x-2">
+                  <a href="{% url 'edit_client' cliente.cliente_id %}" class="text-yellow-600 hover:text-yellow-800 transition inline-flex items-center gap-1">
+                    <i class="fas fa-pen-to-square"></i> <span class="hidden sm:inline">Editar</span>
+                  </a>
+                  <a href="{% url 'delete_client' cliente.cliente_id %}" class="text-red-600 hover:text-red-800 transition inline-flex items-center gap-1">
+                    <i class="fa-solid fa-trash"></i> <span class="hidden sm:inline">Eliminar</span>
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="3" class="py-4 text-gray-500">No hay clientes registrados.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</body>
+</html>

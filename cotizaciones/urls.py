@@ -15,6 +15,12 @@ from cotizaciones.views import (
 )
 from cotizaciones.pdf import generate_quote_pdf
 from cotizaciones.remisiones import generate_remission_pdf
+from cliente.views import (
+    view_client,
+    create_client,
+    edit_client,
+    delete_client,
+)
 
 urlpatterns = [
     path('', quotes_view, name='list_quotes'),
@@ -30,5 +36,9 @@ urlpatterns = [
     path('remission/<str:id>/', view_remission, name='view_remission'),
     path('remission/<str:id>/pdf/', generate_remission_pdf, name='generate_remission_pdf'),
     path('remission/edit/<str:entrega_id>/', edit_remission, name='edit_remission'),
+    path('client/', view_client, name='view_client'),
+    path('client/create/', create_client, name='create_client'),
+    path('client/edit/<int:cliente_id>/', edit_client, name='edit_client'),
+    path('client/delete/<int:cliente_id>/', delete_client, name='delete_client'),
 
 ]

@@ -20,6 +20,9 @@
                 <a href="{% url 'create_quote' %}" class="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
                     <i class="fas fa-file-circle-plus mr-2"></i> Nueva cotización
                 </a>
+                <a href="{% url 'view_client' %}" class="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
+                    <i class="fas fa-solid fa-user-plus mr-2"></i> Agregar y ver catalogo de clientes
+                </a>
                 <input type="text" id="search" onkeyup="filterQuotes()" placeholder="Buscar por número o fecha..." class="w-full sm:w-1/2 border border-gray-300 p-3 rounded-lg">
             </div>
 
