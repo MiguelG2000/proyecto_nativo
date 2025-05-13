@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from textwrap import wrap
 from cotizaciones.models import Cotizaciones, Remisiones, Entregas, CotizacionProduct
 from datetime import datetime
 from cotizaciones.views import generate_qr
@@ -106,50 +107,69 @@ def generate_remission_pdf(request, id):
     for remision in remisiones:
         y = verificar_pagina(pdf, y + 5, margen=150)
 
-        # Obtener entregas ordenadas de manera descendente
         entregas = Entregas.objects.filter(remision=remision).order_by('-id')
         entregas_lista = [f"{i + 1}er entrega: {ent.cantidad_entregada}" for i, ent in enumerate(entregas)]
 
         cotizacion_producto = CotizacionProduct.objects.filter(
             cotizacion_id=cotizacion, product_id=remision.product_id
         ).first()
-
         cantidad_cotizada = cotizacion_producto.cantidad if cotizacion_producto else 0
 
-        # Formatear entregas en varias líneas dentro de la celda
-        entregas_formateadas = "\n".join(entregas_lista)
+        # Coordenadas X centrales de las columnas
+        x_centros = [(col_positions[i] + col_positions[i + 1]) / 2 for i in range(len(col_positions) - 1)]
 
-        pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, remision.product_id.nombre[:30])
-        pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(cantidad_cotizada))
-        pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y,
-                              f"{remision.product_id.largo if remision.product_id.largo is not None else 0.00:.2f}")
-        pdf.drawCentredString((col_positions[3] + col_positions[4]) / 2, y,
-                              f"{remision.product_id.ancho if remision.product_id.ancho is not None else 0.00:.2f}")
-        pdf.drawCentredString((col_positions[4] + col_positions[5]) / 2, y,
-                              f"{remision.product_id.alto if remision.product_id.alto is not None else 0.00:.2f}")
-        pdf.drawCentredString((col_positions[5] + col_positions[6]) / 2, y,
-                              f"{remision.product_id.volumen if remision.product_id.volumen is not None else 0.00:.2f}")
+        # Obtener producto y decidir qué texto mostrar
+        producto = remision.product_id
+        nombre_o_descripcion = producto.descripcion if not producto.otro else producto.nombre
 
-        text = pdf.beginText(col_positions[6] + 5, y)  # Iniciar texto en la celda de entregas
-        text.setFont("Helvetica", 8)
+        # Calcular el ancho permitido para la columna
+        ancho_columna = col_positions[1] - col_positions[0] - 4  # Margen de 2px a cada lado
 
-        for entrega in entregas_lista:
-            text.textLine(entrega)  # Agregar cada entrega en una línea
+        # Calcular caracteres aproximados por línea
+        caracteres_por_linea = int(ancho_columna / pdf.stringWidth("X", "Helvetica", 8))
 
-        pdf.drawText(text)  # Dibujar el texto en el PDF
-        pdf.drawCentredString((col_positions[7] + col_positions[8]) / 2, y, str(remision.entrega))
-        pdf.drawCentredString((col_positions[8] + col_positions[9]) / 2, y, str(remision.restante))
-        pdf.drawCentredString((col_positions[9] + col_positions[10]) / 2, y, remision.status)
+        # Dividir en líneas usando wrap
+        lineas_concepto = wrap(nombre_o_descripcion, width=caracteres_por_linea)
+        num_lineas_concepto = len(lineas_concepto)
 
-        # Determinar la cantidad de líneas necesarias para la celda de entregas
+        # Medir el número de líneas para entregas
         num_lineas_entregas = max(len(entregas_lista), 1)
-        altura_fila = 15 + (8 * num_lineas_entregas)  # Ajustar espacio con más precisión
 
-        # Ajustar la línea horizontal después de imprimir las entregas
-        line_y = y - (8 * (num_lineas_entregas - 1)) - 10  # Ajustar la posición final de la línea
+        # Calcular altura de la fila tomando el mayor número de líneas
+        altura_fila = 15 + 8 * max(num_lineas_entregas, num_lineas_concepto)
+
+        # Imprimir Concepto (alineado a la izquierda con margen)
+        pdf.setFont("Helvetica", 8)
+        text = pdf.beginText(col_positions[0] + 2, y)
+        text.setFont("Helvetica", 8)
+        for linea in lineas_concepto:
+            text.textLine(linea)
+        pdf.drawText(text)
+
+        # Imprimir el resto de columnas alineadas centradas
+        pdf.drawCentredString(x_centros[1], y, str(cantidad_cotizada))
+        pdf.drawCentredString(x_centros[2], y, f"{remision.product_id.largo or 0.00:.2f}")
+        pdf.drawCentredString(x_centros[3], y, f"{remision.product_id.ancho or 0.00:.2f}")
+        pdf.drawCentredString(x_centros[4], y, f"{remision.product_id.alto or 0.00:.2f}")
+        pdf.drawCentredString(x_centros[5], y, f"{remision.product_id.volumen or 0.00:.2f}")
+
+        # Imprimir entregas multilínea
+        text_entregas = pdf.beginText(col_positions[6] + 5, y)
+        text_entregas.setFont("Helvetica", 8)
+        for entrega in entregas_lista:
+            text_entregas.textLine(entrega)
+        pdf.drawText(text_entregas)
+
+        # Campos finales
+        pdf.drawCentredString(x_centros[7], y, str(remision.entrega))
+        pdf.drawCentredString(x_centros[8], y, str(remision.restante))
+        pdf.drawCentredString(x_centros[9], y, remision.status)
+
+        # Línea final bajo la fila
+        line_y = y - (8 * (max(num_lineas_entregas, num_lineas_concepto) - 1)) - 10
         pdf.line(30, line_y, width - 40, line_y)
 
-        # Reducir correctamente el espacio para la siguiente fila
+        # Mover cursor
         y -= altura_fila + 2
 
     # Términos y Condiciones

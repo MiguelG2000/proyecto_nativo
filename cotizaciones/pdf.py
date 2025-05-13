@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from reportlab.lib.utils import simpleSplit
 from rich.filesize import decimal
 
 from cotizaciones.models import Cotizaciones, CotizacionProduct
@@ -124,16 +125,36 @@ def generate_quote_pdf(request, id):
 
         pdf.setFont("Helvetica", 8)
         for producto in productos:
-            y = verificar_pagina(pdf, y, margen = 150)
-            pdf.drawCentredString((col_positions[0] + col_positions[1]) / 2, y, producto.product_id.unidad)
-            pdf.drawCentredString((col_positions[1] + col_positions[2]) / 2, y, str(producto.cantidad))
-            pdf.drawCentredString((col_positions[2] + col_positions[3]) / 2, y, producto.product_id.nombre)
-            pdf.drawCentredString((col_positions[3] + col_positions[4]) / 2, y, f"${producto.phistorico:,.2f}")
-            pdf.drawCentredString((col_positions[4] + col_positions[5]) / 2, y, f"${producto.subtotal:,.2f}")
+            y = verificar_pagina(pdf, y, margen=150)
 
-            # Línea horizontal para separar filas (corregida)
-            pdf.line(40, y - 5, width - 40, y - 5)
-            y -= 20  # Espaciado entre filas
+            unidad_x = (col_positions[0] + col_positions[1]) / 2
+            cantidad_x = (col_positions[1] + col_positions[2]) / 2
+            descripcion_x = (col_positions[2] + col_positions[3]) / 2
+            pu_x = (col_positions[3] + col_positions[4]) / 2
+            total_x = (col_positions[4] + col_positions[5]) / 2
+
+            # Ancho máximo para la descripción
+            max_width = col_positions[3] - col_positions[2] - 10  # 10 de margen lateral
+            lines = simpleSplit(producto.product_id.descripcion, "Helvetica", 8, max_width)
+
+            # Dibujar unidad y cantidad (alineación vertical con la primera línea)
+            pdf.drawCentredString(unidad_x, y, producto.product_id.unidad)
+            pdf.drawCentredString(cantidad_x, y, str(producto.cantidad))
+
+            # Dibujar descripción multilínea
+            for i, line in enumerate(lines):
+                pdf.drawCentredString(descripcion_x, y - (i * 10), line)
+
+            # Dibujar P.U. y Total alineados a la primera línea
+            pdf.drawCentredString(pu_x, y, f"${producto.phistorico:,.2f}")
+            pdf.drawCentredString(total_x, y, f"${producto.subtotal:,.2f}")
+
+            # Dibujar línea separadora bajo el bloque de descripción
+            altura_fila = len(lines) * 10
+            pdf.line(40, y - altura_fila - 5, width - 40, y - altura_fila - 5)
+
+            # Mover el cursor hacia abajo para la siguiente fila
+            y -= altura_fila + 10
 
     # *** TABLA DE PRODUCTOS PERSONALIZADOS ***
     if productosPer.exists():
