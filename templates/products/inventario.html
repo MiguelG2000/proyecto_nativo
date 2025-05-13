@@ -5,7 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .sortable:hover {
+            background-color: #f3f4f6;
+            cursor: pointer;
+        }
+        .sort-icon {
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+        .sorted-asc .sort-icon::after {
+            content: "↑";
+        }
+        .sorted-desc .sort-icon::after {
+            content: "↓";
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 {% if request.user.is_authenticated %}
@@ -27,20 +43,23 @@
             <table id="productsTable" class="min-w-full border border-gray-200 rounded-lg text-sm text-gray-700">
                 <thead class="bg-gray-100 text-gray-700 sticky top-0 z-10">
                     <tr>
-                        <th class="py-3 px-4 text-left">Nombre</th>
-                        <th class="py-3 px-4 text-left">Descripción</th>
-                        <th class="py-3 px-4 text-left">Categoría</th>
-                        <th class="py-3 px-4 text-left">Volumen</th>
-                        <th class="py-3 px-4 text-left">Unidad</th>
-                        <th class="py-3 px-4 text-left">Inventario</th>
-                        <th class="py-3 px-4 text-left">Precio Público</th>
-                        <th class="py-3 px-4 text-left">Precio Distribuidor</th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="nombre">Nombre <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="descripcion">Descripción <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="categoria">Categoría <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="volumen">Volumen <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="unidad">Unidad <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="inventario">Inventario <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="precio_general">Precio Público <span class="sort-icon"></span></th>
+                        <th class="py-3 px-4 text-left sortable" data-sort="precio_distribuidor">Precio Distribuidor <span class="sort-icon"></span></th>
                         <th class="py-3 px-4 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for product in products %}
-                    <tr class="border-t hover:bg-gray-50 transition">
+                    <tr class="border-t hover:bg-gray-50 transition" data-nombre="{{ product.nombre|lower }}"
+                        data-categoria="{{ product.categoria|lower }}" data-volumen="{{ product.volumen }}"
+                        data-inventario="{{ product.inventario }}" data-precio_general="{{ product.precio_general }}"
+                        data-precio_distribuidor="{{ product.precio_distribuidor }}">
                         <td class="py-3 px-4 product-name">{{ product.nombre }}</td>
                         <td class="py-3 px-4">{{ product.descripcion }}</td>
                         <td class="py-3 px-4">{{ product.categoria }}</td>
@@ -75,8 +94,59 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("searchInput");
-        const tableRows = document.querySelectorAll("#productsTable tbody tr");
+        const table = document.getElementById("productsTable");
+        const tableRows = Array.from(document.querySelectorAll("#productsTable tbody tr"));
+        const headers = document.querySelectorAll(".sortable");
 
+        let currentSort = { column: null, direction: 'asc' };
+
+        // Función para ordenar la tabla
+        function sortTable(column, direction) {
+            tableRows.sort((a, b) => {
+                let aValue = a.dataset[column] || a.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.dataset.sort === column) + 1}`).textContent.toLowerCase();
+                let bValue = b.dataset[column] || b.querySelector(`td:nth-child(${Array.from(headers).findIndex(h => h.dataset.sort === column) + 1}`).textContent.toLowerCase();
+
+                // Para ordenamiento numérico
+                if (['volumen', 'inventario', 'precio_general', 'precio_distribuidor'].includes(column)) {
+                    aValue = parseFloat(aValue) || 0;
+                    bValue = parseFloat(bValue) || 0;
+                    return direction === 'asc' ? aValue - bValue : bValue - aValue;
+                }
+
+                // Para ordenamiento de texto
+                return direction === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+            });
+
+            // Reinsertar filas en el nuevo orden
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+            tableRows.forEach(row => tbody.appendChild(row));
+
+            // Actualizar indicadores visuales
+            headers.forEach(header => {
+                header.classList.remove('sorted-asc', 'sorted-desc');
+                if (header.dataset.sort === column) {
+                    header.classList.add(direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                }
+            });
+        }
+
+        // Event listeners para los encabezados
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const column = header.dataset.sort;
+                if (currentSort.column === column) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = { column, direction: 'asc' };
+                }
+                sortTable(currentSort.column, currentSort.direction);
+            });
+        });
+
+        // Búsqueda
         searchInput.addEventListener("keyup", function () {
             const query = searchInput.value.toLowerCase();
             tableRows.forEach(row => {
@@ -84,6 +154,10 @@
                 row.style.display = productName.includes(query) ? "" : "none";
             });
         });
+
+        // Orden inicial por categoría y nombre
+        sortTable('categoria', 'asc');
+        sortTable('nombre', 'asc');
     });
 </script>
 </body>

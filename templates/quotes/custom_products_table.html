@@ -34,6 +34,10 @@
                         <td class="px-4 py-3">{{ cotizacionPro.product_id.volumen_total }} cm³</td>
                         <td class="px-4 py-3">${{ cotizacionPro.subtotal|moneda }}</td>
                         <td class="px-4 py-3 text-center">
+                            <a href="#" onclick="editarProducto('{{ cotizacionPro.product_id.id }}', '{{ cotizacionPro.product_id.nombre }}', '{{ cotizacionPro.cantidad }}', '{{ cotizacionPro.product_id.largo }}', '{{ cotizacionPro.product_id.ancho }}', '{{ cotizacionPro.product_id.alto }}', '{{ cotizacionPro.product_id.precio_general }}')"
+                               class="text-blue-600 hover:text-blue-800 transition inline-flex items-center gap-1 text-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
                             <a href="{% url 'delete_product_from_quote' cotizacionPro.id %}"
                                class="text-red-600 hover:text-red-800 transition inline-flex items-center gap-1 text-sm delete-product">
                                 <i class="fas fa-trash-alt"></i> Eliminar

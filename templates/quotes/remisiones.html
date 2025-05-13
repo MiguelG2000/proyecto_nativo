@@ -148,20 +148,28 @@
                                     <td class="border px-4 py-2">{{ producto.product_id.ancho }}</td>
                                     <td class="border px-4 py-2">{{ producto.product_id.alto }}</td>
                                     {% with remision_data=remisiones_dict|get_item:producto.product_id.id %}
-                                        <td class="border px-4 py-2">
-                                            {% if remision_data.entregas %}
-                                                <ul class="list-disc pl-5">
-                                                    {% for entrega in remision_data.entregas %}
-                                                        <li>{{ forloop.counter }}{% if forloop.counter == 1 %}er{% else %}da{% endif %} entrega: {{ entrega.cantidad_entregada }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% else %}
-                                                <span class="text-gray-500 italic">Sin entregas</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
-                                        <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
-                                        <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
+                                    <td class="border px-4 py-2">
+                                        {% if remision_data.entregas %}
+                                            <ul class="space-y-2">
+                                                {% for entrega in remision_data.entregas %}
+                                                <li>
+                                                    <form method="POST" action="{% url 'edit_remission' entrega.id %}" class="flex items-center gap-2">
+                                                        {% csrf_token %}
+                                                        <input type="number" name="nueva_cantidad" value="{{ entrega.cantidad_entregada }}" min="1" class="border rounded px-2 py-1 w-20">
+                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-save"></i>
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span class="text-gray-500 italic">Sin entregas</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="border px-4 py-2">{{ remision_data.remision.total|default:"0" }}</td>
+                                    <td class="border px-4 py-2">{{ remision_data.remision.restante|default:"0" }}</td>
+                                    <td class="border px-4 py-2">{{ remision_data.remision.status|default:"Pendiente" }}</td>
                                     {% endwith %}
                                 </tr>
                             {% endfor %}

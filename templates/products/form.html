@@ -46,9 +46,11 @@
 
             <div>
                 <label class="block text-gray-700 font-medium">Categoría</label>
-                <select name="categoria" id="categoria" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <select name="categoria" id="categoria" required class="...">
                     {% for categoria in categorias %}
-                        <option value="{{ categoria.nombre }}">{{ categoria.nombre }}</option>
+                        <option value="{{ categoria.nombre }}" {% if categoria.nombre == product.categoria %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
@@ -61,9 +63,11 @@
 
             <div>
                 <label class="block text-gray-700 font-medium">Unidad</label>
-                <select name="unidad" id="unidad" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <select name="unidad" id="unidad" required class="...">
                     {% for unidad in unidades %}
-                        <option value="{{ unidad.nombre }}">{{ unidad.nombre }}</option>
+                        <option value="{{ unidad.nombre }}" {% if unidad.nombre == product.unidad %}selected{% endif %}>
+                            {{ unidad.nombre }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>

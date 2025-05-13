@@ -10,7 +10,7 @@ from products.models import Product, Categorias, Unidades
 # Create your views here.
 #CRUD
 def products_view(request):
-    products = Product.objects.filter(otro = False)
+    products = Product.objects.filter(otro = False).order_by( 'nombre', 'categoria')
     context = {"products": products}
     return render(request, 'products/inventario.html', context)
 

@@ -1,4 +1,3 @@
-
 import qrcode
 from io import BytesIO
 from datetime import datetime
@@ -244,6 +243,53 @@ def add_custom_product_to_quote(request, id):
 
     return redirect(reverse("details", kwargs={"id": id}))
 
+
+def edit_custom_product(request, id):
+    if request.method == "POST":
+        cotizacion = get_object_or_404(Cotizaciones, id=id)
+        product_id = request.POST.get("product_id")
+        product = get_object_or_404(Product, id=product_id)
+
+        # Verificar que el producto sea personalizado (otro=True)
+        if not product.otro:
+            messages.error(request, "Solo se pueden editar productos personalizados.")
+            return redirect(reverse("details", kwargs={"id": id}))
+
+        # Convertir los valores a tipos numéricos correctos
+        largo = float(request.POST["largo"]) if request.POST["largo"] else 0
+        ancho = float(request.POST["ancho"]) if request.POST["ancho"] else 0
+        alto = float(request.POST["alto"]) if request.POST["alto"] else 0
+        precio_general = float(request.POST["precio_general"]) if request.POST["precio_general"] else 0
+        cantidad = int(request.POST["cantidad"]) if request.POST["cantidad"] else 1
+
+        # Actualizar el producto
+        product.nombre = request.POST["nombre"]
+        product.largo = largo
+        product.ancho = ancho
+        product.alto = alto
+        product.precio_general = precio_general
+        product.save()
+
+        # Buscar y actualizar la relación cotización-producto
+        cotizacion_product = CotizacionProduct.objects.filter(
+            cotizacion_id=cotizacion,
+            product_id=product
+        ).first()
+
+        if cotizacion_product:
+            cotizacion_product.cantidad = cantidad
+            cotizacion_product.phistorico = product.precio_general
+            cotizacion_product.save()
+
+        # Actualizar el volumen y recalcular IVA
+        product.update_volumen()
+        cotizacion.calcular_iva()
+
+        messages.success(request, "Producto personalizado actualizado con éxito.")
+        return redirect(reverse("details", kwargs={"id": id}))
+
+    return redirect(reverse("details", kwargs={"id": id}))
+
 def delete_product_from_quote(request, id):
     cotizacion_product = get_object_or_404(CotizacionProduct, id=id)
     cotizacion_id = cotizacion_product.cotizacion_id.id
@@ -322,3 +368,21 @@ def view_remission(request, id):
     }
 
     return render(request, "quotes/remisiones.html", context)
+
+def edit_remission(request, entrega_id):
+    if request.method == "POST":
+        entrega = get_object_or_404(Entregas, id=entrega_id)
+        nueva_cantidad = int(request.POST.get("nueva_cantidad"))
+
+        # Evitar exceder lo cotizado
+        remision = entrega.remision  # Asumiendo que tienes una FK llamada `remision`
+        cotizado = remision.restante + entrega.cantidad_entregada  # resta lo actual
+
+        if nueva_cantidad > cotizado:
+            # Puedes usar mensajes o redirigir con error
+            return redirect('view_remission', id=remision.cotizacion_id.id)
+
+        entrega.cantidad_entregada = nueva_cantidad
+        entrega.save()
+        remision.actualizar_totales()
+    return redirect('view_remission', id=remision.cotizacion_id.id)

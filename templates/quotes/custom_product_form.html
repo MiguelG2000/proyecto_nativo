@@ -1,9 +1,12 @@
+<!-- Botón para agregar producto personalizado -->
 <button id="btnAgregarProducto" class="bg-blue-600 text-white px-4 py-2 rounded mt-10 hover:bg-green-600 flex items-center gap-2 shadow-md">
     <i class="fas fa-plus-circle"></i> Agregar Producto Personalizado
 </button>
+
+<!-- Formulario para AGREGAR producto personalizado -->
 <div id="formularioProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-6 hidden">
     <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
-        <i class="fas fa-box"></i> Agregar un nuevo producto personalizado
+        <i class="fas fa-plus-circle"></i> Nuevo Producto Personalizado
     </h3>
     <form method="POST" action="{% url 'add_custom_product_to_quote' cotizaciones.id %}">
         {% csrf_token %}
@@ -11,44 +14,139 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" name="nombre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+                <input type="text" name="nombre" placeholder="Nombre del producto" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Cantidad</label>
-                <input type="number" name="cantidad" min="1" value="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">Cantidad*</label>
+                <input type="number" name="cantidad" min="1" value="1" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Largo</label>
-                <input type="number" step="any" name="largo" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">Largo (cm)</label>
+                <input type="number" step="0.01" name="largo" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Ancho</label>
-                <input type="number" step="any" name="ancho" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">Ancho (cm)</label>
+                <input type="number" step="0.01" name="ancho" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Alto</label>
-                <input type="number" step="any" name="alto" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">Alto (cm)</label>
+                <input type="number" step="0.01" name="alto" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Precio Unitario</label>
-            <input type="number" step="any" name="precio_general" value="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <label class="block text-sm font-medium text-gray-700">Precio Unitario*</label>
+            <input type="number" step="0.01" name="precio_general" value="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
         </div>
 
         <div class="flex justify-end gap-4">
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2 shadow-md">
-                <i class="fas fa-save"></i> Guardar
+            <button type="button" onclick="document.getElementById('formularioProductoPersonalizado').classList.add('hidden')"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center gap-2 shadow-md">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center gap-2 shadow-md">
+                <i class="fas fa-save"></i> Guardar Producto
             </button>
         </div>
     </form>
 </div>
+
+<!-- Formulario para EDITAR producto personalizado -->
+<div id="formularioEditarProductoPersonalizado" class="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-6 hidden">
+    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
+        <i class="fas fa-edit"></i> Editar Producto Personalizado
+    </h3>
+    <form method="POST" action="{% url 'edit_custom_product' cotizaciones.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="edit_product_id">
+        <input type="hidden" name="quote_id" value="{{ cotizaciones.id }}">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre*</label>
+                <input type="text" name="nombre" id="edit_nombre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Cantidad*</label>
+                <input type="number" name="cantidad" id="edit_cantidad" min="1" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Largo (cm)</label>
+                <input type="number" step="0.01" name="largo" id="edit_largo" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Ancho (cm)</label>
+                <input type="number" step="0.01" name="ancho" id="edit_ancho" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Alto (cm)</label>
+                <input type="number" step="0.01" name="alto" id="edit_alto" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Precio Unitario*</label>
+            <input type="number" step="0.01" name="precio_general" id="edit_precio_general" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <div class="flex justify-end gap-4">
+            <button type="button" id="btnCancelarEdicion"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center gap-2 shadow-md">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2 shadow-md">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </form>
+</div>
+
 <script>
-    document.getElementById("btnAgregarProducto").addEventListener("click", function () {
-        document.getElementById("formularioProductoPersonalizado").classList.toggle("hidden");
+    // Mostrar/ocultar formulario de AGREGAR producto
+    document.getElementById("btnAgregarProducto").addEventListener("click", function() {
+        const addForm = document.getElementById("formularioProductoPersonalizado");
+        const editForm = document.getElementById("formularioEditarProductoPersonalizado");
+
+        addForm.classList.toggle("hidden");
+        // Asegurarse que el formulario de edición esté oculto
+        editForm.classList.add("hidden");
+
+        // Desplazarse al formulario si se muestra
+        if (!addForm.classList.contains("hidden")) {
+            addForm.scrollIntoView({ behavior: 'smooth' });
+        }
     });
+
+    // Cancelar edición
+    document.getElementById("btnCancelarEdicion").addEventListener("click", function() {
+        document.getElementById("formularioEditarProductoPersonalizado").classList.add("hidden");
+    });
+
+    // Función para editar producto (llamada desde la tabla)
+    function editarProducto(id, nombre, cantidad, largo, ancho, alto, precio) {
+        // Ocultar formulario de agregar si está visible
+        document.getElementById("formularioProductoPersonalizado").classList.add("hidden");
+
+        // Mostrar y rellenar formulario de edición
+        const editForm = document.getElementById("formularioEditarProductoPersonalizado");
+        editForm.classList.remove("hidden");
+
+        document.getElementById("edit_product_id").value = id;
+        document.getElementById("edit_nombre").value = nombre;
+        document.getElementById("edit_cantidad").value = cantidad;
+        document.getElementById("edit_largo").value = largo || '';
+        document.getElementById("edit_ancho").value = ancho || '';
+        document.getElementById("edit_alto").value = alto || '';
+        document.getElementById("edit_precio_general").value = precio;
+
+        // Desplazar al formulario de edición
+        editForm.scrollIntoView({ behavior: 'smooth' });
+    }
 </script>
