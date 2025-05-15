@@ -129,42 +129,47 @@ def update_quote(request, id):
     quote = get_object_or_404(Cotizaciones, id=id)
 
     if request.method == "POST":
-        prev_status = quote.status  # Guardar el estado anterior
-        fecha_entrega = request.POST.get("fecha_entrega", "").strip()
-        fecha_entrega = parse_date(fecha_entrega) if fecha_entrega else None
+        try:
+            prev_status = quote.status
+            fecha_entrega = request.POST.get("fecha_entrega", "").strip()
+            fecha_entrega = parse_date(fecha_entrega) if fecha_entrega else None
 
-        # Actualizar los campos con los datos del formulario
-        nuevo_status = request.POST['status']
-        quote.status = nuevo_status
-        quote.anticipo = request.POST['anticipo']
-        quote.metodo_pago = request.POST['metodo_pago']
-        quote.fecha_entrega = fecha_entrega
-        quote.direccion_entrega = request.POST['direccion_entrega']
+            nuevo_status = request.POST['status']
+            quote.status = nuevo_status
+            quote.anticipo = request.POST['anticipo']
+            quote.metodo_pago = request.POST['metodo_pago']
+            quote.fecha_entrega = fecha_entrega
+            quote.direccion_entrega = request.POST['direccion_entrega']
 
-        # Verificar si se debe hacer la resta del inventario
-        if prev_status not in ["Aceptado", "Completado"] and nuevo_status in ["Aceptado", "Completado"]:
-            insuficiente_stock = False  # Variable para controlar el error
+            # Si cambia de Pendiente a Aceptado o Completado
+            if prev_status not in ["Aceptado", "Completado"] and nuevo_status in ["Aceptado", "Completado"]:
+                inventariados = [item for item in quote.cotizaciones.all() if not item.product_id.otro]
 
-            # Verificar si hay suficiente stock antes de restar
-            for item in quote.cotizaciones.all():
-                if item.product_id.inventario is not None:
-                    if item.product_id.inventario < item.cantidad:
-                        insuficiente_stock = True
-                        break  # No hay suficiente inventario, cancelar proceso
+                if inventariados:
+                    # Verificar si hay stock suficiente
+                    for item in inventariados:
+                        inventario_actual = item.product_id.inventario
+                        if inventario_actual is None or inventario_actual < item.cantidad:
+                            messages.error(
+                                request,
+                                f"No hay suficiente inventario para el producto: {item.product_id.nombre}"
+                            )
+                            return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
 
-            if insuficiente_stock:
-                messages.error(request, "No se puede aceptar la cotización: Inventario insuficiente.")
-                return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
+                    # Restar inventario solo de productos inventariados
+                    for item in inventariados:
+                        item.product_id.inventario -= item.cantidad
+                        item.product_id.save()
 
-            # Restar el inventario si hay suficiente stock
-            for item in quote.cotizaciones.all():
-                item.product_id.inventario -= item.cantidad
-                item.product_id.save()
+            quote.save()
+            quote.calcular_iva()
 
-        quote.save()
-        quote.calcular_iva()
+            messages.success(request, "Cotización actualizada correctamente.")
+            return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
 
-        return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
+        except Exception as e:
+            messages.error(request, f"Ocurrió un error al actualizar la cotización: {str(e)}")
+            return redirect(reverse_lazy('details', kwargs={'id': quote.id}))
 
     context = {"quote": quote}
     return render(request, 'quotes/formUpdate.html', context)
